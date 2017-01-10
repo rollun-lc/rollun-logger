@@ -21,8 +21,8 @@
     "zendframework/zend-diactoros": "^1.1",
     "zendframework/zend-config": "^2.6",
     "phpunit/phpunit": "^4.0",
-    "avz-cmf/zaboy-dic": "^1.1",
-    "rollun-com/installer": "master",
+    "rollun-com/dic": "master-dev",
+    "rollun-com/installer": "master-dev",
     "psr/log": "^1.0"
   },
   "require-dev": {

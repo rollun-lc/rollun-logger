@@ -29,7 +29,7 @@ class Logger extends AbstractLogger
 
     public function __construct(LogWriter $logWriter = null)
     {
-        InsideConstruct::initMyServices();
+        InsideConstruct::setConstructParams();
         if (!isset($this->logWriter)) {
             $this->logWriter = new FileLogWriter();
         }

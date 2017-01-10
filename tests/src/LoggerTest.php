@@ -11,7 +11,7 @@ use Interop\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Psr\Log\Test\LoggerInterfaceTest;
-use zaboy\dic\InsideConstruct;
+use rolluncom\dic\InsideConstruct;
 use rolluncom\logger\FileLogWriter;
 use rolluncom\logger\FileLogWriterFactory;
 use rolluncom\logger\Logger;

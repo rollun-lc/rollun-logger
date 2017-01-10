@@ -10,24 +10,13 @@ namespace rolluncom\logger;
 
 use Composer\IO\IOInterface;
 use Interop\Container\ContainerInterface;
-use zaboy\installer\Command;
-use zaboy\installer\Install\InstallerInterface;
+use rolluncom\installer\Command;
+use rolluncom\installer\Install\InstallerAbstract;
 
-class Installer implements InstallerInterface
+class Installer extends InstallerAbstract
 {
     const LOGS_DIR = 'logs';
-    protected $ioComposer;
     const LOGS_FILE = 'logs.txt';
-
-    /**
-     * Installer constructor.
-     * @param ContainerInterface $container
-     * @param IOInterface $ioComposer
-     */
-    public function __construct(ContainerInterface $container, IOInterface $ioComposer)
-    {
-        $this->ioComposer = $ioComposer;
-    }
 
     /**
      * Make clean and install.
@@ -46,7 +35,7 @@ class Installer implements InstallerInterface
     public function uninstall()
     {
         if (constant('APP_ENV') !== 'dev') {
-            echo 'constant("APP_ENV") !== "dev" It has did nothing';
+            $this->io->write('constant("APP_ENV") !== "dev" It has did nothing');
             exit;
         }
         $publicDir = Command::getPublicDir();
@@ -65,7 +54,7 @@ class Installer implements InstallerInterface
     public function install()
     {
         if (constant('APP_ENV') !== 'dev') {
-            echo 'constant("APP_ENV") !== "dev" It has did nothing';
+            $this->io->write('constant("APP_ENV") !== "dev" It has did nothing');
             exit;
         }
         $publicDir = Command::getPublicDir();
