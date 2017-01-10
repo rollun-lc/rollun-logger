@@ -5,16 +5,16 @@
  * Date: 19.12.16
  * Time: 11:43 AM
  */
-namespace zaboy\test\res\Logger;
+namespace rolluncom\test\res\Logger;
 
 use Interop\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Psr\Log\Test\LoggerInterfaceTest;
 use zaboy\dic\InsideConstruct;
-use zaboy\logger\FileLogWriter;
-use zaboy\logger\FileLogWriterFactory;
-use zaboy\logger\Logger;
+use rolluncom\logger\FileLogWriter;
+use rolluncom\logger\FileLogWriterFactory;
+use rolluncom\logger\Logger;
 
 class LoggerTest extends LoggerInterfaceTest
 {

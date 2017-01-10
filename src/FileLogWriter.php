@@ -6,7 +6,7 @@
  * Time: 10:26
  */
 
-namespace zaboy\logger;
+namespace rolluncom\logger;
 
 class FileLogWriter implements LogWriter
 {

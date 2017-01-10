@@ -6,7 +6,7 @@
  * Time: 2:16 PM
  */
 
-namespace zaboy\logger;
+namespace rolluncom\logger;
 
 use Composer\IO\IOInterface;
 use Interop\Container\ContainerInterface;

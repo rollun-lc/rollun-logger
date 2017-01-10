@@ -6,7 +6,7 @@
  * Time: 10:30
  */
 
-namespace zaboy\logger;
+namespace rolluncom\logger;
 
 use Interop\Container\ContainerInterface;
 use Interop\Container\Exception\ContainerException;

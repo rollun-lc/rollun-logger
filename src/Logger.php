@@ -6,11 +6,11 @@
  * Time: 18:32
  */
 
-namespace zaboy\logger;
+namespace rolluncom\logger;
 
 use Psr\Log\AbstractLogger;
 use Psr\Log\InvalidArgumentException;
-use zaboy\dic\InsideConstruct;
+use rolluncom\dic\InsideConstruct;
 
 class Logger extends AbstractLogger
 {

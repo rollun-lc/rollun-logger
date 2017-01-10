@@ -22,7 +22,7 @@
     "zendframework/zend-config": "^2.6",
     "phpunit/phpunit": "^4.0",
     "avz-cmf/zaboy-dic": "^1.1",
-    "avz-cmf/zaboy-installer": "^2.1",
+    "rollun-com/installer": "master",
     "psr/log": "^1.0"
   },
   "require-dev": {
@@ -30,17 +30,17 @@
   },
   "autoload": {
     "psr-4": {
-      "zaboy\\logger\\": "src/"
+      "rolluncom\\logger\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "zaboy\\test\\logger\\": "tests/src"
+      "rolluncom\\test\\logger\\": "tests/src"
     }
   },
   "scripts": {
-    "lib-install": "zaboy\\installer\\Command::install",
-    "lib-uninstall": "zaboy\\installer\\Command::uninstall",
-    "lib-reinstall": "zaboy\\installer\\Command::reinstall"
+    "lib-install": "rolluncom\\installer\\Command::install",
+    "lib-uninstall": "rolluncom\\installer\\Command::uninstall",
+    "lib-reinstall": "rolluncom\\installer\\Command::reinstall"
   }
 }
