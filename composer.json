@@ -1,6 +1,6 @@
 {
-  "name": "avz-cmf/zaboy-skeleton",
-  "description": "zaboy skeleton app",
+  "name": "rollun-com/logger",
+  "description": "Logger",
   "minimum-stability": "stable",
   "license": "proprietary",
   "authors": [
@@ -16,29 +16,31 @@
   "require": {
     "php": "^5.6 || ^7.0",
     "zendframework/zend-servicemanager": "^3.0",
+    "zendframework/zend-stdlib": "^3.0.1",
     "zendframework/zend-stratigility": "^1.1",
-    "psr/http-message": "^1.0",
     "zendframework/zend-diactoros": "^1.1",
     "zendframework/zend-config": "^2.6",
-    "zendframework/zend-stdlib": "^3",
-    "avz-cmf/zaboy-installer": "^1.0"
+    "phpunit/phpunit": "^4.0",
+    "avz-cmf/zaboy-dic": "^1.1",
+    "avz-cmf/zaboy-installer": "^2.1",
+    "psr/log": "^1.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^4.0"
   },
   "autoload": {
     "psr-4": {
-      "zaboy\\skeleton\\": "src/"
+      "zaboy\\logger\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "zaboy\\test\\skeleton\\": "tests/src"
+      "zaboy\\test\\logger\\": "tests/src"
     }
   },
   "scripts": {
-    "lib-install": "zaboy\\skeleton\\InstallerCommands::install",
-    "lib-uninstall": "zaboy\\skeleton\\InstallerCommands::uninstall",
-    "lib-reinstall": "zaboy\\skeleton\\InstallerCommands::reinstall"
+    "lib-install": "zaboy\\installer\\Command::install",
+    "lib-uninstall": "zaboy\\installer\\Command::uninstall",
+    "lib-reinstall": "zaboy\\installer\\Command::reinstall"
   }
 }

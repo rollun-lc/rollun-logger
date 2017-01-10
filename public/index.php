@@ -5,10 +5,9 @@
 chdir(dirname(__DIR__));
 
 require 'vendor/autoload.php';
+require_once 'config/env_configurator.php';
 
 use Zend\Diactoros\Server;
-use zaboy\rest\Pipe\MiddlewarePipeOptions;
-use zaboy\rest\Pipe\Factory\RestRqlFactory;
 use Zend\Stratigility\Middleware\ErrorHandler;
 use Zend\Stratigility\Middleware\NotFoundHandler;
 use Zend\Stratigility\NoopFinalHandler;
@@ -26,5 +25,3 @@ $server = Server::createServer(function ($req, $resp, $next) {
     return "Hello World!";
 }, $_SERVER, $_GET, $_POST, $_COOKIE, $_FILES);
 $server->listen();
-
-
