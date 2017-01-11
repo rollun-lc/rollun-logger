@@ -6,7 +6,7 @@
  * Time: 10:24
  */
 
-namespace zaboy\logger;
+namespace rolluncom\logger;
 
 interface LogWriter
 {

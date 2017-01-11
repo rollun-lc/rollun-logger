@@ -6,10 +6,10 @@
  * Time: 11:45 AM
  */
 
-use \zaboy\logger\FileLogWriter;
-use \zaboy\logger\FileLogWriterFactory;
-use \zaboy\installer\Command;
-use \zaboy\logger\Installer as LoggerInstaller;
+use \rolluncom\logger\FileLogWriter;
+use \rolluncom\logger\FileLogWriterFactory;
+use \rolluncom\installer\Command;
+use \rolluncom\logger\Installer as LoggerInstaller;
 
 return [
     'logWriter' => [

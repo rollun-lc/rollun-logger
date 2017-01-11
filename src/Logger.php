@@ -6,11 +6,11 @@
  * Time: 18:32
  */
 
-namespace zaboy\logger;
+namespace rolluncom\logger;
 
 use Psr\Log\AbstractLogger;
 use Psr\Log\InvalidArgumentException;
-use zaboy\dic\InsideConstruct;
+use rolluncom\dic\InsideConstruct;
 
 class Logger extends AbstractLogger
 {
@@ -29,7 +29,7 @@ class Logger extends AbstractLogger
 
     public function __construct(LogWriter $logWriter = null)
     {
-        InsideConstruct::initMyServices();
+        InsideConstruct::setConstructParams();
         if (!isset($this->logWriter)) {
             $this->logWriter = new FileLogWriter();
         }
