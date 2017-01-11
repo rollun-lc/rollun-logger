@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "aca2b0a0b58e15a0add1b4717a8b3f0b",
-    "content-hash": "189a0100b8fef01a1eedaa282b854b1c",
+    "hash": "5daaeb5a84a807e371785ab5722f23b6",
+    "content-hash": "fb2b11fbc6bc6cbcfd8ccda903853fd1",
     "packages": [
         {
             "name": "composer/ca-bundle",
@@ -1142,23 +1142,23 @@
             "time": "2016-10-10 12:19:37"
         },
         {
-            "name": "rollun-com/dic",
+            "name": "rollun-com/rollun-dic",
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/rollun-com/dic.git",
-                "reference": "866ecc1df240de4b7325478c253981af1ed5c955"
+                "url": "https://github.com/rollun-com/rollun-dic.git",
+                "reference": "2453c600f2fe8bbb2bdc93f1286676c51914d5c6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rollun-com/dic/zipball/866ecc1df240de4b7325478c253981af1ed5c955",
-                "reference": "866ecc1df240de4b7325478c253981af1ed5c955",
+                "url": "https://api.github.com/repos/rollun-com/rollun-dic/zipball/2453c600f2fe8bbb2bdc93f1286676c51914d5c6",
+                "reference": "2453c600f2fe8bbb2bdc93f1286676c51914d5c6",
                 "shasum": ""
             },
             "require": {
                 "php": "^5.6 || ^7.0",
                 "psr/http-message": "^1.0",
-                "rollun-com/installer": "master",
+                "rollun-com/rollun-installer": "dev-master",
                 "zendframework/zend-config": "^2.6",
                 "zendframework/zend-diactoros": "^1.1",
                 "zendframework/zend-servicemanager": "^3.0",
@@ -1171,7 +1171,7 @@
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "rolluncom\\dic\\": "src/"
+                    "rollun\\dic\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -1189,20 +1189,20 @@
                 }
             ],
             "description": "InsideConstruct",
-            "time": "2017-01-10 15:24:19"
+            "time": "2017-01-11 09:40:22"
         },
         {
-            "name": "rollun-com/installer",
+            "name": "rollun-com/rollun-installer",
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/rollun-com/installer.git",
-                "reference": "491ffb9ae2d21bc96b2f5bb03361b2253d87be2a"
+                "url": "https://github.com/rollun-com/rollun-installer.git",
+                "reference": "f18945e9d008ed58f100f449bfa0592d622f71b1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rollun-com/installer/zipball/491ffb9ae2d21bc96b2f5bb03361b2253d87be2a",
-                "reference": "491ffb9ae2d21bc96b2f5bb03361b2253d87be2a",
+                "url": "https://api.github.com/repos/rollun-com/rollun-installer/zipball/f18945e9d008ed58f100f449bfa0592d622f71b1",
+                "reference": "f18945e9d008ed58f100f449bfa0592d622f71b1",
                 "shasum": ""
             },
             "require": {
@@ -1222,7 +1222,7 @@
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "rolluncom\\installer\\": "src/"
+                    "rollun\\installer\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -1240,7 +1240,7 @@
                 }
             ],
             "description": "Installer",
-            "time": "2017-01-10 15:13:03"
+            "time": "2017-01-11 09:44:07"
         },
         {
             "name": "sebastian/comparator",
@@ -2497,8 +2497,8 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "rollun-com/dic": 20,
-        "rollun-com/installer": 20
+        "rollun-com/rollun-dic": 20,
+        "rollun-com/rollun-installer": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

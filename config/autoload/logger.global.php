@@ -6,10 +6,10 @@
  * Time: 11:45 AM
  */
 
-use \rolluncom\logger\FileLogWriter;
-use \rolluncom\logger\FileLogWriterFactory;
-use \rolluncom\installer\Command;
-use \rolluncom\logger\Installer as LoggerInstaller;
+use \rollun\logger\FileLogWriter;
+use \rollun\logger\FileLogWriterFactory;
+use \rollun\installer\Command;
+use \rollun\logger\Installer as LoggerInstaller;
 
 return [
     'logWriter' => [

@@ -6,7 +6,7 @@
  * Time: 10:30
  */
 
-namespace rolluncom\logger;
+namespace rollun\logger;
 
 use Interop\Container\ContainerInterface;
 use Interop\Container\Exception\ContainerException;

@@ -6,11 +6,11 @@
  * Time: 18:32
  */
 
-namespace rolluncom\logger;
+namespace rollun\logger;
 
 use Psr\Log\AbstractLogger;
 use Psr\Log\InvalidArgumentException;
-use rolluncom\dic\InsideConstruct;
+use rollun\dic\InsideConstruct;
 
 class Logger extends AbstractLogger
 {

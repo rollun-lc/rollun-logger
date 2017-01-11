@@ -1,5 +1,5 @@
 {
-  "name": "rollun-com/logger",
+  "name": "rollun-com/rollun-logger",
   "description": "Logger",
   "minimum-stability": "stable",
   "license": "proprietary",
@@ -21,8 +21,8 @@
     "zendframework/zend-diactoros": "^1.1",
     "zendframework/zend-config": "^2.6",
     "phpunit/phpunit": "^4.0",
-    "rollun-com/dic": "master-dev",
-    "rollun-com/installer": "master-dev",
+    "rollun-com/rollun-dic": "master-dev",
+    "rollun-com/rollun-installer": "master-dev",
     "psr/log": "^1.0"
   },
   "require-dev": {
@@ -30,17 +30,17 @@
   },
   "autoload": {
     "psr-4": {
-      "rolluncom\\logger\\": "src/"
+      "rollun\\logger\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "rolluncom\\test\\logger\\": "tests/src"
+      "rollun\\test\\logger\\": "tests/src"
     }
   },
   "scripts": {
-    "lib-install": "rolluncom\\installer\\Command::install",
-    "lib-uninstall": "rolluncom\\installer\\Command::uninstall",
-    "lib-reinstall": "rolluncom\\installer\\Command::reinstall"
+    "lib-install": "rollun\\installer\\Command::install",
+    "lib-uninstall": "rollun\\installer\\Command::uninstall",
+    "lib-reinstall": "rollun\\installer\\Command::reinstall"
   }
 }

@@ -5,16 +5,16 @@
  * Date: 19.12.16
  * Time: 11:43 AM
  */
-namespace rolluncom\test\res\Logger;
+namespace rollun\test\res\Logger;
 
 use Interop\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Psr\Log\Test\LoggerInterfaceTest;
-use rolluncom\dic\InsideConstruct;
-use rolluncom\logger\FileLogWriter;
-use rolluncom\logger\FileLogWriterFactory;
-use rolluncom\logger\Logger;
+use rollun\dic\InsideConstruct;
+use rollun\logger\FileLogWriter;
+use rollun\logger\FileLogWriterFactory;
+use rollun\logger\Logger;
 
 class LoggerTest extends LoggerInterfaceTest
 {

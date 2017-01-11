@@ -6,7 +6,7 @@
  * Time: 10:26
  */
 
-namespace rolluncom\logger;
+namespace rollun\logger;
 
 class FileLogWriter implements LogWriter
 {

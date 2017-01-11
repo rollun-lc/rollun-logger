@@ -1,6 +1,6 @@
 <phpunit bootstrap="tests/bootstrap.php" colors="true">
     <testsuites>
-        <testsuite name="zaboy\\test\\logger\\">
+        <testsuite name="rollun\\test\\logger\\">
             <directory>./tests/src/</directory>
         </testsuite>
     </testsuites>

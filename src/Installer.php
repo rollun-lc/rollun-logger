@@ -6,12 +6,12 @@
  * Time: 2:16 PM
  */
 
-namespace rolluncom\logger;
+namespace rollun\logger;
 
 use Composer\IO\IOInterface;
 use Interop\Container\ContainerInterface;
-use rolluncom\installer\Command;
-use rolluncom\installer\Install\InstallerAbstract;
+use rollun\installer\Command;
+use rollun\installer\Install\InstallerAbstract;
 
 class Installer extends InstallerAbstract
 {
