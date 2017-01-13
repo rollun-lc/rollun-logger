@@ -38,7 +38,7 @@ class Installer extends InstallerAbstract
             $this->io->write('constant("APP_ENV") !== "dev" It has did nothing');
             exit;
         }
-        $publicDir = Command::getPublicDir();
+        $publicDir = Command::getDataDir();
         if (file_exists($publicDir . DIRECTORY_SEPARATOR . self::LOGS_DIR . DIRECTORY_SEPARATOR . self::LOGS_FILE)) {
             unlink($publicDir . DIRECTORY_SEPARATOR . self::LOGS_DIR . DIRECTORY_SEPARATOR . self::LOGS_FILE);
         }
@@ -57,8 +57,8 @@ class Installer extends InstallerAbstract
             $this->io->write('constant("APP_ENV") !== "dev" It has did nothing');
             exit;
         }
-        $publicDir = Command::getPublicDir();
-        mkdir($publicDir . DIRECTORY_SEPARATOR . self::LOGS_DIR);
+        $publicDir = Command::getDataDir();
+        mkdir($publicDir . DIRECTORY_SEPARATOR . self::LOGS_DIR,0777,true);
         fopen($publicDir . DIRECTORY_SEPARATOR . self::LOGS_DIR . DIRECTORY_SEPARATOR . self::LOGS_FILE, "w");
     }
 }

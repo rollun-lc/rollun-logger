@@ -17,7 +17,7 @@ return [
     'logWriter' => [
         FileLogWriter::class => [
             FileLogWriterFactory::FILE_NAME_KEY =>
-                realpath(Command::getPublicDir() . DIRECTORY_SEPARATOR .
+                realpath(Command::getDataDir() . DIRECTORY_SEPARATOR .
                     LoggerInstaller::LOGS_DIR . DIRECTORY_SEPARATOR . LoggerInstaller::LOGS_FILE)
         ]
     ],
