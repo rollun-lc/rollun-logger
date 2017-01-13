@@ -12,9 +12,9 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Psr\Log\Test\LoggerInterfaceTest;
 use rollun\dic\InsideConstruct;
-use rollun\logger\FileLogWriter;
-use rollun\logger\FileLogWriterFactory;
 use rollun\logger\Logger;
+use rollun\logger\LogWriter\FileLogWriter;
+use rollun\logger\LogWriter\FileLogWriterFactory;
 
 class LoggerTest extends LoggerInterfaceTest
 {

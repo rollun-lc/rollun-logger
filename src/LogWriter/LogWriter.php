@@ -6,7 +6,7 @@
  * Time: 10:24
  */
 
-namespace rollun\logger;
+namespace rollun\logger\LogWriter;
 
 interface LogWriter
 {

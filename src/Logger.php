@@ -11,6 +11,8 @@ namespace rollun\logger;
 use Psr\Log\AbstractLogger;
 use Psr\Log\InvalidArgumentException;
 use rollun\dic\InsideConstruct;
+use rollun\logger\LogWriter\FileLogWriter;
+use rollun\logger\LogWriter\LogWriter;
 
 class Logger extends AbstractLogger
 {
@@ -42,7 +44,7 @@ class Logger extends AbstractLogger
      * @param string $message
      * @param array $context
      *
-     * @return void
+     * @return string
      */
     public function log($level, $message, array $context = array())
     {
@@ -58,6 +60,7 @@ class Logger extends AbstractLogger
 
         $split = preg_split('/\|/', strtr($message, $replace), 2, PREG_SPLIT_NO_EMPTY);
         if (count($split) == 2) {
+            $split[0] = trim($split[0]);
             $id = is_numeric($split[0]) ? $split[0] : (new \DateTime($split[0]))->getTimestamp();
             $message = $split[1];
         } else {
@@ -66,5 +69,6 @@ class Logger extends AbstractLogger
         }
         $id = base64_encode(uniqid("", true) . '_' . $id);
         $this->logWriter->logWrite($id, $level, $message);
+        return $id;
     }
 }
