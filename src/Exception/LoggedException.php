@@ -23,7 +23,7 @@ use rollun\logger\Logger;
 class LoggedException extends \Exception
 {
     /** @var  string */
-    const LOG_LEVEL = LogLevel::ERROR;
+    const LOG_LEVEL_DEFAULT = LogLevel::ERROR;
 
     const LOG_PREVIOUS_LEVEL = LogLevel::INFO;
 
@@ -54,7 +54,9 @@ class LoggedException extends \Exception
         $message = isset($prevId) ? (new \DateTime())->getTimestamp() . " | " . $this->message .
             " To get info for previous exception read meessage with id" :
             (new \DateTime())->getTimestamp() . "|" . $this->message;
-        $this->id = $this->logger->log(static::LOG_LEVEL, $message);
+        $level = empty(LogExceptionLevel::getLoggerLevelByCode($code))
+            ? static::LOG_LEVEL_DEFAULT :LogExceptionLevel::getLoggerLevelByCode($code);
+        $this->id = $this->logger->log($level, $message);
     }
 
     /**
