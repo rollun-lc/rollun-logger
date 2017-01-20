@@ -88,7 +88,7 @@ class LoggerTest extends LoggerInterfaceTest
         $logsString = array_diff(explode("\n", file_get_contents($this->file)), [""]);
         foreach ($logsString as $log) {
             $part = explode(';', $log);
-            $logs[] = $part[1] . ' ' . $part[2];
+            $logs[] = $part[1] . ' ' . trim($part[2], '"');
         }
         return $logs;
     }
@@ -99,7 +99,7 @@ class LoggerTest extends LoggerInterfaceTest
         $logsString = array_diff(explode("\n", file_get_contents($this->file)), [""]);
         foreach ($logsString as $log) {
             $part = explode(';', $log);
-            $logs[] = explode('_', base64_decode($part[0]))[1] . ' ' . $part[1] . ' ' . $part[2];
+            $logs[] = explode('_', base64_decode($part[0]))[1] . ' ' . $part[1] . ' ' . trim($part[2], '"');
         }
         return $logs;
     }
