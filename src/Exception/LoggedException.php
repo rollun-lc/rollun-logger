@@ -47,7 +47,7 @@ class LoggedException extends \Exception
      * @param \Exception|null $previous
      * @param LoggerInterface $logger
      */
-    public function __construct($message = "", $code = 0, \Exception $previous = null, LoggerInterface $logger = null)
+    public function __construct($message = "", $code = self::LOG_LEVEL_DEFAULT, \Exception $previous = null, LoggerInterface $logger = null)
     {
         InsideConstruct::init();
         $prevId = isset($previous) ? $this->previousException($previous) : null;
