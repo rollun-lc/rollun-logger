@@ -10,7 +10,7 @@ namespace rollun\logger\Exception;
 
 use Psr\Log\LogLevel;
 
-abstract class LogExceptionLevel
+class LogExceptionLevel
 {
     const EMERGENCY = 7;
     const ALERT = 6;
@@ -35,7 +35,8 @@ abstract class LogExceptionLevel
     public static function getLoggerLevelByCode($code)
     {
         if (array_key_exists($code, self::LOG_LEVEL)) {
-            return self::LOG_LEVEL[$code];
+            $logLevels = self::LOG_LEVEL;
+            return $logLevels[$code];
         }
         return '';
     }

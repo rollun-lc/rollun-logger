@@ -1353,12 +1353,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "1991086b35313dd4e3c5b351f4b22760deea0910"
+                "reference": "3db4b0df21d1f527304650e717c66af48981f1c4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/1991086b35313dd4e3c5b351f4b22760deea0910",
-                "reference": "1991086b35313dd4e3c5b351f4b22760deea0910",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/3db4b0df21d1f527304650e717c66af48981f1c4",
+                "reference": "3db4b0df21d1f527304650e717c66af48981f1c4",
                 "shasum": ""
             },
             "conflict": {
@@ -1402,7 +1402,7 @@
                 "phpmailer/phpmailer": ">=5,<5.2.22",
                 "pusher/pusher-php-server": "<2.2.1",
                 "sabre/dav": ">=1.6,<1.6.99|>=1.7,<1.7.11|>=1.8,<1.8.9",
-                "shopware/shopware": "<4.3.7|>=5,<5.1.5",
+                "shopware/shopware": "<4.4|>=5,<5.2.15",
                 "silverstripe/cms": ">=3.1,<3.1.11|>=3,<=3.0.11",
                 "silverstripe/forum": "<=0.6.1|>=0.7,<=0.7.3",
                 "silverstripe/framework": ">=3,<3.3",
@@ -1476,20 +1476,20 @@
                 }
             ],
             "description": "Prevents installation of composer packages with known security vulnerabilities: no API, simply require it",
-            "time": "2017-01-19 15:04:18"
+            "time": "2017-01-24 18:32:04"
         },
         {
             "name": "rollun-com/rollun-dic",
-            "version": "v1.0.0",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rollun-com/rollun-dic.git",
-                "reference": "bd78d3e90bd1934954ac9c7ea5cc35c452abb4c3"
+                "reference": "433667429f98fe36d388116f59a04f49c78dc3d5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rollun-com/rollun-dic/zipball/bd78d3e90bd1934954ac9c7ea5cc35c452abb4c3",
-                "reference": "bd78d3e90bd1934954ac9c7ea5cc35c452abb4c3",
+                "url": "https://api.github.com/repos/rollun-com/rollun-dic/zipball/433667429f98fe36d388116f59a04f49c78dc3d5",
+                "reference": "433667429f98fe36d388116f59a04f49c78dc3d5",
                 "shasum": ""
             },
             "require": {
@@ -1530,20 +1530,20 @@
                 }
             ],
             "description": "InsideConstruct",
-            "time": "2017-01-13 11:47:01"
+            "time": "2017-01-25 15:24:03"
         },
         {
             "name": "rollun-com/rollun-installer",
-            "version": "1.0.4",
+            "version": "1.0.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rollun-com/rollun-installer.git",
-                "reference": "353d0bb4704cc4d92e25e0f360a5935954ec82e3"
+                "reference": "46749d8dc3e3a398d49517b9ae5e898b5a3ca392"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rollun-com/rollun-installer/zipball/353d0bb4704cc4d92e25e0f360a5935954ec82e3",
-                "reference": "353d0bb4704cc4d92e25e0f360a5935954ec82e3",
+                "url": "https://api.github.com/repos/rollun-com/rollun-installer/zipball/46749d8dc3e3a398d49517b9ae5e898b5a3ca392",
+                "reference": "46749d8dc3e3a398d49517b9ae5e898b5a3ca392",
                 "shasum": ""
             },
             "require": {
@@ -1587,20 +1587,20 @@
                 }
             ],
             "description": "Installer",
-            "time": "2017-01-18 12:47:58"
+            "time": "2017-01-23 13:48:29"
         },
         {
             "name": "rollun-com/rollun-utils",
-            "version": "v1.0.0",
+            "version": "1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rollun-com/rollun-utils.git",
-                "reference": "fe1d2d0c693dd1b70ed98f5b6252203dd6b19d00"
+                "reference": "5da04cb4bfa34e03f62d9be7d840843bdd870f55"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rollun-com/rollun-utils/zipball/fe1d2d0c693dd1b70ed98f5b6252203dd6b19d00",
-                "reference": "fe1d2d0c693dd1b70ed98f5b6252203dd6b19d00",
+                "url": "https://api.github.com/repos/rollun-com/rollun-utils/zipball/5da04cb4bfa34e03f62d9be7d840843bdd870f55",
+                "reference": "5da04cb4bfa34e03f62d9be7d840843bdd870f55",
                 "shasum": ""
             },
             "require": {
@@ -1650,7 +1650,7 @@
                 "php",
                 "rest"
             ],
-            "time": "2017-01-13 11:43:46"
+            "time": "2017-01-23 16:01:11"
         },
         {
             "name": "seld/cli-prompt",
@@ -2236,16 +2236,16 @@
         },
         {
             "name": "zendframework/zend-diactoros",
-            "version": "1.3.9",
+            "version": "1.3.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-diactoros.git",
-                "reference": "d5d74ca5548753e0e427fcffca89b134943bac89"
+                "reference": "83e8d98b9915de76c659ce27d683c02a0f99fa90"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-diactoros/zipball/d5d74ca5548753e0e427fcffca89b134943bac89",
-                "reference": "d5d74ca5548753e0e427fcffca89b134943bac89",
+                "url": "https://api.github.com/repos/zendframework/zend-diactoros/zipball/83e8d98b9915de76c659ce27d683c02a0f99fa90",
+                "reference": "83e8d98b9915de76c659ce27d683c02a0f99fa90",
                 "shasum": ""
             },
             "require": {
@@ -2282,7 +2282,7 @@
                 "psr",
                 "psr-7"
             ],
-            "time": "2017-01-17 16:18:33"
+            "time": "2017-01-23 04:53:24"
         },
         {
             "name": "zendframework/zend-escaper",
@@ -2775,16 +2775,16 @@
         },
         {
             "name": "zendframework/zend-stratigility",
-            "version": "1.3.2",
+            "version": "1.3.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-stratigility.git",
-                "reference": "ffbf29ceb92a9223b8383ea2b021b242591141d2"
+                "reference": "2c4120d2af215c8261a36e0bc3aa8e179e05e148"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-stratigility/zipball/ffbf29ceb92a9223b8383ea2b021b242591141d2",
-                "reference": "ffbf29ceb92a9223b8383ea2b021b242591141d2",
+                "url": "https://api.github.com/repos/zendframework/zend-stratigility/zipball/2c4120d2af215c8261a36e0bc3aa8e179e05e148",
+                "reference": "2c4120d2af215c8261a36e0bc3aa8e179e05e148",
                 "shasum": ""
             },
             "require": {
@@ -2824,7 +2824,7 @@
                 "middleware",
                 "psr-7"
             ],
-            "time": "2017-01-05 22:22:10"
+            "time": "2017-01-23 22:59:03"
         }
     ],
     "packages-dev": [
@@ -3396,16 +3396,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "4.8.31",
+            "version": "4.8.32",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "98b2b39a520766bec663ff5b7ff1b729db9dbfe3"
+                "reference": "f5e1941a8dacf0d904753ff2895c6f68e54bcee1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/98b2b39a520766bec663ff5b7ff1b729db9dbfe3",
-                "reference": "98b2b39a520766bec663ff5b7ff1b729db9dbfe3",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/f5e1941a8dacf0d904753ff2895c6f68e54bcee1",
+                "reference": "f5e1941a8dacf0d904753ff2895c6f68e54bcee1",
                 "shasum": ""
             },
             "require": {
@@ -3464,7 +3464,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2016-12-09 02:45:31"
+            "time": "2017-01-22 08:37:05"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
