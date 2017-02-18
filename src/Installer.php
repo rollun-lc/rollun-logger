@@ -16,7 +16,7 @@ use rollun\installer\Install\InstallerAbstract;
 class Installer extends InstallerAbstract
 {
     const LOGS_DIR = 'logs';
-    const LOGS_FILE = 'logs.txt';
+    const LOGS_FILE = 'logs.csv';
 
     /**
      * Make clean and install.
@@ -57,8 +57,12 @@ class Installer extends InstallerAbstract
             $this->io->write('constant("APP_ENV") !== "dev" It has did nothing');
             exit;
         }
-        $publicDir = Command::getDataDir();
-        mkdir($publicDir . DIRECTORY_SEPARATOR . self::LOGS_DIR,0777,true);
-        fopen($publicDir . DIRECTORY_SEPARATOR . self::LOGS_DIR . DIRECTORY_SEPARATOR . self::LOGS_FILE, "w");
+        $dir = Command::getDataDir() . DIRECTORY_SEPARATOR . self::LOGS_DIR;
+        if(!is_dir($dir)) {
+            mkdir($dir,0777,true);
+        }
+        $file = $dir . DIRECTORY_SEPARATOR . self::LOGS_FILE;
+        fopen($file, "w");
+        file_put_contents($file, "id;level;message\n");
     }
 }

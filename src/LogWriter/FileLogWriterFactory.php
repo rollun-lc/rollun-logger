@@ -39,10 +39,8 @@ class FileLogWriterFactory implements FactoryInterface
             $config = $container->get("config");
             if (isset($config['logWriter'][FileLogWriter::class])) {
                 $config = $config['logWriter'][$requestedName];
-
                 $reflectionConstruct = new \ReflectionMethod(FileLogWriter::class, '__construct');
                 $params = $reflectionConstruct->getParameters();
-
                 $file = '';
                 $delimiter = '';
                 $endString = '';
