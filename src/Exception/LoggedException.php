@@ -52,6 +52,9 @@ class LoggedException extends \Exception implements LoggerAwareInterface
     public function __construct($message = "", $code = LogExceptionLevel::ERROR, \Exception $previous = null)
     {
         InsideConstruct::setConstructParams(['logger' => 'logger']);
+        if(!isset($this->logger)) {
+            $this->logger = new Logger();
+        }
         parent::__construct($message, $code, $previous);
         $prevId = isset($previous) ? $this->previousException($previous) : null;
         $message = isset($prevId) ? (new \DateTime())->getTimestamp() . " | " . $this->message .
