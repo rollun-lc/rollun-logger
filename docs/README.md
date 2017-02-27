@@ -7,7 +7,7 @@ Logger класс реализует интерфейс `Psr\Log\LoggerInterface
 
 # FileLogWriter
 Стандартная реализация интерфейса `LogWriter` для записи лога в файл.
-> По умолчанию лог будет записать в `/dev/null`
+> По умолчанию лог будет записать в `/dev/null` либо в `null`
 
 `FileLogWriterFactory` - Создает инстанс `FileLogWriter` используя параметры из конфига.
 Пример конфига:
