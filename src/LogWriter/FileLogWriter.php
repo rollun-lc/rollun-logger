@@ -19,6 +19,14 @@ class FileLogWriter implements LogWriter
 
     public function __construct($file = "/dev/null", $delimiter = ';', $endString = "\n")
     {
+        if ($file === "/dev/null" || $file === "null") {
+            if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+                $file = "null";
+            } else {
+                $file = "/dev/null";
+            }
+        }
+
         $this->file = $file;
         $this->delimiter = $delimiter;
         $this->endString = $endString;
