@@ -10,5 +10,7 @@ namespace rollun\logger\LogWriter;
 
 interface LogWriter
 {
+    const DEFAULT_LOG_WRITER_SERVICE = LogWriter::class;
+
     public function logWrite($id, $level, $message);
 }
