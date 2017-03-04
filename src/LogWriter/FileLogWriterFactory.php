@@ -36,7 +36,7 @@ class FileLogWriterFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        return new FileLogWriter(static::getLogFile());
+        return new FileLogWriterInterface(static::getLogFile());
     }
 
     static public function getLogFile()
