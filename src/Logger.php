@@ -16,6 +16,8 @@ use rollun\logger\LogWriter\LogWriter;
 
 class Logger extends AbstractLogger
 {
+    const DEFAULT_LOGGER_SERVICE = 'logger';
+
     protected $logWriter;
 
     protected $levelEnum = [
@@ -31,7 +33,7 @@ class Logger extends AbstractLogger
 
     public function __construct(LogWriter $logWriter = null)
     {
-        InsideConstruct::setConstructParams();
+        InsideConstruct::setConstructParams(['logWriter' => LogWriter::DEFAULT_LOG_WRITER_SERVICE]);
         if (!isset($this->logWriter)) {
             $this->logWriter = new FileLogWriter();
         }

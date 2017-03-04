@@ -51,7 +51,7 @@ class LoggedException extends \Exception implements LoggerAwareInterface
      */
     public function __construct($message = "", $code = LogExceptionLevel::ERROR, \Exception $previous = null)
     {
-        InsideConstruct::setConstructParams(['logger' => 'logger']);
+        InsideConstruct::setConstructParams(['logger' => Logger::DEFAULT_LOGGER_SERVICE]);
         if(!isset($this->logger)) {
             $this->logger = new Logger();
         }

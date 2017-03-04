@@ -10,6 +10,7 @@ namespace rollun\logger\LogWriter;
 
 use Interop\Container\ContainerInterface;
 use Interop\Container\Exception\ContainerException;
+use rollun\installer\Command;
 use Zend\ServiceManager\Exception\ServiceNotCreatedException;
 use Zend\ServiceManager\Exception\ServiceNotFoundException;
 use Zend\ServiceManager\Factory\FactoryInterface;
@@ -17,9 +18,9 @@ use Zend\ServiceManager\Factory\FactoryInterface;
 class FileLogWriterFactory implements FactoryInterface
 {
 
-    const FILE_NAME_KEY = 'file';
-    const DELIMITER_KEY = 'delimiter';
-    const END_STRING_KEY = 'endString';
+    const LOGS_DIR = 'logs';
+
+    const LOGS_FILE_NAME = 'logs.csv';
 
     /**
      * Create an object
@@ -35,26 +36,11 @@ class FileLogWriterFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        if ($container->has("config")) {
-            $config = $container->get("config");
-            if (isset($config['logWriter'][FileLogWriter::class])) {
-                $config = $config['logWriter'][$requestedName];
-                $reflectionConstruct = new \ReflectionMethod(FileLogWriter::class, '__construct');
-                $params = $reflectionConstruct->getParameters();
-                $file = '';
-                $delimiter = '';
-                $endString = '';
-                foreach ($params as $param) {
-                    /** @var $param \ReflectionParameter */
-                    ${$param->getName()} = isset($config[$param->getName()]) ? $config[$param->getName()]
-                        : $param->getDefaultValue();
-                    if ($param->getName() == static::FILE_NAME_KEY && !file_exists($file)) {
-                        $file = $param->getDefaultValue();
-                    }
-                }
-                return new FileLogWriter($file, $delimiter, $endString);
-            }
-        }
-        return new FileLogWriter();
+        return new FileLogWriter(static::getLogFile());
+    }
+
+    static public function getLogFile()
+    {
+        return realpath(Command::getDataDir() . DIRECTORY_SEPARATOR . static::LOGS_DIR . DIRECTORY_SEPARATOR . static::LOGS_FILE_NAME);
     }
 }
