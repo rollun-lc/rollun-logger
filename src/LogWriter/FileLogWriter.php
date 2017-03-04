@@ -8,7 +8,7 @@
 
 namespace rollun\logger\LogWriter;
 
-class FileLogWriterInterface implements LogWriterInterface
+class FileLogWriter implements LogWriterInterface
 {
 
     protected $file;

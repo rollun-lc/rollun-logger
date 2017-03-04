@@ -11,7 +11,7 @@ namespace rollun\logger;
 use Psr\Log\AbstractLogger;
 use Psr\Log\InvalidArgumentException;
 use rollun\dic\InsideConstruct;
-use rollun\logger\LogWriter\FileLogWriterInterface;
+use rollun\logger\LogWriter\FileLogWriter;
 use rollun\logger\LogWriter\LogWriterInterface;
 
 class Logger extends AbstractLogger
@@ -35,7 +35,7 @@ class Logger extends AbstractLogger
     {
         InsideConstruct::setConstructParams(['logWriter' => LogWriterInterface::DEFAULT_LOG_WRITER_SERVICE]);
         if (!isset($this->logWriter)) {
-            $this->logWriter = new FileLogWriterInterface();
+            $this->logWriter = new FileLogWriter();
         }
     }
 
