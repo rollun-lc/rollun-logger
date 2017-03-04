@@ -27,8 +27,7 @@ class LoggedExceptionTest extends \PHPUnit_Framework_TestCase
     {
         $container = include 'config/container.php';
         InsideConstruct::setContainer($container);
-        $this->logFile =
-            $container->get('config')['logWriter'][FileLogWriter::class][FileLogWriterFactory::FILE_NAME_KEY];
+        $this->logFile =FileLogWriterFactory::getLogFile();
         fopen($this->logFile, "w");
     }
 

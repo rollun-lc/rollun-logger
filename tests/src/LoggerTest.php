@@ -32,7 +32,7 @@ class LoggerTest extends LoggerInterfaceTest
         InsideConstruct::setContainer($this->container);
         $this->object = $this->getLogger();
         $config = $this->container->get('config');
-        $this->file = $config['logWriter'][FileLogWriter::class][FileLogWriterFactory::FILE_NAME_KEY];
+        $this->file = FileLogWriterFactory::getLogFile();
         fopen($this->file, "w");
     }
 

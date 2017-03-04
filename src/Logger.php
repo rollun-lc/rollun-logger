@@ -12,7 +12,7 @@ use Psr\Log\AbstractLogger;
 use Psr\Log\InvalidArgumentException;
 use rollun\dic\InsideConstruct;
 use rollun\logger\LogWriter\FileLogWriter;
-use rollun\logger\LogWriter\LogWriter;
+use rollun\logger\LogWriter\LogWriterInterface;
 
 class Logger extends AbstractLogger
 {
@@ -31,9 +31,9 @@ class Logger extends AbstractLogger
         'debug'
     ];
 
-    public function __construct(LogWriter $logWriter = null)
+    public function __construct(LogWriterInterface $logWriter = null)
     {
-        InsideConstruct::setConstructParams(['logWriter' => LogWriter::DEFAULT_LOG_WRITER_SERVICE]);
+        InsideConstruct::setConstructParams(['logWriter' => LogWriterInterface::DEFAULT_LOG_WRITER_SERVICE]);
         if (!isset($this->logWriter)) {
             $this->logWriter = new FileLogWriter();
         }
