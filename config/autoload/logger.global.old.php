@@ -12,6 +12,7 @@ use \rollun\logger\LogWriter\FileLogWriter;
 use \rollun\logger\LogWriter\FileLogWriterFactory;
 use \rollun\installer\Command;
 use \rollun\logger\Installer as LoggerInstaller;
+use rollun\logger\LogWriter\LogWriterInterface;
 
 return [
     'dependencies' => [
@@ -20,8 +21,8 @@ return [
             \rollun\logger\Logger::class => \rollun\logger\LoggerFactory::class,
         ],
         'aliases' => [
-            'logWriter' => FileLogWriter::class,
-            'logger' => Logger::class,
+            LogWriterInterface::DEFAULT_LOG_WRITER_SERVICE => FileLogWriter::class,
+            Logger::DEFAULT_LOGGER_SERVICE => Logger::class,
         ]
     ]
 ];
