@@ -16,7 +16,7 @@ use rollun\logger\LogWriter\FileLogWriter;
 use rollun\logger\LogWriter\FileLogWriterFactory;
 use rollun\logger\LogWriter\LogWriterInterface;
 
-class Installer extends InstallerAbstract
+class LoggerInstaller extends InstallerAbstract
 {
     const LOGS_DIR = 'logs';
     const LOGS_FILE = 'logs.csv';
