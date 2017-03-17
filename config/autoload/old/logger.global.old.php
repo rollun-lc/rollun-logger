@@ -11,7 +11,7 @@ use \rollun\logger\LoggerFactory;
 use \rollun\logger\LogWriter\FileLogWriter;
 use \rollun\logger\LogWriter\FileLogWriterFactory;
 use \rollun\installer\Command;
-use \rollun\logger\Installer as LoggerInstaller;
+use \rollun\logger\LoggerInstaller as LoggerInstaller;
 use rollun\logger\LogWriter\LogWriterInterface;
 
 return [
