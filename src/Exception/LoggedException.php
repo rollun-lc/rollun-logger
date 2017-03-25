@@ -24,7 +24,6 @@ use rollun\logger\Logger;
  */
 class LoggedException extends \Exception implements LoggerAwareInterface
 {
-    /** @var  string */
     const LOG_LEVEL_DEFAULT = LogLevel::ERROR;
 
     const LOG_PREVIOUS_LEVEL = LogLevel::INFO;
@@ -47,7 +46,6 @@ class LoggedException extends \Exception implements LoggerAwareInterface
      * @param string $message
      * @param int $code
      * @param \Exception|null $previous
-     * @param LoggerInterface $logger
      */
     public function __construct($message = "", $code = LogExceptionLevel::ERROR, \Exception $previous = null)
     {
@@ -56,31 +54,9 @@ class LoggedException extends \Exception implements LoggerAwareInterface
             $this->logger = new Logger();
         }
         parent::__construct($message, $code, $previous);
-        $prevId = isset($previous) ? $this->previousException($previous) : null;
-        $message = isset($prevId) ? (new \DateTime())->getTimestamp() . " | " . $this->message .
-            " To get info for previous exception read meessage with id" :
-            (new \DateTime())->getTimestamp() . "|" . $this->message;
-        $level = empty(LogExceptionLevel::getLoggerLevelByCode($code))
-            ? static::LOG_LEVEL_DEFAULT :LogExceptionLevel::getLoggerLevelByCode($code);
-        $this->id = $this->logger->log($level, $message);
-
-    }
-
-    /**
-     * @param \Exception $exception
-     * @return string
-     */
-    public function previousException(\Exception $exception)
-    {
-        if (!($exception instanceof LoggedException)) {
-            $prev = $exception->getPrevious();
-            $prevId = isset($prev) ? $this->previousException($exception->getPrevious()) : null;
-            $message = !empty($prevId) ? $this->message .
-                " To get info for previous exception read meessage with id: " . $prevId : $this->message;
-            return $this->logger->log(static::LOG_PREVIOUS_LEVEL, $message);
-        } else {
-            return $exception->getId();
-        }
+        $exceptionLogging = new ExceptionLogging($this->logger);
+        $exceptionLogging->setError($this);
+        $this->id = $exceptionLogging->log();
     }
 
     public function getId()

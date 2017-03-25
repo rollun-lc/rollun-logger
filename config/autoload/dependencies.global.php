@@ -36,5 +36,10 @@ return [
             Middleware\NotFoundHandler::class                => Container\NotFoundHandlerFactory::class,
 
         ],
+        'delegators' => [
+            \Zend\Stratigility\Middleware\ErrorHandler::class => [
+                \rollun\logger\Factory\LoggingErrorListenerDelegatorFactory::class
+            ]
+        ]
     ],
 ];
