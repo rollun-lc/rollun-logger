@@ -12,9 +12,11 @@ use Composer\IO\IOInterface;
 use Interop\Container\ContainerInterface;
 use rollun\installer\Command;
 use rollun\installer\Install\InstallerAbstract;
+use rollun\logger\Factory\LoggingErrorListenerDelegatorFactory;
 use rollun\logger\LogWriter\FileLogWriter;
 use rollun\logger\LogWriter\FileLogWriterFactory;
 use rollun\logger\LogWriter\LogWriterInterface;
+use Zend\Stratigility\Middleware\ErrorHandler;
 
 class LoggerInstaller extends InstallerAbstract
 {
@@ -75,6 +77,11 @@ class LoggerInstaller extends InstallerAbstract
                     'aliases' => [
                         LogWriterInterface::DEFAULT_LOG_WRITER_SERVICE => FileLogWriter::class,
                         Logger::DEFAULT_LOGGER_SERVICE => Logger::class,
+                    ],
+                    'delegators' => [
+                        ErrorHandler::class => [
+                            LoggingErrorListenerDelegatorFactory::class
+                        ]
                     ]
                 ]
             ];
