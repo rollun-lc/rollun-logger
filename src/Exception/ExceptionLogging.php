@@ -42,6 +42,15 @@ class ExceptionLogging
     }
 
     /**
+     * @param $exception
+     */
+    public static function loggedException($exception) {
+        $exceptionLogging = new ExceptionLogging(new Logger());
+        $exceptionLogging->setError($exception);
+        $exceptionLogging->log();
+    }
+
+    /**
      * @return string
      */
     public function log()
