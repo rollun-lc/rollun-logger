@@ -42,6 +42,15 @@ class ExceptionLogging
     }
 
     /**
+     * @param $exception
+     */
+    public static function loggedException($exception) {
+        $exceptionLogging = new ExceptionLogging(new Logger());
+        $exceptionLogging->setError($exception);
+        $exceptionLogging->log();
+    }
+
+    /**
      * @return string
      */
     public function log()
@@ -83,7 +92,7 @@ class ExceptionLogging
     protected function exceptionInfo($error)
     {
         $message = (new \DateTime())->getTimestamp() . " | ";
-        $message .= "message: [" . $error->getMessage() . ']';
+        $message .= "message: [" . str_replace("\n", " ", $error->getMessage()) . ']';
         $message .= "file: [" . $error->getFile() . ']';
         $message .= "line: [" . $error->getLine() . ']';
         return $message;
