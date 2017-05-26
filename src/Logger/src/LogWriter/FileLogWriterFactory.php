@@ -41,6 +41,7 @@ class FileLogWriterFactory implements FactoryInterface
 
     static public function getLogFile()
     {
-        return realpath(Command::getDataDir() . DIRECTORY_SEPARATOR . static::LOGS_DIR . DIRECTORY_SEPARATOR . static::LOGS_FILE_NAME);
+        $logFile = realpath(Command::getDataDir() . DIRECTORY_SEPARATOR . static::LOGS_DIR . DIRECTORY_SEPARATOR . static::LOGS_FILE_NAME);
+        return $logFile !== false ? $logFile : "/dev/null";
     }
 }

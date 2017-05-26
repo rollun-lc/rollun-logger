@@ -8,6 +8,7 @@
 
 namespace rollun\test\logger\Exception;
 
+use PHPUnit\Framework\TestCase;
 use rollun\dic\InsideConstruct;
 use rollun\installer\Command;
 use rollun\logger\LogWriter;
@@ -17,7 +18,7 @@ use rollun\logger\LogWriter\FileLogWriterFactory;
 use rollun\utils\Json\Serializer;
 use Zend\Stdlib\Exception\BadMethodCallException;
 
-class LoggedExceptionTest extends \PHPUnit_Framework_TestCase
+class LoggedExceptionTest extends TestCase
 {
 
     protected $logFile;
@@ -27,7 +28,7 @@ class LoggedExceptionTest extends \PHPUnit_Framework_TestCase
     {
         $container = include 'config/container.php';
         InsideConstruct::setContainer($container);
-        $this->logFile =FileLogWriterFactory::getLogFile();
+        $this->logFile = FileLogWriterFactory::getLogFile();
         fopen($this->logFile, "w");
     }
 
