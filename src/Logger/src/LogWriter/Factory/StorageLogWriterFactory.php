@@ -10,7 +10,7 @@ namespace rollun\logger\LogWriter\Factory;
 
 use Interop\Container\ContainerInterface;
 use Interop\Container\Exception\ContainerException;
-use rollun\logger\LogWriter\StorageLogWriter;
+use rollun\logger\LogWriter\DataStoreLogWriter;
 use Zend\ServiceManager\Exception\ServiceNotCreatedException;
 use Zend\ServiceManager\Exception\ServiceNotFoundException;
 use Zend\ServiceManager\Factory\FactoryInterface;
@@ -44,6 +44,6 @@ class StorageLogWriterFactory implements FactoryInterface
             $serviceConfig = $options;
         }
         $storageService = $container->get($serviceConfig[static::KEY_STORAGE_SERVICE]);
-        return new StorageLogWriter($storageService);
+        return new DataStoreLogWriter($storageService);
     }
 }
