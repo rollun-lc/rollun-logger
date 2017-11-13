@@ -15,7 +15,6 @@
   ],
   "require": {
     "php": "^5.6 || ^7.0",
-    "roave/security-advisories": "dev-master",
     "zendframework/zend-component-installer": "^1.0 || ^0.7.0",
     "zendframework/zend-config-aggregator": "^0.2.0",
     "zendframework/zend-expressive": "^2.0.2",
@@ -27,9 +26,9 @@
     "zendframework/zend-db": "2.8.2",
     "psr/log": "^1.0",
     "zendframework/zend-http": "^2.5",
-    "rollun-com/rollun-dic": "^2.0",
+    "rollun-com/rollun-dic": "^2.2",
     "rollun-com/rollun-utils": "^3.0",
-    "rollun-com/rollun-installer": "^3.0",
+    "rollun-com/rollun-installer": "^3.2",
     "zendframework/zend-cache": "^2.7"
   },
   "require-dev": {
