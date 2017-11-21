@@ -106,7 +106,7 @@ class LoggerDbWriterInstaller extends InstallerAbstract
 
     public function isInstall()
     {
-        $result = $this->container->has(LogWriterInterface::DEFAULT_LOG_WRITER_SERVICE);
+        $result = $this->container->has(Logger::DEFAULT_LOGGER_SERVICE);
         return $result;
     }
 
@@ -119,8 +119,8 @@ class LoggerDbWriterInstaller extends InstallerAbstract
     {
         switch ($lang) {
             case "ru":
-                $description = "Предоставяляет обьект logger позволяющий писать сообщения в лог.\n" .
-                        "LoggerException которое позволяет записывать в лог возникшее исключение, а так же предшествующее ему.";
+                $description = "Предоставяляет обьект logger позволяющий писать логи в базу данных.\n" .
+                        "Предоставяляет LoggerException, которое позволяет записывать в лог возникшее исключение, а так же предшествующее ему.";
                 break;
             default:
                 $description = "Does not exist.";

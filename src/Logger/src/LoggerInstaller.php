@@ -97,7 +97,7 @@ class LoggerInstaller extends InstallerAbstract
 //        $result &= $this->container->has(LogWriterInterface::DEFAULT_LOG_WRITER_SERVICE);
 //        $result &= $this->container->has(Logger::DEFAULT_LOGGER_SERVICE);
 
-        $result = $this->container->has(LogWriterInterface::DEFAULT_LOG_WRITER_SERVICE);
+        $result = $this->container->has(Logger::DEFAULT_LOGGER_SERVICE);
         return $result;
     }
 
