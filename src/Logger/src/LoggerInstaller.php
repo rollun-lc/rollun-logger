@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: victorsecuring
@@ -20,6 +21,7 @@ use Zend\Stratigility\Middleware\ErrorHandler;
 
 class LoggerInstaller extends InstallerAbstract
 {
+
     const LOGS_DIR = 'logs';
     const LOGS_FILE = 'logs.csv';
 
@@ -90,10 +92,12 @@ class LoggerInstaller extends InstallerAbstract
 
     public function isInstall()
     {
-        $publicDir = Command::getDataDir();
-        $result = file_exists($publicDir . DIRECTORY_SEPARATOR . self::LOGS_DIR . DIRECTORY_SEPARATOR . self::LOGS_FILE);
-        $result &= $this->container->has(LogWriterInterface::DEFAULT_LOG_WRITER_SERVICE);
-        $result &= $this->container->has(Logger::DEFAULT_LOGGER_SERVICE);
+//        $publicDir = Command::getDataDir();
+//        $result = file_exists($publicDir . DIRECTORY_SEPARATOR . self::LOGS_DIR . DIRECTORY_SEPARATOR . self::LOGS_FILE);
+//        $result &= $this->container->has(LogWriterInterface::DEFAULT_LOG_WRITER_SERVICE);
+//        $result &= $this->container->has(Logger::DEFAULT_LOGGER_SERVICE);
+
+        $result = $this->container->has(LogWriterInterface::DEFAULT_LOG_WRITER_SERVICE);
         return $result;
     }
 
@@ -107,11 +111,12 @@ class LoggerInstaller extends InstallerAbstract
         switch ($lang) {
             case "ru":
                 $description = "Предоставяляет обьект logger позволяющий писать сообщения в лог.\n" .
-                    "LoggerException которое позволяет записывать в лог возникшее исключение, а так же предшествующее ему.";
+                        "LoggerException которое позволяет записывать в лог возникшее исключение, а так же предшествующее ему.";
                 break;
             default:
                 $description = "Does not exist.";
         }
         return $description;
     }
+
 }
