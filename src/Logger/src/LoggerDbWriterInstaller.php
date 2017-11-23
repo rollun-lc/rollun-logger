@@ -8,6 +8,7 @@ use rollun\logger\Factory\LoggingErrorListenerDelegatorFactory;
 use rollun\logger\LogWriter\Factory\DbLogWriterFactory;
 use rollun\logger\LogWriter\DbLogWriter;
 use rollun\logger\LogWriter\LogWriterInterface;
+use rollun\utils\DbInstaller;
 use Zend\Stratigility\Middleware\ErrorHandler;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Metadata\Source;
@@ -37,6 +38,7 @@ class LoggerDbWriterInstaller extends InstallerAbstract
     /**
      * install
      * @return array
+     * @throws \Exception
      */
     public function install()
     {
@@ -45,7 +47,7 @@ class LoggerDbWriterInstaller extends InstallerAbstract
             return;
         }
         $this->consoleIO->write('Standart service name for logger db adpter is '
-                . DbLogWriterFactory::LOG_DB_ADAPTER
+            . DbLogWriterFactory::LOG_DB_ADAPTER
         );
         $logDbAdapterExist = $this->container->has(DbLogWriterFactory::LOG_DB_ADAPTER);
         if (!$logDbAdapterExist) {
@@ -57,15 +59,14 @@ class LoggerDbWriterInstaller extends InstallerAbstract
             $logDbAdapterServiceMame = $this->askParamWithDefault($paramName, $question, $defaultValue);
             $logDbAdapterExist = $this->container->has($logDbAdapterServiceMame);
             if (!$logDbAdapterExist) {
-                $this->consoleIO->writeError('db adapter for logger not found!');
-                $this->consoleIO->writeError('Create it and run this installer again', true);
+                throw new \Exception("db adapter for logger not found! Create it and run this installer again");
                 return;
             }
         }
 
         $logDbAdapter = $this->container->get($logDbAdapterServiceMame);
         if (!is_a($logDbAdapter, AdapterInterface::class, true)) {
-            $this->consoleIO->writeError($logDbAdapterServiceMame . ' is not db adapter');
+            throw new \Exception($logDbAdapterServiceMame . " is not db adapter");
             return;
         }
 
@@ -78,10 +79,13 @@ class LoggerDbWriterInstaller extends InstallerAbstract
             $question .= "Create it with filds 'id', 'level' and 'message'" . PHP_EOL;
             $question .= "And type 'y' or 'q' for quit" . PHP_EOL;
             $this->askYesNoQuit($question);
+            $dbMetadata = Source\Factory::createSourceFromAdapter($logDbAdapter);
             $tableNames = $dbMetadata->getTableNames();
             $tableLogs = DbLogWriterFactory::LOG_TABLE_NAME;
             $logsTableExist = in_array($tableLogs, $tableNames);
-            $this->consoleIO->writeError("table \"$tableLogs\" not found!");
+            if (!$logsTableExist) {
+                throw new \Exception("table \"$tableLogs\" not found!");
+            }
             return;
         }
 
@@ -110,6 +114,12 @@ class LoggerDbWriterInstaller extends InstallerAbstract
         return $result;
     }
 
+    public function getDependencyInstallers()
+    {
+        return [DbInstaller::class];
+    }
+
+
     public function isDefaultOn()
     {
         return true;
@@ -120,7 +130,7 @@ class LoggerDbWriterInstaller extends InstallerAbstract
         switch ($lang) {
             case "ru":
                 $description = "Предоставяляет обьект logger позволяющий писать логи в базу данных.\n" .
-                        "Предоставяляет LoggerException, которое позволяет записывать в лог возникшее исключение, а так же предшествующее ему.";
+                    "Предоставяляет LoggerException, которое позволяет записывать в лог возникшее исключение, а так же предшествующее ему.";
                 break;
             default:
                 $description = "Does not exist.";
