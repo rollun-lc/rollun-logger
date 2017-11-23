@@ -47,7 +47,7 @@ class LoggerDbWriterInstaller extends InstallerAbstract
             return;
         }
         $this->consoleIO->write('Standart service name for logger db adpter is '
-                . DbLogWriterFactory::LOG_DB_ADAPTER
+            . DbLogWriterFactory::LOG_DB_ADAPTER
         );
         $logDbAdapterExist = $this->container->has(DbLogWriterFactory::LOG_DB_ADAPTER);
         if (!$logDbAdapterExist) {
@@ -79,10 +79,13 @@ class LoggerDbWriterInstaller extends InstallerAbstract
             $question .= "Create it with filds 'id', 'level' and 'message'" . PHP_EOL;
             $question .= "And type 'y' or 'q' for quit" . PHP_EOL;
             $this->askYesNoQuit($question);
+            $dbMetadata = Source\Factory::createSourceFromAdapter($logDbAdapter);
             $tableNames = $dbMetadata->getTableNames();
             $tableLogs = DbLogWriterFactory::LOG_TABLE_NAME;
             $logsTableExist = in_array($tableLogs, $tableNames);
-            throw new \Exception("table \"$tableLogs\" not found!");
+            if (!$logsTableExist) {
+                throw new \Exception("table \"$tableLogs\" not found!");
+            }
             return;
         }
 
@@ -111,10 +114,10 @@ class LoggerDbWriterInstaller extends InstallerAbstract
         return $result;
     }
 
-   public function getDependencyInstallers()
-   {
-       return [DbInstaller::class];
-   }
+    public function getDependencyInstallers()
+    {
+        return [DbInstaller::class];
+    }
 
 
     public function isDefaultOn()
@@ -127,7 +130,7 @@ class LoggerDbWriterInstaller extends InstallerAbstract
         switch ($lang) {
             case "ru":
                 $description = "Предоставяляет обьект logger позволяющий писать логи в базу данных.\n" .
-                        "Предоставяляет LoggerException, которое позволяет записывать в лог возникшее исключение, а так же предшествующее ему.";
+                    "Предоставяляет LoggerException, которое позволяет записывать в лог возникшее исключение, а так же предшествующее ему.";
                 break;
             default:
                 $description = "Does not exist.";
