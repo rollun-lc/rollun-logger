@@ -8,6 +8,7 @@ use rollun\logger\Factory\LoggingErrorListenerDelegatorFactory;
 use rollun\logger\LogWriter\Factory\DbLogWriterFactory;
 use rollun\logger\LogWriter\DbLogWriter;
 use rollun\logger\LogWriter\LogWriterInterface;
+use rollun\utils\DbInstaller;
 use Zend\Stratigility\Middleware\ErrorHandler;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Metadata\Source;
@@ -37,6 +38,7 @@ class LoggerDbWriterInstaller extends InstallerAbstract
     /**
      * install
      * @return array
+     * @throws \Exception
      */
     public function install()
     {
@@ -57,15 +59,14 @@ class LoggerDbWriterInstaller extends InstallerAbstract
             $logDbAdapterServiceMame = $this->askParamWithDefault($paramName, $question, $defaultValue);
             $logDbAdapterExist = $this->container->has($logDbAdapterServiceMame);
             if (!$logDbAdapterExist) {
-                $this->consoleIO->writeError('db adapter for logger not found!');
-                $this->consoleIO->writeError('Create it and run this installer again', true);
+                throw new \Exception("db adapter for logger not found! Create it and run this installer again");
                 return;
             }
         }
 
         $logDbAdapter = $this->container->get($logDbAdapterServiceMame);
         if (!is_a($logDbAdapter, AdapterInterface::class, true)) {
-            $this->consoleIO->writeError($logDbAdapterServiceMame . ' is not db adapter');
+            throw new \Exception($logDbAdapterServiceMame . " is not db adapter");
             return;
         }
 
@@ -81,7 +82,7 @@ class LoggerDbWriterInstaller extends InstallerAbstract
             $tableNames = $dbMetadata->getTableNames();
             $tableLogs = DbLogWriterFactory::LOG_TABLE_NAME;
             $logsTableExist = in_array($tableLogs, $tableNames);
-            $this->consoleIO->writeError("table \"$tableLogs\" not found!");
+            throw new \Exception("table \"$tableLogs\" not found!");
             return;
         }
 
@@ -109,6 +110,12 @@ class LoggerDbWriterInstaller extends InstallerAbstract
         $result = $this->container->has(Logger::DEFAULT_LOGGER_SERVICE);
         return $result;
     }
+
+   public function getDependencyInstallers()
+   {
+       return [DbInstaller::class];
+   }
+
 
     public function isDefaultOn()
     {
