@@ -88,7 +88,7 @@ class LoggerDbWriterInstaller extends InstallerAbstract
         $logDbAdapter = $this->container->get($logDbAdapterServiceMame);
         //check if retrieved adapter is actually a Db adapter
         if (!is_a($logDbAdapter, AdapterInterface::class, true)) {
-            throw new \Exception($logDbAdapterServiceMame . " is not Db adapter");
+            throw new \Exception($logDbAdapterServiceMame . " does not implement Zend\AdapterInterface");
         }
         $tableLogs = DbLogWriterFactory::LOG_TABLE_NAME;
         //check if 'logs' table exists
