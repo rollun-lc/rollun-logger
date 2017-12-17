@@ -1,6 +1,6 @@
 {
     "name": "rollun-com/rollun-logger",
-    "description": "Logger",
+    "description": "Zend style Logger",
     "minimum-stability": "stable",
     "license": "proprietary",
     "authors": [
