@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: victorsecuring
  * Date: 19.12.16
  * Time: 11:43 AM
  */
+
 namespace rollun\test\res\Logger;
 
 use Interop\Container\ContainerInterface;
@@ -18,12 +20,12 @@ use rollun\logger\LogWriter\FileLogWriterFactory;
 
 class LoggerTest extends LoggerInterfaceTest
 {
+
     /** @var  LoggerInterface */
     protected $object;
 
     /** @var  ContainerInterface */
     protected $container;
-
     protected $file;
 
     public function setUp()
@@ -44,9 +46,7 @@ class LoggerTest extends LoggerInterfaceTest
     public function testLogWithTime($dateTime, $expectedTime)
     {
         $this->object->log(
-            LogLevel::ERROR,
-            $dateTime . "|" . "Error message of level emergency with context: {user}",
-            ['user' => 'Bob']
+                LogLevel::ERROR, $dateTime . "|" . "Error message of level emergency with context: {user}", ['user' => 'Bob']
         );
         $expected = [
             $expectedTime . ' ' . LogLevel::ERROR . ' ' .
@@ -103,4 +103,5 @@ class LoggerTest extends LoggerInterfaceTest
         }
         return $logs;
     }
+
 }

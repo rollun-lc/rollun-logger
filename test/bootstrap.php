@@ -1,4 +1,5 @@
 <?php
+
 global $argv;
 
 error_reporting(E_ALL | E_STRICT);
