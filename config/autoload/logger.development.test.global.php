@@ -31,7 +31,7 @@ return [
     ],
     'log_formatters' => [
         'factories' => [
-            ToString::class => InvokableFactory::class
+            ContextToString::class => InvokableFactory::class
         ],
     ],
     'log_filters' => [
@@ -74,7 +74,7 @@ return [
             ],
             'writers' => [
                 [
-                    'name' => Mock::class,
+                    'name' => WriterMock::class,
 //                  'priority' => Logger::DEBUG,
 //                  'options' => [
 //                        //'stream' => 'php://output',
