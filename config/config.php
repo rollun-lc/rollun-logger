@@ -11,7 +11,6 @@ $cacheConfig = [
 ];
 
 $aggregator = new ConfigAggregator([
-    \Zend\Cache\ConfigProvider::class,
     \Zend\Validator\ConfigProvider::class,
     // Include cache configuration
     new ArrayProvider($cacheConfig),
