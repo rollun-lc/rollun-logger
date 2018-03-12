@@ -14,6 +14,11 @@ use Psr\Log\LogLevel;
 use rollun\dic\InsideConstruct;
 use rollun\logger\Logger;
 
+/**
+ * Class ExceptionLogging
+ * @package rollun\logger\Exception
+ * @deprecated
+ */
 class ExceptionLogging
 {
     const LOG_LEVEL_DEFAULT = LogLevel::ERROR;
@@ -31,13 +36,12 @@ class ExceptionLogging
     /**
      * ExceptionParse constructor.
      * @param LoggerInterface $logger
-     * @throws LoggedException
      */
     public function __construct(LoggerInterface $logger)
     {
         InsideConstruct::setConstructParams(['logger' => Logger::DEFAULT_LOGGER_SERVICE]);
         if (!isset($this->logger)) {
-            throw new LoggedException("Logger not found!", LogLevel::CRITICAL);
+            throw new \RuntimeException("Logger not found!", LogLevel::CRITICAL);
         }
     }
 

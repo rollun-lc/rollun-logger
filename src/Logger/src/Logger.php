@@ -14,6 +14,11 @@ use rollun\dic\InsideConstruct;
 use rollun\logger\LogWriter\FileLogWriter;
 use rollun\logger\LogWriter\LogWriterInterface;
 
+/**
+ * Class Logger
+ * @package rollun\logger
+ * @deprecated
+ */
 class Logger extends AbstractLogger
 {
     const DEFAULT_LOGGER_SERVICE = 'logger';

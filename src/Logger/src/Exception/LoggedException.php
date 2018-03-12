@@ -19,8 +19,9 @@ use rollun\logger\Logger;
 /**
  * Exception class
  *
- * @category   utils
- * @package    zaboy
+ * @category   rollun
+ * @package    logger
+ * @deprecated
  */
 class LoggedException extends \Exception implements LoggerAwareInterface
 {
