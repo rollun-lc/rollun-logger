@@ -34,6 +34,7 @@ class FileLogWriter implements LogWriterInterface
 
     public function logWrite($id, $level, $message)
     {
+		$message = preg_replace('/"/', '""', $message);
         $string = $id . $this->delimiter . $level . $this->delimiter . '"' . $message . '"' . $this->endString;
         file_put_contents($this->file, $string, FILE_APPEND);
     }
