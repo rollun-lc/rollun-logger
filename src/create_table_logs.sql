@@ -16,7 +16,8 @@ CREATE TABLE `logs` (
   `priority` int(11) NOT NULL,
   `message` text NOT NULL,
   `context` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+ADD PRIMARY KEY (`id`);
 
 --
 -- Индексы сохранённых таблиц
