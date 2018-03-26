@@ -1,59 +1,63 @@
 {
-    "name": "rollun-com/rollun-logger",
-    "description": "Zend style Logger",
-    "minimum-stability": "stable",
-    "license": "proprietary",
-    "authors": [
-        {
-            "name": "avz-cmf",
-            "email": "email@example.com"
-        },
-        {
-            "name": "victorynox",
-            "email": "it.proffesor02@gmail.com"
-        }
-    ],
-    "require": {
-        "php": "^7.0",
-        "avz-cmf/zend-psr3-log": "^3.0",
-        "zendframework/zend-stdlib": "^3.1",
-        "zendframework/zend-servicemanager": "^3.3"
+  "name": "rollun-com/rollun-logger",
+  "description": "Zend style Logger",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "avz-cmf",
+      "email": "email@example.com"
     },
-    "require-dev": {
-
-        "zendframework/zend-component-installer": "^1.0",
-        "zendframework/zend-config-aggregator": "^1.0",
-        "phpunit/phpunit": "^6.0.8 || ^5.7.15",
-        "zfcampus/zf-development-mode": "^3.1"
-    },
-    "autoload": {
-        "psr-4": {
-            "rollun\\logger\\": "src/Logger/src"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "rollun\\test\\logger\\": "test/Logger"
-        }
-    },
-    "scripts": {
-        "post-create-project-cmd": [
-            "@development-enable"
-        ],
-        "development-disable": "zf-development-mode disable",
-        "development-enable": "zf-development-mode enable",
-        "development-status": "zf-development-mode status",
-        "check": [
-            "@cs-check",
-            "@test"
-        ],
-        "clear-config-cache": "php bin/clear-config-cache.php",
-        "cs-check": "phpcs",
-        "cs-fix": "phpcbf",
-        "serve": "php -S 0.0.0.0:8080 -t public public/index.php",
-        "test": "phpunit --colors=always",
-        "test-coverage": "phpunit --colors=always --coverage-clover clover.xml",
-        "upload-coverage": "coveralls -v",
-        "lib": "rollun\\installer\\Command::command"
+    {
+      "name": "victorynox",
+      "email": "it.proffesor02@gmail.com"
     }
+  ],
+  "require": {
+    "php": "^7.0",
+    "avz-cmf/zend-psr3-log": "^3.0",
+    "zendframework/zend-stdlib": "^3.1",
+    "zendframework/zend-servicemanager": "^3.3",
+    "zendframework/zend-db": "^2.9",
+    "psr/http-message": "^1.0"
+  },
+  "suggest": {
+    "zendframework/zend-diactoros": "PSR-7 HTTP Message implementation"
+  },
+  "require-dev": {
+    "zendframework/zend-component-installer": "^1.0",
+    "zendframework/zend-config-aggregator": "^1.0",
+    "phpunit/phpunit": "^6.0.8 || ^5.7.15",
+    "zfcampus/zf-development-mode": "^3.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "rollun\\logger\\": "src/Logger/src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "rollun\\test\\logger\\": "test/Logger"
+    }
+  },
+  "scripts": {
+    "post-create-project-cmd": [
+      "@development-enable"
+    ],
+    "development-disable": "zf-development-mode disable",
+    "development-enable": "zf-development-mode enable",
+    "development-status": "zf-development-mode status",
+    "check": [
+      "@cs-check",
+      "@test"
+    ],
+    "clear-config-cache": "php bin/clear-config-cache.php",
+    "cs-check": "phpcs",
+    "cs-fix": "phpcbf",
+    "serve": "php -S 0.0.0.0:8080 -t public public/index.php",
+    "test": "phpunit --colors=always",
+    "test-coverage": "phpunit --colors=always --coverage-clover clover.xml",
+    "upload-coverage": "coveralls -v",
+    "lib": "rollun\\installer\\Command::command"
+  }
 }
