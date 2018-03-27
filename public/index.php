@@ -14,5 +14,6 @@ require_once 'config/env_configurator.php';
 call_user_func(function () {
     /** @var \Interop\Container\ContainerInterface $container */
     $container = require 'config/container.php';
-
+    $logger = $container->get(\Psr\Log\LoggerInterface::class);
+    $logger->notice("Test notice. %request_time", ["request_time" => $_SERVER["REQUEST_TIME"]]);
 });

@@ -5,7 +5,10 @@ namespace rollun\logger;
 
 use Psr\Log\LoggerInterface;
 use rollun\logger\Processor\IdMaker;
+use rollun\logger\Writer\Factory\HttpFactory as HttpWriterFactory;
 use rollun\logger\Writer\Http as HttpWriter;
+use rollun\utils\DbInstaller;
+use Zend\Log\Writer\Factory\WriterFactory;
 use Zend\ServiceManager\Factory\InvokableFactory;
 use Zend\Log\Writer\Mock as WriterMock;
 use Zend\Log\LoggerAbstractServiceFactory;
@@ -103,7 +106,7 @@ class LoggerInstaller extends InstallerAbstract
             ],
             'log_writers' => [
                 'factories' => [
-// ...
+                    HttpWriter::class => WriterFactory::class
                 ],
             ],
             'dependencies' => [
@@ -186,6 +189,14 @@ class LoggerInstaller extends InstallerAbstract
     {
         return "Install logger in system";
     }
+
+    public function getDependencyInstallers()
+    {
+        return [
+            DbInstaller::class
+        ];
+    }
+
 
     /**
      * @param $adapterName

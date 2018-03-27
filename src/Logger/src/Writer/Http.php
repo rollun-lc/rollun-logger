@@ -4,9 +4,15 @@
 namespace rollun\logger\Writer;
 
 
+use Traversable;
 use Zend\Http\Client;
 use Zend\Log\Writer\AbstractWriter;
+use Zend\Uri\Http as HttpUri;
 
+/**
+ * Class Http
+ * @package rollun\logger\Writer
+ */
 class Http extends AbstractWriter
 {
 
@@ -16,13 +22,41 @@ class Http extends AbstractWriter
     protected $options;
 
     /**
-     * HttpWriter constructor.
-     * @param null $options
+     * @var Client
      */
-    public function __construct($options = null)
+    protected $client;
+
+    /**
+     * @var HttpUri
+     */
+    protected $uri;
+
+    /**
+     * HttpWriter constructor.
+     * @param $client
+     * @param string|HttpUri $uri
+     * @param array $options
+     */
+    public function __construct($client, $uri = null, array $options = [])
     {
-        parent::__construct($options);
-        $this->options = isset($options["http_options"]) ? $options["http_options"] : [];
+        if ($client instanceof Traversable) {
+            $client = iterator_to_array($client);
+        }
+        if (is_array($client)) {
+            parent::__construct($client);
+            $options = isset($client["options"]) ? $client["options"] : [];
+            $uri = isset($client["uri"]) ? $client["uri"] : null;
+            $client = isset($client["client"]) ? $client["client"] : null;
+            $client = is_string($client) ? new $client() : $client;
+        }
+
+        if (!$client instanceof Client) {
+            throw new \InvalidArgumentException('You must pass a valid Zend\Http\Client');
+        }
+        $this->client = $client;
+        $this->options = $options;
+        $uri = isset($uri) ? $uri : $client->getUri();
+        $this->uri = new HttpUri($uri);
     }
 
     /**
@@ -30,13 +64,12 @@ class Http extends AbstractWriter
      * @param array $options
      * @return Client
      */
-    protected function initHttpClient($uri, $options = [])
+    private function initHttpClient($uri, $options = [])
     {
-        $httpClient = new Client();
+        $httpClient = clone $this->client;
         $httpClient->setUri($uri);
         $httpClient->setOptions($options);
-        $headers['Content-Type'] = 'application/json';
-        $headers['Accept'] = 'application/json';
+        $headers['Content-Type'] = 'application/octet-stream';
         $headers['APP_ENV'] = constant('APP_ENV');
         $httpClient->setHeaders($headers);
         if (isset($this->login) && isset($this->password)) {
@@ -47,6 +80,19 @@ class Http extends AbstractWriter
     }
 
     /**
+     * @param array $event
+     * @throws \Exception
+     */
+    public function write(array $event)
+    {
+        if(!isset($this->uri) || !$this->uri->isValid()) {
+            return;
+        }
+        parent::write($event);
+    }
+
+
+    /**
      * Write a message to the log
      *
      * @param array $event log data event
@@ -54,21 +100,18 @@ class Http extends AbstractWriter
      */
     protected function doWrite(array $event)
     {
-        if (isset($event["uri"])) {
-            $uri = $event["uri"];
-            $client = $this->initHttpClient($uri, $this->options);
-            $serialisedData = serialize($event);
-            $rawData = base64_encode($serialisedData);
-            $client->setRawBody($rawData);
-            $response = $client->send();
-            if ($response->isServerError()) {
-                throw new \RuntimeException(sprintf(
-                    "Error with status %s by send event to %s, with message: %s",
-                    $response->getStatusCode(),
-                    $uri,
-                    $response->getReasonPhrase()
-                ));
-            }
+        $client = $this->initHttpClient($this->uri, $this->options);
+        $serialisedData = serialize($event);
+        $rawData = base64_encode($serialisedData);
+        $client->setRawBody($rawData);
+        $response = $client->send();
+        if ($response->isServerError()) {
+            throw new \RuntimeException(sprintf(
+                "Error with status %s by send event to %s, with message: %s",
+                $response->getStatusCode(),
+                $this->uri,
+                $response->getReasonPhrase()
+            ));
         }
     }
 }

@@ -15,9 +15,9 @@ CREATE TABLE `logs` (
   `level` varchar(32) NOT NULL,
   `priority` int(11) NOT NULL,
   `message` text NOT NULL,
-  `context` text NOT NULL
+  `context` text NOT NULL,
+  PRIMARY KEY (`id`),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8
-ADD PRIMARY KEY (`id`);
 
 --
 -- Индексы сохранённых таблиц
