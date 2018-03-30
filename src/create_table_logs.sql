@@ -14,8 +14,11 @@ CREATE TABLE `logs` (
   `timestamp` varchar(32) NOT NULL,
   `level` varchar(32) NOT NULL,
   `priority` int(11) NOT NULL,
+  `token` varchar(32) NOT NULL,
+  `parent_token` varchar(32),
   `message` text NOT NULL,
   `context` text NOT NULL,
+  FOREIGN KEY (`parent_token`) REFERENCES logs(token),
   PRIMARY KEY (`id`),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8
 

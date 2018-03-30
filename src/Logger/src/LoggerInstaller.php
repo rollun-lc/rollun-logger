@@ -4,7 +4,9 @@
 namespace rollun\logger;
 
 use Psr\Log\LoggerInterface;
+use rollun\logger\Processor\Factory\LifeCycleTokenReferenceInjectorFactory;
 use rollun\logger\Processor\IdMaker;
+use rollun\logger\Processor\LifeCycleTokenInjector;
 use rollun\logger\Writer\Factory\HttpFactory as HttpWriterFactory;
 use rollun\logger\Writer\Http as HttpWriter;
 use rollun\utils\DbInstaller;
@@ -101,7 +103,8 @@ class LoggerInstaller extends InstallerAbstract
             ],
             'log_processors' => [
                 'factories' => [
-                    IdMaker::class => InvokableFactory::class
+                    IdMaker::class => InvokableFactory::class,
+                    LifeCycleTokenInjector::class => LifeCycleTokenReferenceInjectorFactory::class,
                 ],
             ],
             'log_writers' => [
@@ -126,9 +129,8 @@ class LoggerInstaller extends InstallerAbstract
             'log' => [
                 LoggerInterface::class => [
                     'processors' => [
-                        [
-                            'name' => IdMaker::class
-                        ],
+                        ['name' => IdMaker::class],
+                        ['name' => LifeCycleTokenInjector::class],
                     ],
                     'writers' => [
                         [
@@ -153,7 +155,6 @@ class LoggerInstaller extends InstallerAbstract
                             'options' => [
                                 'formatter' => ContextToString::class
                             ],
-
                         ],
                     ],
                 ]
@@ -218,6 +219,9 @@ class LoggerInstaller extends InstallerAbstract
             "`priority` int(11) NOT NULL," .
             "`message` text NOT NULL," .
             "`context` text NOT NULL," .
+            "`token` varchar(32) NOT NULL," .
+            "`parent_token` varchar(32)," .
+            "FOREIGN KEY (`parent_token`) REFERENCES logs(token)," .
             "PRIMARY KEY (`id`)" .
             ") ENGINE=InnoDB DEFAULT CHARSET=utf8;"
             , Adapter::QUERY_MODE_EXECUTE);
