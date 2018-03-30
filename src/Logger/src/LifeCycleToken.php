@@ -8,6 +8,8 @@ use rollun\utils\IdGenerator;
 
 class LifeCycleToken
 {
+    const KEY_PARENT_LIFECYCLE_TOKEN = "parent_lifecycle_token";
+    
     /**
      * @var string
      */
