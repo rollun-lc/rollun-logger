@@ -4,7 +4,7 @@
 namespace rollun\logger\Processor;
 
 
-use rollun\token\LifeCycleToken;
+use rollun\logger\LifeCycleToken;
 use Zend\Log\Processor\ProcessorInterface;
 
 class LifeCycleTokenInjector implements ProcessorInterface
@@ -32,8 +32,20 @@ class LifeCycleTokenInjector implements ProcessorInterface
      */
     public function process(array $event)
     {
-        if(!isset($event["content"][LifeCycleToken::class])) {
-            $event["content"][LifeCycleToken::class] = $this->token->toString();
+        if (!isset($event[LifeCycleToken::KEY_LIFECYCLE_TOKEN])) {
+            $event[LifeCycleToken::KEY_LIFECYCLE_TOKEN] = $this->token->toString();
+        } elseif (!isset($event['context'][LifeCycleToken::KEY_ORIGINAL_LIFECYCLE_TOKEN]) &&
+            ($this->token->toString() !== $event[LifeCycleToken::KEY_LIFECYCLE_TOKEN])) {
+            $event['context'][LifeCycleToken::KEY_ORIGINAL_LIFECYCLE_TOKEN] = $this->token->toString();
+        }
+        if ($this->token->hasParentToken()) {
+            if (!isset($event[LifeCycleToken::KEY_PARENT_LIFECYCLE_TOKEN])) {
+                $event[LifeCycleToken::KEY_PARENT_LIFECYCLE_TOKEN] = $this->token->getParentToken()->toString();
+            } elseif (!isset($event['context'][LifeCycleToken::KEY_ORIGINAL_PARENT_LIFECYCLE_TOKEN]) &&
+                $this->token->getParentToken()->toString() !== $event[LifeCycleToken::KEY_PARENT_LIFECYCLE_TOKEN]
+            ) {
+                $event['context'][LifeCycleToken::KEY_ORIGINAL_PARENT_LIFECYCLE_TOKEN] = $this->token->getParentToken()->toString();
+            }
         }
         return $event;
     }
