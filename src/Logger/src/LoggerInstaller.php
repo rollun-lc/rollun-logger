@@ -212,18 +212,19 @@ class LoggerInstaller extends InstallerAbstract
         $serviceName = $this->consoleIO->ask("Set application service name: ", "");
         $serviceName = preg_replace('/([^\w\d\_]+)/', '_', $serviceName);
         $tableName = "logs_$serviceName";
-        $adapter->query("CREATE TABLE `$tableName` (" .
+        $adapter->query(
+            "CREATE TABLE `{$tableName}` (" .
             "`id` varchar(255) NOT NULL," .
             "`timestamp` varchar(32) NOT NULL," .
             "`level` varchar(32) NOT NULL," .
             "`priority` int(11) NOT NULL," .
+            "`lifecycle_token` varchar(32) NOT NULL," .
+            "`parent_lifecycle_token` varchar(32)," .
             "`message` text NOT NULL," .
             "`context` text NOT NULL," .
-            "`token` varchar(32) NOT NULL," .
-            "`parent_token` varchar(32)," .
-            "FOREIGN KEY (`parent_token`) REFERENCES logs(token)," .
-            "PRIMARY KEY (`id`)" .
-            ") ENGINE=InnoDB DEFAULT CHARSET=utf8;"
+            "FOREIGN KEY (`parent_lifecycle_token`) REFERENCES {$tableName}(`lifecycle_token`)," .
+            "PRIMARY KEY (`id`)," .
+            ") ENGINE=InnoDB DEFAULT CHARSET=utf8"
             , Adapter::QUERY_MODE_EXECUTE);
         return $tableName;
     }

@@ -29,5 +29,3 @@ CREATE TABLE `logs` (
 --
 -- Индексы таблицы `logs`
 --
-ALTER TABLE `logs`
-  ADD PRIMARY KEY (`id`);
