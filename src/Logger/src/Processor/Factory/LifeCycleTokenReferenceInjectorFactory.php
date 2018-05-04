@@ -7,7 +7,7 @@ namespace rollun\logger\Processor\Factory;
 use Interop\Container\ContainerInterface;
 use Interop\Container\Exception\ContainerException;
 use rollun\logger\Processor\LifeCycleTokenInjector;
-use rollun\token\LifeCycleToken;
+use rollun\logger\LifeCycleToken;
 use Zend\ServiceManager\Exception\ServiceNotCreatedException;
 use Zend\ServiceManager\Exception\ServiceNotFoundException;
 use Zend\ServiceManager\Factory\FactoryInterface;
