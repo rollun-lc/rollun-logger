@@ -10,6 +10,7 @@ use rollun\logger\Processor\LifeCycleTokenInjector;
 use rollun\logger\Writer\Factory\HttpFactory as HttpWriterFactory;
 use rollun\logger\Writer\Http as HttpWriter;
 use rollun\utils\DbInstaller;
+use Zend\Http\Client;
 use Zend\Log\Writer\Factory\WriterFactory;
 use Zend\ServiceManager\Factory\InvokableFactory;
 use Zend\Log\Writer\Mock as WriterMock;
@@ -153,7 +154,8 @@ class LoggerInstaller extends InstallerAbstract
                         [
                             'name' => HttpWriter::class,
                             'options' => [
-                                'formatter' => ContextToString::class
+                                'formatter' => ContextToString::class,
+                                "client" => Client::class,
                             ],
                         ],
                     ],

@@ -43,4 +43,5 @@ printf(
     $config['config_cache_path'],
     PHP_EOL
 );
+
 exit(0);

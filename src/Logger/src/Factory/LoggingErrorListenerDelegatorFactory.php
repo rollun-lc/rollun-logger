@@ -5,8 +5,10 @@ namespace rollun\logger\Factory;
 
 
 use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Log\LoggerInterface;
 use rollun\logger\LoggingErrorListener;
+use rollun\logger\SimpleLogger;
 
 class LoggingErrorListenerDelegatorFactory
 {
@@ -20,7 +22,13 @@ class LoggingErrorListenerDelegatorFactory
      */
     public function __invoke(ContainerInterface $container, string $name, callable $callback)
     {
-        $listener = new LoggingErrorListener($container->get(LoggerInterface::class));
+        try {
+            $logger = $container->get(LoggerInterface::class);
+        } catch (ContainerExceptionInterface $containerException) {
+            $logger = new SimpleLogger();
+            $logger->alert($containerException->getMessage());//Logger not work. Alert situation.
+        }
+        $listener = new LoggingErrorListener($logger);
         $errorHandler = $callback();
         $errorHandler->attachListener($listener);
         return $errorHandler;
