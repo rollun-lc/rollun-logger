@@ -22,12 +22,8 @@ class LoggingErrorListenerDelegatorFactory
      */
     public function __invoke(ContainerInterface $container, string $name, callable $callback)
     {
-        try {
-            $logger = $container->get(LoggerInterface::class);
-        } catch (ContainerExceptionInterface $containerException) {
-            $logger = new SimpleLogger();
-            $logger->alert($containerException->getMessage());//Logger not work. Alert situation.
-        }
+        $logger = $container->get(LoggerInterface::class);
+
         $listener = new LoggingErrorListener($logger);
         $errorHandler = $callback();
         $errorHandler->attachListener($listener);

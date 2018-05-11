@@ -5,7 +5,6 @@ namespace rollun\logger;
 
 use Psr\Log\LoggerInterface;
 use Psr\Log\LoggerTrait;
-use rollun\installer\Command;
 use Zend\Log\Processor\PsrPlaceholder;
 
 /**
@@ -36,8 +35,8 @@ final class SimpleLogger implements LoggerInterface
     public function __construct()
     {
         $receiverPath = getenv("LOGS_RECEIVER");
-        if (!$receiverPath || !is_string($receiverPath) || !file_exists($receiverPath)) {
-            $receiverPath = Command::getDataDir() . static::DEFAULT_LOGS_PATH;
+        if (!$receiverPath || !is_string($receiverPath) || !file_exists($receiverPath) || !is_file($receiverPath)) {
+            $receiverPath = "data" . DIRECTORY_SEPARATOR . static::DEFAULT_LOGS_PATH;
             file_put_contents($receiverPath, "", FILE_APPEND);
         }
         $this->receiverPath = $receiverPath;

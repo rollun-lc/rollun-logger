@@ -8,7 +8,6 @@ use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
-use rollun\dic\InsideConstruct;
 
 class RequestLoggedMiddleware implements MiddlewareInterface
 {
@@ -21,13 +20,11 @@ class RequestLoggedMiddleware implements MiddlewareInterface
     /**
      * RequestLoggedMiddleware constructor.
      * @param LoggerInterface|null $logger
-     * @throws \ReflectionException
      */
-    public function __construct(LoggerInterface $logger = null)
+    public function __construct(LoggerInterface $logger)
     {
-        InsideConstruct::setConstructParams(["logger" => LoggerInterface::class]);
+        $this->logger = $logger;
     }
-
 
     /**
      * Process an incoming server request and return a response, optionally delegating

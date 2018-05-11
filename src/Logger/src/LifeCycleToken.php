@@ -4,7 +4,6 @@
 namespace rollun\logger;
 
 
-use rollun\utils\IdGenerator;
 
 class LifeCycleToken implements \Serializable
 {
@@ -59,8 +58,23 @@ class LifeCycleToken implements \Serializable
      */
     public static function generateToken()
     {
-        $idGenerator = new IdGenerator(30);
-        $token = new LifeCycleToken($idGenerator->generate());
+        /**
+         * Generate unique id
+         * @param int $length
+         * @param string $idCharSet
+         * @return string
+         */
+        $idGenerator = function (int $length, $idCharSet = "QWERTYUIOPASDFGHJKLZXCVBNM0123456789") {
+            $id = [];
+            $idCharSetArray = str_split($idCharSet);
+            $charArrayCount = count($idCharSetArray) - 1;
+            for ($i = 0; $i < $length; $i++) {
+                $id[$i] = $idCharSetArray[random_int(0, $charArrayCount)];
+            }
+            $id = implode("", $id);
+            return $id;
+        };
+        $token = new LifeCycleToken($idGenerator(30));
         return $token;
     }
 
