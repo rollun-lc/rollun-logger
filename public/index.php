@@ -14,14 +14,35 @@ require_once 'config/env_configurator.php';
  * Self-called anonymous function that creates its own scope and keep the global namespace clean.
  */
 call_user_func(function () {
-    /** @var \Interop\Container\ContainerInterface $container */
-    $container = require "config/container.php";
+    if (!function_exists('get_all_headers')) {
+        function get_all_headers()
+        {
+            $arh = array();
+            $rx_http = '/\AHTTP_/';
+            foreach ($_SERVER as $key => $val) {
+                if (preg_match($rx_http, $key)) {
+                    $arh_key = preg_replace($rx_http, '', $key);
+                    // do some nasty string manipulations to restore the original letter case
+                    // this should work in most cases
+                    $rx_matches = explode('_', $arh_key);
+                    if (count($rx_matches) > 0 and strlen($arh_key) > 2) {
+                        foreach ($rx_matches as $ak_key => $ak_val) $rx_matches[$ak_key] = ucfirst($ak_val);
+                        $arh_key = implode('-', $rx_matches);
+                    }
+                    $arh[$arh_key] = $val;
+                }
+            }
+            return ($arh);
+        }
+    }
     //init lifecycle token
     $lifeCycleToken = \rollun\logger\LifeCycleToken::generateToken();
-    if(apache_request_headers() && array_key_exists("LifeCycleToken", apache_request_headers())) {
-        $lifeCycleToken->unserialize(apache_request_headers()["LifeCycleToken"]);
+    if (get_all_headers() && array_key_exists("LifeCycleToken", get_all_headers())) {
+        $lifeCycleToken->unserialize(get_all_headers()["LifeCycleToken"]);
     }
     /** use container method to set service.*/
+    /** @var \Interop\Container\ContainerInterface $container */
+    $container = require "config/container.php";
     $container->setService(\rollun\logger\LifeCycleToken::class, $lifeCycleToken);
 
     try {
@@ -31,7 +52,6 @@ call_user_func(function () {
         $logger->error($containerException);
         $container->setService(\Psr\Log\LoggerInterface::class, $logger);
     }
-
 
 
     $logger = $container->get(\Psr\Log\LoggerInterface::class);
