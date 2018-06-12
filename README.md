@@ -1,31 +1,48 @@
-#rollun-logger
+# rollun-logger
 
-Logger класс реализует интерфейс `Psr\Log\LoggerInterface`
+The Logger class implements the interface `Psr\Log\LoggerInterface`
 
-Для запуска тестов настройте доступ к БД в config\autoload\logger.development.test.global
+To run the tests, configure the access to the database in `config\autoload\logger.development.test.global`
 
-и создайте таблицу в БД скриптом create_table_logs
+and create a table in the database using the script `src\create_table_logs.sql`
 
-# Lifecycle token 
-Для использования lifecycle token необходимо добавить в index.php
+## Usage
+For safe use of the logger, you need to add the following lines to index.php (and all entry point scripts):
 ```php
 <?php
+
+/**
+ * Self-called anonymous function that creates its own scope and keep the global namespace clean.
+ */
+call_user_func(function () {
+    if (!function_exists('get_all_headers')) {
+        function get_all_headers()
+        {
+            $arh = array();
+            $rx_http = '/\AHTTP_/';
+            foreach ($_SERVER as $key => $val) {
+                if (preg_match($rx_http, $key)) {
+                    $arh_key = preg_replace($rx_http, '', $key);
+                    $rx_matches = explode('_', $arh_key);
+                    if (count($rx_matches) > 0 and strlen($arh_key) > 2) {
+                        foreach ($rx_matches as $ak_key => $ak_val) $rx_matches[$ak_key] = ucfirst($ak_val);
+                        $arh_key = implode('-', $rx_matches);
+                    }
+                    $arh[$arh_key] = $val;
+                }
+            }
+            return ($arh);
+        }
+    }
     //init lifecycle token
     $lifeCycleToken = \rollun\logger\LifeCycleToken::generateToken();
-    if(apache_request_headers() && array_key_exists("LifeCycleToken", apache_request_headers())) {
-        $lifeCycleToken->unserialize(apache_request_headers()["LifeCycleToken"]);
+    if (get_all_headers() && array_key_exists("LifeCycleToken", get_all_headers())) {
+        $lifeCycleToken->unserialize(get_all_headers()["LifeCycleToken"]);
     }
     /** use container method to set service.*/
-    $container->setService(\rollun\logger\LifeCycleToken::class, $lifeCycleToken);
-
-```
-
-# Logger
-Для безопасного использования логера, необходимо добавить в index.php (и все скрипты-запуска) следующие строки
-```php
-<?php
-        
     /** @var \Interop\Container\ContainerInterface $container */
+    $container = require "config/container.php";
+    $container->setService(\rollun\logger\LifeCycleToken::class, $lifeCycleToken);
     try {
         $logger = $container->get(\Psr\Log\LoggerInterface::class);
     } catch (ContainerException $containerException) {
@@ -33,11 +50,15 @@ Logger класс реализует интерфейс `Psr\Log\LoggerInterface
         $logger->error($containerException);
         $container->setService(\Psr\Log\LoggerInterface::class, $logger);
     }
+    $logger = $container->get(\Psr\Log\LoggerInterface::class);
+    $logger->notice("Test notice. %request_time", ["request_time" => $_SERVER["REQUEST_TIME"]]);
+});
 ```
 
-# Config
+## Config
 ```php
 <?php
+
 return
     [
         'log_formatters' => [
@@ -52,6 +73,7 @@ return
         'log_processors' => [
             'factories' => [
                 'rollun\logger\Processor\IdMaker' => 'Zend\ServiceManager\Factory\InvokableFactory',
+                'rollun\logger\Processor\LifeCycleTokenInjector' => 'Zend\ServiceManager\Factory\InvokableFactory',
             ],
         ],
         'log_writers' => [
@@ -79,6 +101,9 @@ return
                 'processors' => [
                     [
                         'name' => 'rollun\logger\Processor\IdMaker',
+                    ],
+                    [
+                        'name' => 'rollun\logger\Processor\LifeCycleTokenInjector',
                     ],
                 ],
                 'writers' => [

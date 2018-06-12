@@ -2,6 +2,7 @@
 
 use Psr\Log\LoggerInterface;
 use rollun\logger\Processor\IdMaker;
+use rollun\logger\Processor\LifeCycleTokenInjector;
 use Zend\ServiceManager\Factory\InvokableFactory;
 use Zend\Log\Writer\Mock as WriterMock;
 use Zend\Log\LoggerAbstractServiceFactory;
@@ -41,7 +42,8 @@ return [
     ],
     'log_processors' => [
         'factories' => [
-            IdMaker::class => InvokableFactory::class
+            IdMaker::class => InvokableFactory::class,
+            LifeCycleTokenInjector::class => InvokableFactory::class,
         ],
     ],
     'log_writers' => [
@@ -71,6 +73,9 @@ return [
                 [
                     'name' => IdMaker::class
                 ],
+                [
+                    'name' => LifeCycleTokenInjector::class
+                ],
             ],
             'writers' => [
                 [
@@ -97,6 +102,9 @@ return [
                 [
                     'name' => IdMaker::class
                 ],
+                [
+                    'name' => LifeCycleTokenInjector::class
+                ],
             ],
             'writers' => [
                 [
@@ -109,6 +117,9 @@ return [
             'processors' => [
                 [
                     'name' => IdMaker::class
+                ],
+                [
+                    'name' => LifeCycleTokenInjector::class
                 ],
             ],
             'writers' => [
@@ -129,6 +140,9 @@ return [
             'processors' => [
                 [
                     'name' => IdMaker::class
+                ],
+                [
+                    'name' => LifeCycleTokenInjector::class
                 ],
             ],
             'writers' => [
