@@ -4,8 +4,6 @@
 namespace rollun\logger;
 
 
-use rollun\utils\IdGenerator;
-
 class LifeCycleToken implements \Serializable
 {
     //for system token
@@ -59,15 +57,42 @@ class LifeCycleToken implements \Serializable
      */
     public static function generateToken()
     {
-        $idGenerator = new IdGenerator(30);
-        $token = new LifeCycleToken($idGenerator->generate());
+        $token = new LifeCycleToken(self::IdGenerate(30));
         return $token;
     }
 
     /**
+     * IdGenerator from pollun/utils replacement:
+     * Generate id.
+     * Generates an arbitrary length string of cryptographic random
+     * @param int $nums = 8;
+     * @return string
+     * @throws \Exception
+     */
+    public static function IdGenerate($nums = 8)
+    {
+        /**
+         * @var string
+         */
+        $idCharSet = "QWERTYUIOPASDFGHJKLZXCVBNM0123456789";
+
+        $id = [];
+        $idCharSetArray = str_split($idCharSet);
+        $charArrayCount = count($idCharSetArray) - 1;
+        for ($i = 0; $i < $nums; $i++) {
+            $id[$i] = $idCharSetArray[random_int(0, $charArrayCount)];
+        }
+        $id = implode("", $id);
+        return $id;
+
+    }
+
+
+    /**
      * @return bool
      */
-    public function hasParentToken() {
+    public function hasParentToken()
+    {
         return isset($this->parentToken);
     }
 

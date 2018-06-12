@@ -2,8 +2,8 @@
 
 namespace rollun\logger\Processor;
 
+use rollun\logger\LifeCycleToken;
 use Zend\Log\Processor\ProcessorInterface;
-use rollun\utils\IdGenerator;
 
 class IdMaker implements ProcessorInterface
 {
@@ -24,8 +24,8 @@ class IdMaker implements ProcessorInterface
     {
         list($usec, $sec) = explode(" ", microtime());
         $timestamp = (int) ($sec - date('Z')) . '.' . (int) ($usec * 1000 * 1000);
-        $idGenerator = new IdGenerator(8);
-        $id = $timestamp . '_' . $idGenerator->generate(); //1512570082.960175_VFSOODML
+        $idGenerator = LifeCycleToken::IdGenerate(8);
+        $id = $timestamp . '_' . $idGenerator; //1512570082.960175_VFSOODML
         return $id;
     }
 
