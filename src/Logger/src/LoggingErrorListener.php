@@ -37,12 +37,19 @@ class LoggingErrorListener
      */
     public function __invoke(Throwable $error, ServerRequestInterface $request, ResponseInterface $response)
     {
-        $this->logger->error(sprintf(
+        $message = sprintf(
             self::LOG_FORMAT,
             $response->getStatusCode(),
             $request->getMethod(),
             (string) $request->getUri(),
             $error->getMessage()
-        ));
+        );
+        try {
+            $this->logger->error($message);
+        } catch (\Throwable $throwable) {
+            $logger = new SimpleLogger();
+            $logger->alert($throwable->getMessage());// Logger not work, alert situation.
+            $logger->error($message);
+        }
     }
 }
