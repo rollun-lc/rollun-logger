@@ -18,4 +18,3 @@ require 'vendor/autoload.php';
 require_once 'config/env_configurator.php';
 
 $container = require 'config/container.php';
-\rollun\dic\InsideConstruct::setContainer($container);
