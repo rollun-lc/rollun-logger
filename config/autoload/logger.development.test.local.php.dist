@@ -2,7 +2,6 @@
 
 use Psr\Log\LoggerInterface;
 use rollun\logger\Processor\IdMaker;
-use rollun\logger\Processor\LifeCycleTokenInjector;
 use Zend\ServiceManager\Factory\InvokableFactory;
 use Zend\Log\Writer\Mock as WriterMock;
 use Zend\Log\LoggerAbstractServiceFactory;
@@ -42,8 +41,7 @@ return [
     ],
     'log_processors' => [
         'factories' => [
-            IdMaker::class => InvokableFactory::class,
-            LifeCycleTokenInjector::class => \rollun\logger\Processor\Factory\LifeCycleTokenReferenceInjectorFactory::class,
+            IdMaker::class => InvokableFactory::class
         ],
     ],
     'log_writers' => [
@@ -65,17 +63,72 @@ return [
         ],
         'aliases' => [
             'logDbAdapter' => AdapterInterface::class, //logWithDbWriter
-            \Psr\Log\LoggerInterface::class => 'logWithDbWriter',
         ],
     ],
     'log' => [
-        'logWithDbWriter' => [
+        LoggerInterface::class => [
             'processors' => [
                 [
                     'name' => IdMaker::class
                 ],
+            ],
+            'writers' => [
                 [
-                    'name' => LifeCycleTokenInjector::class
+                    'name' => WriterMock::class,
+//                  'priority' => Logger::DEBUG,
+//                  'options' => [
+//                        //'stream' => 'php://output',
+//                        'formatter' => [
+//                            'name' => 'MyFormatter',
+//                            'options' => []
+//                        ],
+//                        'filters' => [
+//                            [
+//                                'name' => 'MyFilter',
+//                            ],
+//                        ],
+//                  ],
+                ],
+            ],
+        ],
+        //
+        'logWithMockWriter' => [
+            'processors' => [
+                [
+                    'name' => IdMaker::class
+                ],
+            ],
+            'writers' => [
+                [
+                    'name' => WriterMock::class,
+                ],
+            ],
+        ],
+        //
+        'logWithFileWriter' => [
+            'processors' => [
+                [
+                    'name' => IdMaker::class
+                ],
+            ],
+            'writers' => [
+                [
+                    'name' => WriterStream::class,
+                    'options' => [
+                        'stream' => 'data/log/test-log.txt',
+                        'formatter' => [
+                            'name' => FormatterSimple::class,
+                            'format' => '%id% %timestamp% %level% %message% %context%'
+                        ],
+                    ],
+                ],
+            ],
+        ],
+        //
+        'logWithDbWriter' => [
+            'processors' => [
+                [
+                    'name' => IdMaker::class
                 ],
             ],
             'writers' => [
@@ -91,7 +144,6 @@ return [
                             'level' => 'level',
                             'priority' => 'priority',
                             'context' => 'context',
-                            'lifecycle_token' => 'lifecycle_token',
                         ],
                         'formatter' => ContextToString::class
                     ],
@@ -99,73 +151,4 @@ return [
             ],
         ],
     ],
-//        LoggerInterface::class => [
-//            'processors' => [
-//                [
-//                    'name' => IdMaker::class
-//                ],
-//                [
-//                    'name' => LifeCycleTokenInjector::class
-//                ],
-//            ],
-//            'writers' => [
-//                [
-//                    'name' => WriterMock::class,
-////                  'priority' => Logger::DEBUG,
-////                  'options' => [
-////                        //'stream' => 'php://output',
-////                        'formatter' => [
-////                            'name' => 'MyFormatter',
-////                            'options' => []
-////                        ],
-////                        'filters' => [
-////                            [
-////                                'name' => 'MyFilter',
-////                            ],
-////                        ],
-////                  ],
-//                ],
-//            ],
-//        ],
-//        //
-//        'logWithMockWriter' => [
-//            'processors' => [
-//                [
-//                    'name' => IdMaker::class
-//                ],
-//                [
-//                    'name' => LifeCycleTokenInjector::class
-//                ],
-//            ],
-//            'writers' => [
-//                [
-//                    'name' => WriterMock::class,
-//                ],
-//            ],
-//        ],
-//        //
-//        'logWithFileWriter' => [
-//            'processors' => [
-//                [
-//                    'name' => IdMaker::class
-//                ],
-//                [
-//                    'name' => LifeCycleTokenInjector::class
-//                ],
-//            ],
-//            'writers' => [
-//                [
-//                    'name' => WriterStream::class,
-//                    'options' => [
-//                        'stream' => 'log/test-log.txt',
-//                        'formatter' => [
-//                            'name' => FormatterSimple::class,
-//                            'format' => '%id% %timestamp% %level% %message% %context%'
-//                        ],
-//                    ],
-//                ],
-//            ],
-//        ],
-//        //
 ];
-
