@@ -119,6 +119,7 @@ return
                                 'level' => 'level',
                                 'priority' => 'priority',
                                 'context' => 'context',
+                                'lifecycle_token' => 'lifecycle_token',
                             ],
                             'formatter' => 'rollun\logger\Formatter\ContextToString',
                         ],
