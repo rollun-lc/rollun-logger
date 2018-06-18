@@ -61,7 +61,7 @@ return [
             'LogWriterManager' => WriterPluginManagerFactory::class,
         ],
         'aliases' => [
-            'logDbAdapter1' => AdapterInterface::class, //logWithDbWriter
+            'logDbAdapter' => AdapterInterface::class, //logWithDbWriter
             \Psr\Log\LoggerInterface::class => 'logWithDbWriter',
         ],
     ],
@@ -138,7 +138,7 @@ return [
                 [
                     'name' => WriterDb::class,
                     'options' => [
-                        'db' => 'logDbAdapter1',
+                        'db' => 'logDbAdapter',
                         'table' => 'logs',
                         'column' => [
                             'id' => 'id',

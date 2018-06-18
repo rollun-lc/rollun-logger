@@ -55,7 +55,7 @@ class LoggerWithDbWriterTest extends TestCase
 
     public function getLogs()
     {
-        $adapter = $this->container->get('logDbAdapter1');
+        $adapter = $this->container->get('logDbAdapter');
         $tableGateway = new TableGateway('logs', $adapter);
         $rowset = $tableGateway->select();
         $tableGateway->delete(1);

@@ -93,7 +93,7 @@ return
                 'LogWriterManager' => 'Zend\Log\WriterPluginManagerFactory',
             ],
             'aliases' => [
-                'logDbAdapter1' => 'Zend\Db\Adapter\AdapterInterface',
+                'logDbAdapter' => 'Zend\Db\Adapter\AdapterInterface',
             ],
         ],
         'log' => [
@@ -110,7 +110,7 @@ return
                     [
                         'name' => 'Zend\Log\Writer\Db',
                         'options' => [
-                            'db' => 'logDbAdapter1',
+                            'db' => 'logDbAdapter',
                             'table' => 'logs_test_log',
                             'column' => [
                                 'id' => 'id',
