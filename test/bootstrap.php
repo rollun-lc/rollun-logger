@@ -1,6 +1,7 @@
 <?php
 
 global $argv;
+global $container;
 
 error_reporting(E_ALL | E_STRICT);
 
@@ -18,3 +19,5 @@ require 'vendor/autoload.php';
 require_once 'config/env_configurator.php';
 
 $container = require 'config/container.php';
+$lifeCycleToken = \rollun\logger\LifeCycleToken::generateToken();
+$container->setService(\rollun\logger\LifeCycleToken::class, $lifeCycleToken);

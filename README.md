@@ -73,7 +73,7 @@ return
         'log_processors' => [
             'factories' => [
                 'rollun\logger\Processor\IdMaker' => 'Zend\ServiceManager\Factory\InvokableFactory',
-                'rollun\logger\Processor\LifeCycleTokenInjector' => 'Zend\ServiceManager\Factory\InvokableFactory',
+                'rollun\logger\Processor\LifeCycleTokenInjector' => 'rollun\logger\Processor\Factory\LifeCycleTokenReferenceInjectorFactory',
             ],
         ],
         'log_writers' => [

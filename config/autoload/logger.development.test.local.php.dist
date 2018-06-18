@@ -20,13 +20,11 @@ use Zend\Db\Adapter\AdapterAbstractServiceFactory;
 
 return [
     'db' => [
+        'driver' => 'Pdo_Mysql',
+        'database' => 'logs_db',
+        'username' => 'user',
+        'password' => 'password',
         'adapters' => [
-            AdapterInterface::class => [
-                'driver' => 'Pdo_Mysql',
-                'database' => 'logs_db',
-                'username' => 'root',
-                'password' => '',
-            ],
         ],
     ],
     'log_formatters' => [
@@ -41,7 +39,8 @@ return [
     ],
     'log_processors' => [
         'factories' => [
-            IdMaker::class => InvokableFactory::class
+            IdMaker::class => InvokableFactory::class,
+            LifeCycleTokenInjector::class => LifeCycleTokenReferenceInjectorFactory::class,
         ],
     ],
     'log_writers' => [
@@ -63,6 +62,7 @@ return [
         ],
         'aliases' => [
             'logDbAdapter' => AdapterInterface::class, //logWithDbWriter
+            \Psr\Log\LoggerInterface::class => 'logWithDbWriter',
         ],
     ],
     'log' => [
@@ -130,6 +130,9 @@ return [
                 [
                     'name' => IdMaker::class
                 ],
+                [
+                    'name' => LifeCycleTokenInjector::class
+                ],
             ],
             'writers' => [
                 [
@@ -144,6 +147,7 @@ return [
                             'level' => 'level',
                             'priority' => 'priority',
                             'context' => 'context',
+                            'lifecycle_token' => 'lifecycle_token',
                         ],
                         'formatter' => ContextToString::class
                     ],

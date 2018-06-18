@@ -47,7 +47,8 @@ class LoggerWithDbWriterTest extends TestCase
      */
     public function setUp()
     {
-        $this->container = include 'config/container.php';
+        global $container;
+        $this->container = $container;
         $this->logger = $this->container->get('logWithDbWriter');
         $this->getLogs();
     }
