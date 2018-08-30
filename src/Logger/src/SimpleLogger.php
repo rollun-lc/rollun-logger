@@ -38,7 +38,7 @@ final class SimpleLogger implements LoggerInterface
         if (!$receiverPath || !is_string($receiverPath) || !file_exists($receiverPath) || !is_file($receiverPath)) {
             $receiverPath = "data" . DIRECTORY_SEPARATOR . static::DEFAULT_LOGS_PATH;
             //silent exception if can't create or write to file, and set receiver path to stdout.
-            if(!@file_put_contents($receiverPath, "", FILE_APPEND)) {
+            if(@file_put_contents($receiverPath, "", FILE_APPEND) === false) {
                 $receiverPath = "php://stdout";
             }
         }
