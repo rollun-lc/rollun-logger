@@ -13,17 +13,17 @@ class ExceptionBacktrace implements ProcessorInterface
 {
     /**
      * Get backtrace from exception (with all previous exceptions)
-     * Begin from the last cached exception
+     * Begin from the last caught exception
      * Put result in $event['context']['backtrace']
      *
      * Return:
      *  [
      *      // The last one exception
      *      [
-     *          'line' => result of 'getLine' method,
-     *          'file' => result of 'getFile' method,
-     *          'code' => result of 'getCode' method,
-     *          'message' => result of 'getMessage' method,
+     *          'line' => result of 'getLine' \Throwable method,
+     *          'file' => result of 'getFile' \Throwable method,
+     *          'code' => result of 'getCode' \Throwable method,
+     *          'message' => result of 'getMessage' \Throwable method,
      *      ],
      *
      *      // The next previous exception and so on
