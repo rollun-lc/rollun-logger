@@ -12,17 +12,21 @@ use Zend\Log\Processor\ProcessorInterface;
 class ExceptionBacktrace implements ProcessorInterface
 {
     /**
-     * Get backtrace from exception
+     * Get backtrace from exception (with all previous exceptions)
+     * Begin from the last cached exception
      * Put result in $event['context']['backtrace']
      *
      * Return:
      *  [
+     *      // The last one exception
      *      [
      *          'line' => result of 'getLine' method,
      *          'file' => result of 'getFile' method,
      *          'code' => result of 'getCode' method,
      *          'message' => result of 'getMessage' method,
      *      ],
+     *
+     *      // The next previous exception and so on
      *      [
      *          //...
      *      ],
