@@ -72,8 +72,8 @@ class ExceptionBacktrace implements ProcessorInterface
                 $backtrace,
                 $this->getExceptionBacktrace($e->getPrevious(), ++$stack)
             );
-        } else {
-            return $backtrace;
         }
+
+        return $backtrace;
     }
 }
