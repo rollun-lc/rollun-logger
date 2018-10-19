@@ -52,6 +52,9 @@ class ExceptionBacktrace implements ProcessorInterface
         $backtrace = $this->getExceptionBacktrace($exception);
         $event['context']['backtrace'] = $backtrace;
 
+        // Remove exception from context to prevent serialize it to log result message
+        unset($event['context']['exception']);
+
         return $event;
     }
 
@@ -59,12 +62,11 @@ class ExceptionBacktrace implements ProcessorInterface
      * Process exception and all previous exceptions to return one-level array with exceptions backtrace
      *
      * @param \Throwable $e
-     * @param int $stack
      * @return array
      */
-    public function getExceptionBacktrace(\Throwable $e, $stack = 0)
+    public function getExceptionBacktrace(\Throwable $e)
     {
-        $backtrace[$stack] = [
+        $backtrace[] = [
             'line' => $e->getLine(),
             'file' => $e->getFile(),
             'code' => $e->getCode(),
@@ -74,7 +76,7 @@ class ExceptionBacktrace implements ProcessorInterface
         if ($e->getPrevious()) {
             return array_merge(
                 $backtrace,
-                $this->getExceptionBacktrace($e->getPrevious(), ++$stack)
+                $this->getExceptionBacktrace($e->getPrevious())
             );
         }
 
