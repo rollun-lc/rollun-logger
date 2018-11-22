@@ -39,13 +39,20 @@ class LoggingErrorListener
     {
         $message = sprintf(
             self::LOG_FORMAT,
-            $response->getStatusCode(),
-            $request->getMethod(),
-            (string) $request->getUri(),
+            empty($response->getStatusCode()) ? $error->getCode() : $response->getStatusCode(),
+            empty($request->getMethod()) ? $error->getLine() : $request->getMethod(),
+            empty((string) $request->getUri()) ? $error->getFile() : (string) $request->getUri(),
             $error->getMessage()
         );
         try {
-            $this->logger->error($message);
+            $this->logger->error($message, [
+                "status_code" => $response->getStatusCode(),
+                "method" => $request->getMethod(),
+                "uri" => (string) $request->getUri(),
+                "code" => $error->getCode(),
+                "line" => $error->getLine(),
+                "file" => $error->getFile(),
+            ]);
         } catch (\Throwable $throwable) {
             $logger = new SimpleLogger();
             $logger->alert($throwable->getMessage());// Logger not work, alert situation.

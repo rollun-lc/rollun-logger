@@ -15,29 +15,10 @@ For safe use of the logger, you need to add the following lines to index.php (an
  * Self-called anonymous function that creates its own scope and keep the global namespace clean.
  */
 call_user_func(function () {
-    if (!function_exists('get_all_headers')) {
-        function get_all_headers()
-        {
-            $arh = array();
-            $rx_http = '/\AHTTP_/';
-            foreach ($_SERVER as $key => $val) {
-                if (preg_match($rx_http, $key)) {
-                    $arh_key = preg_replace($rx_http, '', $key);
-                    $rx_matches = explode('_', $arh_key);
-                    if (count($rx_matches) > 0 and strlen($arh_key) > 2) {
-                        foreach ($rx_matches as $ak_key => $ak_val) $rx_matches[$ak_key] = ucfirst($ak_val);
-                        $arh_key = implode('-', $rx_matches);
-                    }
-                    $arh[$arh_key] = $val;
-                }
-            }
-            return ($arh);
-        }
-    }
     //init lifecycle token
     $lifeCycleToken = \rollun\logger\LifeCycleToken::generateToken();
-    if (get_all_headers() && array_key_exists("LifeCycleToken", get_all_headers())) {
-        $lifeCycleToken->unserialize(get_all_headers()["LifeCycleToken"]);
+    if (\rollun\logger\LifeCycleToken::getAllHeaders() && array_key_exists("LifeCycleToken", \rollun\logger\LifeCycleToken::getAllHeaders())) {
+        $lifeCycleToken->unserialize(\rollun\logger\LifeCycleToken::getAllHeaders()["LifeCycleToken"]);
     }
     /** use container method to set service.*/
     /** @var \Interop\Container\ContainerInterface $container */
