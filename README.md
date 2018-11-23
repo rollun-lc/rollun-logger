@@ -110,3 +110,36 @@ return
         ],
     ];
 ```
+
+### [Processors](https://docs.zendframework.com/zend-log/processors/)
+
+* ExceptionBacktrace - достает с `$context`, обрабатывает `exception` объект и помещает результат под ключем `backtrace`
+
+Пример:
+
+```php
+
+// According to psr-3 standard put exception under 'exception' key
+$previousException = new \Exception('Previous error', 1)
+$event['context']['exception'] = new \Exception('Error eccurred', 2, $previousException)
+$processor = new ExceptionBacktrace();
+$event = $processor->process($event);
+
+print_r($event['context']['backtrace']);
+// Output
+// [
+//     [
+//         'line' => 22,
+//         'file' => 'someFile.php',
+//         'code' => 2,
+//         'message' => 'Error eccurred',
+//     ],
+//     [
+//         'line' => 34,
+//         'file' => 'someElseFile.php',
+//         'code' => 1,
+//         'message' => 'Previous error',
+//     ],
+// ]
+
+```
