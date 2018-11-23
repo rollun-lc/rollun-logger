@@ -1,15 +1,16 @@
 <?php
-
+/**
+ * @copyright Copyright © 2014 Rollun LC (http://rollun.com/)
+ * @license LICENSE.md New BSD License
+ */
 
 namespace rollun\logger\Processor;
-
 
 use rollun\logger\LifeCycleToken;
 use Zend\Log\Processor\ProcessorInterface;
 
 class LifeCycleTokenInjector implements ProcessorInterface
 {
-
     /**
      * @var LifeCycleToken
      */
@@ -34,19 +35,22 @@ class LifeCycleTokenInjector implements ProcessorInterface
     {
         if (!isset($event[LifeCycleToken::KEY_LIFECYCLE_TOKEN])) {
             $event[LifeCycleToken::KEY_LIFECYCLE_TOKEN] = $this->token->toString();
-        } elseif (!isset($event['context'][LifeCycleToken::KEY_ORIGINAL_LIFECYCLE_TOKEN]) &&
-            ($this->token->toString() !== $event[LifeCycleToken::KEY_LIFECYCLE_TOKEN])) {
+        } elseif (!isset($event['context'][LifeCycleToken::KEY_ORIGINAL_LIFECYCLE_TOKEN])
+            && ($this->token->toString() !== $event[LifeCycleToken::KEY_LIFECYCLE_TOKEN])) {
             $event['context'][LifeCycleToken::KEY_ORIGINAL_LIFECYCLE_TOKEN] = $this->token->toString();
         }
         if ($this->token->hasParentToken()) {
             if (!isset($event[LifeCycleToken::KEY_PARENT_LIFECYCLE_TOKEN])) {
-                $event[LifeCycleToken::KEY_PARENT_LIFECYCLE_TOKEN] = $this->token->getParentToken()->toString();
-            } elseif (!isset($event['context'][LifeCycleToken::KEY_ORIGINAL_PARENT_LIFECYCLE_TOKEN]) &&
-                $this->token->getParentToken()->toString() !== $event[LifeCycleToken::KEY_PARENT_LIFECYCLE_TOKEN]
-            ) {
-                $event['context'][LifeCycleToken::KEY_ORIGINAL_PARENT_LIFECYCLE_TOKEN] = $this->token->getParentToken()->toString();
+                $event[LifeCycleToken::KEY_PARENT_LIFECYCLE_TOKEN] = $this->token->getParentToken()
+                    ->toString();
+            } elseif (!isset($event['context'][LifeCycleToken::KEY_ORIGINAL_PARENT_LIFECYCLE_TOKEN])
+                && $this->token->getParentToken()
+                    ->toString() !== $event[LifeCycleToken::KEY_PARENT_LIFECYCLE_TOKEN]) {
+                $event['context'][LifeCycleToken::KEY_ORIGINAL_PARENT_LIFECYCLE_TOKEN] = $this->token->getParentToken()
+                    ->toString();
             }
         }
+
         return $event;
     }
 }

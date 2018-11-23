@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * @copyright Copyright © 2014 Rollun LC (http://rollun.com/)
+ * @license LICENSE.md New BSD License
+ */
 
 namespace rollun\logger\Middleware;
 
@@ -11,7 +14,6 @@ use Psr\Log\LoggerInterface;
 
 class RequestLoggedMiddleware implements MiddlewareInterface
 {
-
     /**
      * @var LoggerInterface
      */
@@ -32,20 +34,19 @@ class RequestLoggedMiddleware implements MiddlewareInterface
      *
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
-     *
      * @return ResponseInterface
+     * @throws \Exception
      */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        $message = ""
-            . "[" . (new \DateTime())->format("c") . "] "
-            . $request->getMethod() . " - "
-            . $request->getUri()->getPath()
-            . (!empty($request->getUri()->getQuery()) ? ("?" . $request->getUri()->getQuery() . " ") : " ")
-            . "<- " . $this->resolveSenderIp($request);
+        $message = "[" . (new \DateTime())->format("c") . "] ";
+        $message .= $request->getMethod() . " - " . $request->getUri()->getPath();
+        $message .= (!empty($request->getUri()->getQuery()) ? ("?" . $request->getUri()->getQuery() . " ") : " ");
+        $message .= "<- " . $this->resolveSenderIp($request);
 
         $this->logger->info($message);
         $response = $delegate->process($request);
+
         return $response;
     }
 
@@ -56,6 +57,7 @@ class RequestLoggedMiddleware implements MiddlewareInterface
     private function resolveSenderIp(ServerRequestInterface $request): string
     {
         $serverParams = $request->getServerParams();
+
         if (!empty($serverParams["HTTP_CLIENT_IP"])) {
             $senderIp = $serverParams["HTTP_CLIENT_IP"];
         } elseif (!empty($serverParams["HTTP_X_FORWARDED_FOR"])) {
@@ -63,6 +65,7 @@ class RequestLoggedMiddleware implements MiddlewareInterface
         } else {
             $senderIp = $serverParams["REMOTE_ADDR"];
         }
+
         return $senderIp;
     }
 }

@@ -1,14 +1,14 @@
 <?php
-
+/**
+ * @copyright Copyright © 2014 Rollun LC (http://rollun.com/)
+ * @license LICENSE.md New BSD License
+ */
 
 namespace rollun\logger\Factory;
 
-
 use Interop\Container\ContainerInterface;
-use Psr\Container\ContainerExceptionInterface;
 use Psr\Log\LoggerInterface;
 use rollun\logger\LoggingErrorListener;
-use rollun\logger\SimpleLogger;
 
 class LoggingErrorListenerDelegatorFactory
 {
@@ -17,8 +17,6 @@ class LoggingErrorListenerDelegatorFactory
      * @param string $name
      * @param callable $callback
      * @return mixed
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function __invoke(ContainerInterface $container, string $name, callable $callback)
     {

@@ -1,13 +1,10 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: victorsecuring
- * Date: 27.03.18
- * Time: 1:39 PM
+ * @copyright Copyright © 2014 Rollun LC (http://rollun.com/)
+ * @license LICENSE.md New BSD License
  */
 
 namespace rollun\logger\Writer\Factory;
-
 
 use Interop\Container\ContainerInterface;
 use Psr\Container\ContainerExceptionInterface;
@@ -44,8 +41,8 @@ class HttpFactory implements FactoryInterface
         $config = (array)$options;
         $client = isset($config[static::KEY_CLIENT]) ? $container->get($config[static::KEY_CLIENT]) : new Client();
         $uri = isset($config[static::KEY_URI]) ? $config[static::KEY_URI] : null;
-        $options = isset($config[static::KEY_OPTIONS]) ? $config[static::KEY_OPTIONS] :  [];
+        $options = isset($config[static::KEY_OPTIONS]) ? $config[static::KEY_OPTIONS] : [];
+
         return new Http($client, $uri, $options);
     }
-
 }

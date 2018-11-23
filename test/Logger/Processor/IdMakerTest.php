@@ -1,10 +1,7 @@
 <?php
-
 /**
- * Created by PhpStorm.
- * User: victorsecuring
- * Date: 19.12.16
- * Time: 11:43 AM
+ * @copyright Copyright © 2014 Rollun LC (http://rollun.com/)
+ * @license LICENSE.md New BSD License
  */
 
 namespace rollun\test\Logger\Processor;
@@ -14,8 +11,7 @@ use rollun\logger\Processor\IdMaker;
 
 class IdMakerTest extends TestCase
 {
-
-    public function test_add_Id()
+    public function testAddId()
     {
         $processor = new IdMaker();
 
@@ -23,9 +19,8 @@ class IdMakerTest extends TestCase
             'timestamp' => '',
             'priority' => 1,
             'level' => 'ALERT',
-            'message' => 'foo'
-            ,
-            'context' => []
+            'message' => 'foo',
+            'context' => [],
         ];
 
         $event = $processor->process($event);
@@ -37,7 +32,7 @@ class IdMakerTest extends TestCase
         $this->assertTrue($timeInterval <= 1);
     }
 
-    public function test_not_add_Id()
+    public function testNotAddId()
     {
         $processor = new IdMaker();
 
@@ -46,9 +41,8 @@ class IdMakerTest extends TestCase
             'priority' => 1,
             'level' => 'ALERT',
             'message' => 'foo',
-            'context' => ['foo' => 'bar']
-            ,
-            'id' => '1512570082.960175_VFSOODML'
+            'context' => ['foo' => 'bar'],
+            'id' => '1512570082.960175_VFSOODML',
         ];
 
         $event = $processor->process($event);
@@ -56,5 +50,4 @@ class IdMakerTest extends TestCase
         $this->assertArrayHasKey('id', $event);
         $this->assertEquals('1512570082.960175_VFSOODML', $event['id']);
     }
-
 }

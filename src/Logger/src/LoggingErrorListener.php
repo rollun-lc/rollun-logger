@@ -1,8 +1,10 @@
 <?php
-
+/**
+ * @copyright Copyright © 2014 Rollun LC (http://rollun.com/)
+ * @license LICENSE.md New BSD License
+ */
 
 namespace rollun\logger;
-
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -18,7 +20,7 @@ class LoggingErrorListener
      */
     const LOG_FORMAT = '%d [%s] %s: %s';
 
-    /** @var LoggerInterface  */
+    /** @var LoggerInterface */
     private $logger;
 
     /**
@@ -41,18 +43,22 @@ class LoggingErrorListener
             self::LOG_FORMAT,
             empty($response->getStatusCode()) ? $error->getCode() : $response->getStatusCode(),
             empty($request->getMethod()) ? $error->getLine() : $request->getMethod(),
-            empty((string) $request->getUri()) ? $error->getFile() : (string) $request->getUri(),
+            empty((string)$request->getUri()) ? $error->getFile() : (string)$request->getUri(),
             $error->getMessage()
         );
+
         try {
-            $this->logger->error($message, [
-                "status_code" => $response->getStatusCode(),
-                "method" => $request->getMethod(),
-                "uri" => (string) $request->getUri(),
-                "code" => $error->getCode(),
-                "line" => $error->getLine(),
-                "file" => $error->getFile(),
-            ]);
+            $this->logger->error(
+                $message,
+                [
+                    "status_code" => $response->getStatusCode(),
+                    "method" => $request->getMethod(),
+                    "uri" => (string)$request->getUri(),
+                    "code" => $error->getCode(),
+                    "line" => $error->getLine(),
+                    "file" => $error->getFile(),
+                ]
+            );
         } catch (\Throwable $throwable) {
             $logger = new SimpleLogger();
             $logger->alert($throwable->getMessage());// Logger not work, alert situation.

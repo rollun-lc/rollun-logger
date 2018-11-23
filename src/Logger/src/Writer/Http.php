@@ -1,8 +1,10 @@
 <?php
-
+/**
+ * @copyright Copyright © 2014 Rollun LC (http://rollun.com/)
+ * @license LICENSE.md New BSD License
+ */
 
 namespace rollun\logger\Writer;
-
 
 use Traversable;
 use Zend\Http\Client;
@@ -15,7 +17,6 @@ use Zend\Uri\Http as HttpUri;
  */
 class Http extends AbstractWriter
 {
-
     /**
      * @var array
      */
@@ -42,6 +43,7 @@ class Http extends AbstractWriter
         if ($client instanceof Traversable) {
             $client = iterator_to_array($client);
         }
+
         if (is_array($client)) {
             parent::__construct($client);
             $options = isset($client["options"]) ? $client["options"] : [];
@@ -53,6 +55,7 @@ class Http extends AbstractWriter
         if (!$client instanceof Client) {
             throw new \InvalidArgumentException('You must pass a valid Zend\Http\Client');
         }
+
         $this->client = $client;
         $this->options = $options;
         $uri = isset($uri) ? $uri : $client->getUri();
@@ -70,12 +73,16 @@ class Http extends AbstractWriter
         $httpClient->setUri($uri);
         $httpClient->setOptions($options);
         $headers['Content-Type'] = 'application/octet-stream';
-        $headers['APP_ENV'] = constant('APP_ENV');
+        $headers['APP_ENV'] = getenv('APP_ENV');
+
         $httpClient->setHeaders($headers);
+
         if (isset($this->login) && isset($this->password)) {
             $httpClient->setAuth($this->login, $this->password);
         }
+
         $httpClient->setMethod("POST");
+
         return $httpClient;
     }
 
@@ -85,9 +92,10 @@ class Http extends AbstractWriter
      */
     public function write(array $event)
     {
-        if(!isset($this->uri) || !$this->uri->isValid()) {
+        if (!isset($this->uri) || !$this->uri->isValid()) {
             return;
         }
+
         parent::write($event);
     }
 
@@ -105,13 +113,16 @@ class Http extends AbstractWriter
         $rawData = base64_encode($serialisedData);
         $client->setRawBody($rawData);
         $response = $client->send();
+
         if ($response->isServerError()) {
-            throw new \RuntimeException(sprintf(
-                "Error with status %s by send event to %s, with message: %s",
-                $response->getStatusCode(),
-                $this->uri,
-                $response->getReasonPhrase()
-            ));
+            throw new \RuntimeException(
+                sprintf(
+                    "Error with status %s by send event to %s, with message: %s",
+                    $response->getStatusCode(),
+                    $this->uri,
+                    $response->getReasonPhrase()
+                )
+            );
         }
     }
 }

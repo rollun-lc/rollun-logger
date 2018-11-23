@@ -1,4 +1,8 @@
 <?php
+/**
+ * @copyright Copyright © 2014 Rollun LC (http://rollun.com/)
+ * @license LICENSE.md New BSD License
+ */
 
 namespace rollun\test\logger;
 
@@ -25,7 +29,8 @@ class LifeCycleTokenTest extends TestCase
         $this->object = new LifeCycleToken($tokenString, new LifeCycleToken($parentTokenString));
         $this->assertEquals($tokenString, $this->object->toString());
         $this->assertNotNull($this->object->getParentToken());
-        $this->assertEquals($parentTokenString, $this->object->getParentToken()->toString());
+        $this->assertEquals($parentTokenString, $this->object->getParentToken()
+            ->toString());
     }
 
     public function testHasParentToken()
@@ -36,7 +41,7 @@ class LifeCycleTokenTest extends TestCase
         $this->assertTrue($this->object->hasParentToken());
     }
 
-    public function testUnserialize()
+    public function testUnsterilized()
     {
         $tokenString = "TESTLIFECYCLETOKEN";
         $this->object = new LifeCycleToken($tokenString);
@@ -53,8 +58,8 @@ class LifeCycleTokenTest extends TestCase
         $this->assertNotEquals($tokenString, $this->object->toString());
         $this->assertTrue($this->object->hasParentToken());
         $this->assertNotNull($this->object->getParentToken());
-        $this->assertEquals($tokenString, $this->object->getParentToken()->toString());
-
+        $this->assertEquals($tokenString, $this->object->getParentToken()
+            ->toString());
     }
 
     public function testGenerateToken()
