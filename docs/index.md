@@ -13,7 +13,7 @@ composer require rollun-com/rollun-logger
 
 ### Getting Started
 
-По скольку это расширение к `zend-log` здесь будут описаны только расширения, базовою документацию можно почитать 
+По скольку это расширение к `zend-log`, базовою документацию можно почитать 
 [здесь](https://framework.zend.com/manual/2.4/en/modules/zend.log.overview.html).
 
 
@@ -23,7 +23,7 @@ composer require rollun-com/rollun-logger
 
 #### Formatters
 
-- **ContextToString** - `json` декодирует `$event`
+- **ContextToString** - декодирует `$event` в `json`.
 
 
 #### Processors
@@ -33,9 +33,9 @@ composer require rollun-com/rollun-logger
     - `LifeCycleToken::KEY_ORIGINAL_LIFECYCLE_TOKEN` (`original_lifecycle_token`);
     - `LifeCycleToken::KEY_PARENT_LIFECYCLE_TOKEN` (`parent_lifecycle_token`);
     - `LifeCycleToken::KEY_ORIGINAL_PARENT_LIFECYCLE_TOKEN` (`original_parent_lifecycle_token`).
-- **IdMarker** - добавляет к массиву `$event` автосгенерированый идентификатор под ключом `id`
+- **IdMarker** - добавляет к массиву `$event` автосгенерированый идентификатор под ключом `id`.
 - **ExceptionBacktrace** - достает с `$context`, обрабатывает `exception` объект и помещает результат под ключем 
-`backtrace`
+`backtrace`.
 
 Пример:
 
