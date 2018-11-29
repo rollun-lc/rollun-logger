@@ -85,10 +85,8 @@ return [
                             'message' => 'message',
                             'level' => 'level',
                             'priority' => 'priority',
-                            'context' => [
-                                'context' => 'context',
-                                'lifecycle_token' => 'lifecycle_token',
-                            ],
+                            'context' => 'context',
+                            'lifecycle_token' => 'lifecycle_token',
                         ],
                         'formatter' => ContextToString::class,
                     ],
