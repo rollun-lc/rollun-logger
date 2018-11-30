@@ -1,18 +1,20 @@
 <?php
-
+/**
+ * @copyright Copyright © 2014 Rollun LC (http://rollun.com/)
+ * @license LICENSE.md New BSD License
+ */
 
 namespace rollun\logger;
 
-
 class LifeCycleToken implements \Serializable
 {
-    //for system token
+    // For system token
     const KEY_LIFECYCLE_TOKEN = "lifecycle_token";
-    //if sented token not equals to system, system token write with this name
+    // If sent token not equals to system, system token write with this name
     const KEY_ORIGINAL_LIFECYCLE_TOKEN = "original_lifecycle_token";
-    //For parent token
+    // For parent token
     const KEY_PARENT_LIFECYCLE_TOKEN = "parent_lifecycle_token";
-    //if sented parent token not equals to system, system patent token write with this name
+    // If sent parent token not equals to system, system patent token write with this name
     const KEY_ORIGINAL_PARENT_LIFECYCLE_TOKEN = "original_parent_lifecycle_token";
 
     /**
@@ -58,6 +60,7 @@ class LifeCycleToken implements \Serializable
     public static function generateToken()
     {
         $token = new LifeCycleToken(self::IdGenerate(30));
+
         return $token;
     }
 
@@ -79,14 +82,42 @@ class LifeCycleToken implements \Serializable
         $id = [];
         $idCharSetArray = str_split($idCharSet);
         $charArrayCount = count($idCharSetArray) - 1;
+
         for ($i = 0; $i < $nums; $i++) {
             $id[$i] = $idCharSetArray[random_int(0, $charArrayCount)];
         }
-        $id = implode("", $id);
-        return $id;
 
+        $id = implode("", $id);
+
+        return $id;
     }
 
+    /**
+     * @see get_all_getders
+     */
+    public static function getAllHeaders()
+    {
+        $arh = [];
+        $rx_http = '/\AHTTP_/';
+
+        foreach ($_SERVER as $key => $val) {
+            if (preg_match($rx_http, $key)) {
+                $arh_key = preg_replace($rx_http, '', $key);
+                // do some nasty string manipulations to restore the original letter case
+                // this should work in most cases
+                $rx_matches = explode('_', $arh_key);
+                if (count($rx_matches) > 0 and strlen($arh_key) > 2) {
+                    foreach ($rx_matches as $ak_key => $ak_val) {
+                        $rx_matches[$ak_key] = ucfirst($ak_val);
+                    }
+                    $arh_key = implode('-', $rx_matches);
+                }
+                $arh[$arh_key] = $val;
+            }
+        }
+
+        return ($arh);
+    }
 
     /**
      * @return bool

@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * @copyright Copyright © 2014 Rollun LC (http://rollun.com/)
+ * @license LICENSE.md New BSD License
+ */
 
 namespace rollun\logger;
 
@@ -17,7 +20,7 @@ final class SimpleLogger implements LoggerInterface
 {
     use LoggerTrait;
 
-    const DEFAULT_LOGS_PATH = "simple_logs/logs.dat";
+    const DEFAULT_LOGS_PATH = "logs.log";
 
     /**
      * @var string
@@ -37,7 +40,10 @@ final class SimpleLogger implements LoggerInterface
         $receiverPath = getenv("LOGS_RECEIVER");
         if (!$receiverPath || !is_string($receiverPath) || !file_exists($receiverPath) || !is_file($receiverPath)) {
             $receiverPath = "data" . DIRECTORY_SEPARATOR . static::DEFAULT_LOGS_PATH;
-            file_put_contents($receiverPath, "", FILE_APPEND);
+            //silent exception if can't create or write to file, and set receiver path to stdout.
+            if (@file_put_contents($receiverPath, "", FILE_APPEND) === false) {
+                $receiverPath = "php://stdout";
+            }
         }
         $this->receiverPath = $receiverPath;
         $this->psrPlaceholder = new PsrPlaceholder();
