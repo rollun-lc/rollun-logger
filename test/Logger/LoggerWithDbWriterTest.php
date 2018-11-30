@@ -1,38 +1,20 @@
 <?php
-
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @copyright Copyright © 2014 Rollun LC (http://rollun.com/)
+ * @license LICENSE.md New BSD License
  */
 
 namespace ZendTest\Log;
 
-use Exception;
-use ErrorException;
 use PHPUnit\Framework\TestCase;
-use Zend\Log\Exception\RuntimeException;
 use Zend\Log\Logger;
-use Zend\Log\Processor\Backtrace;
-use Zend\Log\Writer\Mock as MockWriter;
-use Zend\Log\Writer\Stream as StreamWriter;
-use Zend\Log\Filter\Mock as MockFilter;
-use Zend\Stdlib\SplPriorityQueue;
-use Zend\Validator\Digits as DigitsFilter;
 use Psr\Log\LogLevel;
-use Psr\Log\LoggerInterface;
-use Zend\Log\Writer\WriterInterface;
 use Psr\Container\ContainerInterface;
-use Zend\Log\Writer\Mock as WriterMock;
 use Zend\Db\TableGateway\TableGateway;
 
 class LoggerWithDbWriterTest extends TestCase
 {
-
     /**
-     *
      * @var ContainerInterface
      */
     protected $container;
@@ -47,27 +29,38 @@ class LoggerWithDbWriterTest extends TestCase
      */
     public function setUp()
     {
-        $this->container = include 'config/container.php';
-        $this->logger = $this->container->get('logWithDbWriter');
+        $this->logger = $this->getContainer()->get('logWithDbWriter');
         $this->getLogs();
+    }
+
+    /**
+     * @return mixed|ContainerInterface
+     */
+    protected function getContainer()
+    {
+        if (is_null($this->container)) {
+            $this->container = require 'config/container.php';
+        }
+
+        return $this->container;
     }
 
     public function getLogs()
     {
         $adapter = $this->container->get('logDbAdapter');
         $tableGateway = new TableGateway('logs', $adapter);
-        $rowset = $tableGateway->select();
+        $resultSet = $tableGateway->select();
         $tableGateway->delete(1);
-        return $rowset;
+
+        return $resultSet;
     }
 
     public function testLoggingArray()
     {
-        $this->logger->log(LogLevel::INFO, 'test', [1, 'next', 'key' => 'val']);
-        $rowset = $this->getLogs();
-        $rowArray = $rowset->toArray();
+        $this->logger->log(LogLevel::INFO, 'test', ['lifecycle_token' => 'value1', 'context' => 'value2']);
+        $resultSet = $this->getLogs();
+        $rowArray = $resultSet->toArray();
         $row = $rowArray[0];
         $this->assertArraySubset(['level' => "info", 'priority' => "6", 'message' => "test"], $row);
     }
-
 }

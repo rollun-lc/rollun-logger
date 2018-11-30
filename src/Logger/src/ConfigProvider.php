@@ -1,17 +1,22 @@
 <?php
-
+/**
+ * @copyright Copyright © 2014 Rollun LC (http://rollun.com/)
+ * @license LICENSE.md New BSD License
+ */
 
 namespace rollun\logger;
 
 use Psr\Log\LoggerInterface;
+use rollun\logger\Processor\ExceptionBacktrace;
+use rollun\logger\Processor\IdMaker;
 use Zend\Log\LoggerAbstractServiceFactory;
 use Zend\Log\LoggerServiceFactory;
 use Zend\Log\FilterPluginManagerFactory;
 use Zend\Log\FormatterPluginManagerFactory;
 use Zend\Log\ProcessorPluginManagerFactory;
+use Zend\Log\Writer\Stream;
 use Zend\Log\WriterPluginManagerFactory;
 use Zend\Log\Logger;
-use Zend\Log\Writer\Noop as WriterNoop;
 
 class ConfigProvider
 {
@@ -57,8 +62,19 @@ class ConfigProvider
             LoggerInterface::class => [
                 'writers' => [
                     [
-                        'name' => WriterNoop::class,
+                        'name' => Stream::class,
+                        'options' => [
+                            'stream' => 'php://stdout'
+                        ]
                     ],
+                ],
+                'processors' => [
+                    [
+                        'name' => IdMaker::class,
+                    ],
+                    [
+                        'name' => ExceptionBacktrace::class
+                    ]
                 ],
             ],
         ];
