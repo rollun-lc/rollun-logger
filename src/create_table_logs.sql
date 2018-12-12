@@ -15,8 +15,7 @@ CREATE TABLE `logs` (
 	`context` TEXT NOT NULL,
 	PRIMARY KEY (`id`),
 	INDEX `parent_lifecycle_token` (`parent_lifecycle_token`),
-	INDEX `lifecycle_token` (`lifecycle_token`),
-	CONSTRAINT `logs_ibfk_1` FOREIGN KEY (`parent_lifecycle_token`) REFERENCES `logs` (`lifecycle_token`)
+	INDEX `lifecycle_token` (`lifecycle_token`)
 )
 COLLATE='utf8_general_ci'
 ENGINE=InnoDB
