@@ -1,4 +1,8 @@
 <?php
+/**
+ * @copyright Copyright © 2014 Rollun LC (http://rollun.com/)
+ * @license LICENSE.md New BSD License
+ */
 
 use Psr\Log\LoggerInterface;
 use rollun\logger\Processor\IdMaker;
@@ -11,42 +15,27 @@ use Zend\Log\FormatterPluginManagerFactory;
 use Zend\Log\ProcessorPluginManagerFactory;
 use Zend\Log\WriterPluginManagerFactory;
 use Zend\Log\Logger;
-use Zend\Log\Writer\Stream as WriterStream;
 use Zend\Log\Writer\Db as WriterDb;
-use Zend\Log\Formatter\Simple as FormatterSimple;
 use rollun\logger\Formatter\ContextToString;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\AdapterAbstractServiceFactory;
 
 return [
     'db' => [
-        'adapters' => [
-            AdapterInterface::class => [
-                'driver' => 'Pdo_Mysql',
-                'database' => 'logs_db',
-                'username' => 'root',
-                'password' => '',
-            ],
-        ],
+        'driver' => getenv('DB_DRIVER'),
+        'database' => getenv('DB_NAME'),
+        'username' => getenv('DB_USER'),
+        'password' => getenv('DB_PASS'),
+        'port' => getenv('DB_PORT'),
     ],
     'log_formatters' => [
         'factories' => [
-            ContextToString::class => InvokableFactory::class
-        ],
-    ],
-    'log_filters' => [
-        'factories' => [
-// ...
+            ContextToString::class => InvokableFactory::class,
         ],
     ],
     'log_processors' => [
         'factories' => [
-            IdMaker::class => InvokableFactory::class
-        ],
-    ],
-    'log_writers' => [
-        'factories' => [
-// ...
+            IdMaker::class => InvokableFactory::class,
         ],
     ],
     'dependencies' => [
@@ -62,40 +51,14 @@ return [
             'LogWriterManager' => WriterPluginManagerFactory::class,
         ],
         'aliases' => [
-            'logDbAdapter' => AdapterInterface::class, //logWithDbWriter
+            'logDbAdapter' => AdapterInterface::class,
         ],
     ],
     'log' => [
         LoggerInterface::class => [
             'processors' => [
                 [
-                    'name' => IdMaker::class
-                ],
-            ],
-            'writers' => [
-                [
-                    'name' => WriterMock::class,
-//                  'priority' => Logger::DEBUG,
-//                  'options' => [
-//                        //'stream' => 'php://output',
-//                        'formatter' => [
-//                            'name' => 'MyFormatter',
-//                            'options' => []
-//                        ],
-//                        'filters' => [
-//                            [
-//                                'name' => 'MyFilter',
-//                            ],
-//                        ],
-//                  ],
-                ],
-            ],
-        ],
-        //
-        'logWithMockWriter' => [
-            'processors' => [
-                [
-                    'name' => IdMaker::class
+                    'name' => IdMaker::class,
                 ],
             ],
             'writers' => [
@@ -104,31 +67,10 @@ return [
                 ],
             ],
         ],
-        //
-        'logWithFileWriter' => [
-            'processors' => [
-                [
-                    'name' => IdMaker::class
-                ],
-            ],
-            'writers' => [
-                [
-                    'name' => WriterStream::class,
-                    'options' => [
-                        'stream' => 'data/log/test-log.txt',
-                        'formatter' => [
-                            'name' => FormatterSimple::class,
-                            'format' => '%id% %timestamp% %level% %message% %context%'
-                        ],
-                    ],
-                ],
-            ],
-        ],
-        //
         'logWithDbWriter' => [
             'processors' => [
                 [
-                    'name' => IdMaker::class
+                    'name' => IdMaker::class,
                 ],
             ],
             'writers' => [
@@ -144,8 +86,9 @@ return [
                             'level' => 'level',
                             'priority' => 'priority',
                             'context' => 'context',
+                            'lifecycle_token' => 'lifecycle_token',
                         ],
-                        'formatter' => ContextToString::class
+                        'formatter' => ContextToString::class,
                     ],
                 ],
             ],

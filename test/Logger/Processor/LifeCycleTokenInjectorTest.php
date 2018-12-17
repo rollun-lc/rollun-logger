@@ -1,4 +1,8 @@
 <?php
+/**
+ * @copyright Copyright © 2014 Rollun LC (http://rollun.com/)
+ * @license LICENSE.md New BSD License
+ */
 
 namespace rollun\test\logger\Processor;
 
@@ -6,12 +10,9 @@ use rollun\logger\Processor\LifeCycleTokenInjector;
 use PHPUnit\Framework\TestCase;
 use rollun\logger\LifeCycleToken;
 
-/**
- * TODO: maybe rewrite with LifeCycleToken mock object
- */
 class LifeCycleTokenInjectorTest extends TestCase
 {
-    public function test_injectToken()
+    public function testInjectToken()
     {
         $lifeCycleToken = LifeCycleToken::generateToken();
         $lifeCycleTokenInjector = new LifeCycleTokenInjector($lifeCycleToken);
@@ -22,10 +23,11 @@ class LifeCycleTokenInjectorTest extends TestCase
         $this->assertEquals($lifeCycleToken->toString(), $event[LifeCycleToken::KEY_LIFECYCLE_TOKEN]);
     }
 
-    public function test_injectWithParentToken()
+    public function testInjectWithParentToken()
     {
         $lifeCycleTokenParent = LifeCycleToken::generateToken();
-        $lifeCycleToken = new LifeCycleToken(LifeCycleToken::generateToken()->toString(), $lifeCycleTokenParent);
+        $lifeCycleToken = new LifeCycleToken(LifeCycleToken::generateToken()
+            ->toString(), $lifeCycleTokenParent);
         $lifeCycleTokenInjector = new LifeCycleTokenInjector($lifeCycleToken);
 
         $event = [];
@@ -34,45 +36,50 @@ class LifeCycleTokenInjectorTest extends TestCase
         $this->assertEquals($lifeCycleTokenParent->toString(), $event[LifeCycleToken::KEY_PARENT_LIFECYCLE_TOKEN]);
     }
 
-    public function test_tokenIsExist()
+    public function testTokenIsExist()
     {
         $lifeCycleToken = LifeCycleToken::generateToken();
         $lifeCycleTokenInjector = new LifeCycleTokenInjector($lifeCycleToken);
 
-        $tokenId = LifeCycleToken::generateToken()->toString();
+        $tokenId = LifeCycleToken::generateToken()
+            ->toString();
         $event = [
-            LifeCycleToken::KEY_LIFECYCLE_TOKEN => $tokenId
+            LifeCycleToken::KEY_LIFECYCLE_TOKEN => $tokenId,
         ];
         $event = $lifeCycleTokenInjector->process($event);
         $this->assertEquals($tokenId, $event[LifeCycleToken::KEY_LIFECYCLE_TOKEN]);
-        $this->assertEquals($lifeCycleToken->toString(), $event['context'][LifeCycleToken::KEY_ORIGINAL_LIFECYCLE_TOKEN]);
+        $this->assertEquals($lifeCycleToken->toString(),
+            $event['context'][LifeCycleToken::KEY_ORIGINAL_LIFECYCLE_TOKEN]);
     }
 
-    public function test_tokenIsExistButEq()
+    public function testTokenIsExistButEq()
     {
         $lifeCycleToken = LifeCycleToken::generateToken();
         $lifeCycleTokenInjector = new LifeCycleTokenInjector($lifeCycleToken);
 
         $event = [
-            LifeCycleToken::KEY_LIFECYCLE_TOKEN => $lifeCycleToken->toString()
+            LifeCycleToken::KEY_LIFECYCLE_TOKEN => $lifeCycleToken->toString(),
         ];
         $event = $lifeCycleTokenInjector->process($event);
         $this->assertEquals($lifeCycleToken->toString(), $event[LifeCycleToken::KEY_LIFECYCLE_TOKEN]);
         $this->assertArrayNotHasKey('context', $event);
     }
 
-    public function test_parentTokenIsExist()
+    public function testParentTokenIsExist()
     {
         $lifeCycleTokenParent = LifeCycleToken::generateToken();
-        $lifeCycleToken = new LifeCycleToken(LifeCycleToken::generateToken()->toString(), $lifeCycleTokenParent);
+        $lifeCycleToken = new LifeCycleToken(LifeCycleToken::generateToken()
+            ->toString(), $lifeCycleTokenParent);
         $lifeCycleTokenInjector = new LifeCycleTokenInjector($lifeCycleToken);
 
-        $parentTokenId = LifeCycleToken::generateToken()->toString();
+        $parentTokenId = LifeCycleToken::generateToken()
+            ->toString();
         $event = [
-            LifeCycleToken::KEY_PARENT_LIFECYCLE_TOKEN => $parentTokenId
+            LifeCycleToken::KEY_PARENT_LIFECYCLE_TOKEN => $parentTokenId,
         ];
         $event = $lifeCycleTokenInjector->process($event);
         $this->assertEquals($parentTokenId, $event[LifeCycleToken::KEY_PARENT_LIFECYCLE_TOKEN]);
-        $this->assertEquals($lifeCycleTokenParent->toString(), $event['context'][LifeCycleToken::KEY_ORIGINAL_PARENT_LIFECYCLE_TOKEN]);
+        $this->assertEquals($lifeCycleTokenParent->toString(),
+            $event['context'][LifeCycleToken::KEY_ORIGINAL_PARENT_LIFECYCLE_TOKEN]);
     }
 }

@@ -1,9 +1,7 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: victorsecuring
- * Date: 27.03.18
- * Time: 4:55 PM
+ * @copyright Copyright © 2014 Rollun LC (http://rollun.com/)
+ * @license LICENSE.md New BSD License
  */
 
 namespace rollun\test\logger\Writer;
@@ -43,11 +41,13 @@ class HttpTest extends TestCase
 
             public function send(Request $request = null)
             {
-                $this->rawBodyStorage = $this->getRequest()->getContent();
+                $this->rawBodyStorage = $this->getRequest()
+                    ->getContent();
+
                 return new Response();
             }
         };
-        //set link for save result from client (write clone client)
+
         $this->clientMock->setRequestRawBodyStorage($this->requestRawBody);
     }
 
@@ -58,7 +58,7 @@ class HttpTest extends TestCase
     {
         $event = [
             'message' => 'foo',
-            'priority' => 42
+            'priority' => 42,
         ];
         $this->object = new HttpWriter($this->clientMock);
         $this->object->write($event);
@@ -73,7 +73,7 @@ class HttpTest extends TestCase
     {
         $event = [
             'message' => 'foo',
-            'priority' => 42
+            'priority' => 42,
         ];
         $this->object = new HttpWriter($this->clientMock, "http://testuri");
         $this->object->write($event);

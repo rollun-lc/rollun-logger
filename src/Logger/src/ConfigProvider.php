@@ -1,17 +1,26 @@
 <?php
-
+/**
+ * @copyright Copyright © 2014 Rollun LC (http://rollun.com/)
+ * @license LICENSE.md New BSD License
+ */
 
 namespace rollun\logger;
 
 use Psr\Log\LoggerInterface;
+use rollun\logger\Formatter\ContextToString;
+use rollun\logger\Processor\ExceptionBacktrace;
+use rollun\logger\Processor\Factory\LifeCycleTokenReferenceInjectorFactory;
+use rollun\logger\Processor\IdMaker;
+use rollun\logger\Processor\LifeCycleTokenInjector;
 use Zend\Log\LoggerAbstractServiceFactory;
 use Zend\Log\LoggerServiceFactory;
 use Zend\Log\FilterPluginManagerFactory;
 use Zend\Log\FormatterPluginManagerFactory;
 use Zend\Log\ProcessorPluginManagerFactory;
+use Zend\Log\Writer\Stream;
 use Zend\Log\WriterPluginManagerFactory;
 use Zend\Log\Logger;
-use Zend\Log\Writer\Noop as WriterNoop;
+use Zend\ServiceManager\Factory\InvokableFactory;
 
 class ConfigProvider
 {
@@ -23,6 +32,27 @@ class ConfigProvider
         return [
             "dependencies" => $this->getDependencies(),
             "log" => $this->getLog(),
+            'log_processors' => $this->getLogProcessors(),
+            'log_formatters' => $this->getLogFormatters(),
+        ];
+    }
+
+    protected function getLogProcessors()
+    {
+        return [
+            'factories' => [
+                LifeCycleTokenInjector::class => LifeCycleTokenReferenceInjectorFactory::class,
+                IdMaker::class => InvokableFactory::class
+            ],
+        ];
+    }
+
+    protected function getLogFormatters()
+    {
+        return [
+            'factories' => [
+                ContextToString::class => InvokableFactory::class,
+            ],
         ];
     }
 
@@ -57,8 +87,19 @@ class ConfigProvider
             LoggerInterface::class => [
                 'writers' => [
                     [
-                        'name' => WriterNoop::class,
+                        'name' => Stream::class,
+                        'options' => [
+                            'stream' => 'php://stdout'
+                        ]
                     ],
+                ],
+                'processors' => [
+                    [
+                        'name' => IdMaker::class,
+                    ],
+                    [
+                        'name' => ExceptionBacktrace::class
+                    ]
                 ],
             ],
         ];
