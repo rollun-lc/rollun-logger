@@ -6,7 +6,13 @@
  * Time: 17:46
  */
 
-class JsonString implements \Zend\Log\Formatter\FormatterInterface
+namespace rollun\logger\Formatter;
+
+
+use RuntimeException;
+use Zend\Log\Formatter\FormatterInterface;
+
+class JsonString implements FormatterInterface
 {
 
     /**
@@ -36,7 +42,7 @@ class JsonString implements \Zend\Log\Formatter\FormatterInterface
      *
      * @see http://php.net/manual/en/function.date.php
      * @param string $dateTimeFormat DateTime format
-     * @return \Zend\Log\Formatter\FormatterInterface
+     * @return FormatterInterface
      */
     public function setDateTimeFormat($dateTimeFormat)
     {
