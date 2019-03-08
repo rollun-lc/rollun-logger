@@ -102,7 +102,11 @@ class ConfigProvider
                     ],
                     [
                         'name' => ExceptionBacktrace::class
-                    ]
+                    ],
+
+                    [
+                        'name' => LifeCycleTokenInjector::class,
+                    ],
                 ],
             ],
         ];
