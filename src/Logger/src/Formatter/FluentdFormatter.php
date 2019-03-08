@@ -24,20 +24,37 @@ class FluentdFormatter implements FormatterInterface
      */
     public function format($event)
     {
-        $event = $this->repackEvent($event);
+        $event = $this->reachUpFirstNestedLevel($event);
+        $event = $this->clearEmptyArrayInEvent($event);
         return json_encode($event);
     }
-
     /**
-     * Clear empty array in and reach up first nested arrays in event
+     * Clear empty array in event
      * @param array $event
      * @return array
      */
-    private function repackEvent(array $event)
+    private function clearEmptyArrayInEvent(array $event) {
+        $repackEvent = [];
+        foreach ($event as $key => $value) {
+            if(is_array($value) && count($value) > 0) {
+                $repackEvent[$key] = $this->clearEmptyArrayInEvent($value);
+            }else if(!is_array($value)) {
+                $repackEvent[$key] = $value;
+            }
+        }
+        return $repackEvent;
+    }
+
+    /**
+     * reach up first nested arrays in event
+     * @param array $event
+     * @return array
+     */
+    private function reachUpFirstNestedLevel(array $event)
     {
         $repackEvent = [];
         foreach ($event as $key => $value) {
-            if (is_array($value) && count($value) > 0) {
+            if (is_array($value)) {
                 foreach ($value as $nestedKey => $nestedValue) {
                     $repackEvent["$key.$nestedKey"] = $nestedValue;
                 }

@@ -61,6 +61,39 @@ class FluentdFormatterTest extends TestCase
 
                 ])
             ],
+            [
+                [
+                    'timestamp' => time(),
+                    'priority' => 1,
+                    'level' => 'debug',
+                    'message' => 'test message',
+                    'context' => [
+                        'a' => '1',
+                        'b' => '2',
+                        'c' => [
+                            'qqq' => 'qwe',
+                            'empty' => [],
+                            'not_empty' => [
+                                'a' => '1',
+                                'b' => '2',
+                            ]
+                        ],
+                    ],
+                ],
+                json_encode([
+                    'timestamp' => time(), 'priority' => 1, 'level' => 'debug', 'message' => 'test message',
+                    'context.a' => '1',
+                    'context.b' => '2',
+                    'context.c' => [
+                        'qqq' => 'qwe',
+                        'not_empty' => [
+                            'a' => '1',
+                            'b' => '2',
+                        ]
+                    ],
+
+                ])
+            ],
 
         ];
     }
