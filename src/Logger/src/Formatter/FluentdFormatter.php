@@ -12,7 +12,7 @@ namespace rollun\logger\Formatter;
 use RuntimeException;
 use Zend\Log\Formatter\FormatterInterface;
 
-class JsonString implements FormatterInterface
+class FluentdFormatter implements FormatterInterface
 {
 
     /**
@@ -24,7 +24,28 @@ class JsonString implements FormatterInterface
      */
     public function format($event)
     {
+        $event = $this->repackEvent($event);
         return json_encode($event);
+    }
+
+    /**
+     * Clear empty array in and reach up first nested arrays in event
+     * @param array $event
+     * @return array
+     */
+    private function repackEvent(array $event)
+    {
+        $repackEvent = [];
+        foreach ($event as $key => $value) {
+            if (is_array($value) && count($value) > 0) {
+                foreach ($value as $nestedKey => $nestedValue) {
+                    $repackEvent["$key.$nestedKey"] = $nestedValue;
+                }
+            } else if (!is_array($value)) {
+                $repackEvent[$key] = $value;
+            }
+        }
+        return $repackEvent;
     }
 
     /**

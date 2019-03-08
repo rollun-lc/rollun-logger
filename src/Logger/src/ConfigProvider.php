@@ -6,9 +6,9 @@
 
 namespace rollun\logger;
 
-use JsonString;
 use Psr\Log\LoggerInterface;
 use rollun\logger\Formatter\ContextToString;
+use rollun\logger\Formatter\FluentdFormatter;
 use rollun\logger\Processor\ExceptionBacktrace;
 use rollun\logger\Processor\Factory\LifeCycleTokenReferenceInjectorFactory;
 use rollun\logger\Processor\IdMaker;
@@ -53,7 +53,7 @@ class ConfigProvider
         return [
             'factories' => [
                 ContextToString::class => InvokableFactory::class,
-                JsonString::class => InvokableFactory::class,
+                FluentdFormatter::class => InvokableFactory::class,
             ],
         ];
     }
@@ -93,7 +93,7 @@ class ConfigProvider
                         'options' => [
                             'stream' => 'php://stdout'
                         ],
-                        'formatter' => JsonString::class
+                        'formatter' => FluentdFormatter::class
                     ],
                 ],
                 'processors' => [
