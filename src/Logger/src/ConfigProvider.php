@@ -91,9 +91,9 @@ class ConfigProvider
                     [
                         'name' => Stream::class,
                         'options' => [
-                            'stream' => 'php://stdout'
+                            'stream' => 'php://stdout',
+                            'formatter' => FluentdFormatter::class
                         ],
-                        'formatter' => FluentdFormatter::class
                     ],
                 ],
                 'processors' => [
