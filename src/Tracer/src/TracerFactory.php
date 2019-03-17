@@ -42,6 +42,7 @@ class TracerFactory implements FactoryInterface
 
         $tgAgentHost = $tracerConfig['host'] ?? 'localhost';
         $tgAgentPort = $tracerConfig['port'] ?? 6832;
+        $serviceName = $tracerConfig['serviceName'] ?? 'application';
         $isDebugEnable = $tracerConfig['debugEnable'] ?? true;
 
         $transport = new TUDPTransport($tgAgentHost, $tgAgentPort);
@@ -49,7 +50,7 @@ class TracerFactory implements FactoryInterface
         $binaryProtocol = new TBinaryProtocol($bufferTransport);
 
         $client = new ThriftClient(
-            'test-service-usps',
+            $serviceName,
             new AgentClient($binaryProtocol)
         );
 
