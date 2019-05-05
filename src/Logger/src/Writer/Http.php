@@ -46,9 +46,9 @@ class Http extends AbstractWriter
 
         if (is_array($client)) {
             parent::__construct($client);
-            $options = isset($client["options"]) ? $client["options"] : [];
-            $uri = isset($client["uri"]) ? $client["uri"] : null;
-            $client = isset($client["client"]) ? $client["client"] : null;
+            $options = isset($client['options']) ? $client['options'] : [];
+            $uri = isset($client['uri']) ? $client['uri'] : null;
+            $client = isset($client['client']) ? $client['client'] : null;
             $client = is_string($client) ? new $client() : $client;
         }
 
@@ -81,7 +81,7 @@ class Http extends AbstractWriter
             $httpClient->setAuth($this->login, $this->password);
         }
 
-        $httpClient->setMethod("POST");
+        $httpClient->setMethod('POST');
 
         return $httpClient;
     }
@@ -117,7 +117,7 @@ class Http extends AbstractWriter
         if ($response->isServerError()) {
             throw new \RuntimeException(
                 sprintf(
-                    "Error with status %s by send event to %s, with message: %s",
+                    'Error with status %s by send event to %s, with message: %s',
                     $response->getStatusCode(),
                     $this->uri,
                     $response->getReasonPhrase()

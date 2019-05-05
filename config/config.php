@@ -19,12 +19,9 @@ $appEnv = getenv('APP_ENV');
 
 $aggregator = new ConfigAggregator([
     \Zend\Validator\ConfigProvider::class,
-    \Zend\Db\ConfigProvider::class,
     \Zend\Log\ConfigProvider::class,
-
     // Include cache configuration
     new ArrayProvider($cacheConfig),
-
     // Default App module config
     // Load application config in a pre-defined order in such a way that local settings
     // overwrite global settings. (Loaded as first to last):
@@ -33,7 +30,6 @@ $aggregator = new ConfigAggregator([
     //   - `local.php`
     //   - `*.local.php`
     new PhpFileProvider('config/autoload/{{,*.}global,{,*.}local}.php'),
-
     // Load application config according to environment:
     //   - `global.dev.php`,   `global.test.php`,   `prod.global.prod.php`
     //   - `*.global.dev.php`, `*.global.test.php`, `*.prod.global.prod.php`
