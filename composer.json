@@ -36,7 +36,8 @@
   },
   "autoload": {
     "psr-4": {
-      "rollun\\logger\\": "src/Logger/src"
+      "rollun\\logger\\": "src/Logger/src",
+      "rollun\\tracer\\": "src/Tracer/src"
     }
   },
   "autoload-dev": {
