@@ -40,7 +40,8 @@ class Elasticsearch implements FormatterInterface
 	{
 		$event['_index'] = $this->index;
 		$event['_type'] = $this->type;
-		return $event;
+        $event['timestamp'] = $event['timestamp'] instanceof DateTime ? $event['timestamp']->format('c') : $event['timestamp'];
+        return $event;
 	}
 
 	/**
