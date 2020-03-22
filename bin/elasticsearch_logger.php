@@ -12,8 +12,8 @@ $lifeCycleToken = LifeCycleToken::generateToken();
 $container->setService(LifeCycleToken::class, $lifeCycleToken);
 
 /** @var \Psr\Log\LoggerInterface $logger */
-$logger = $container->get('loggerWithElasticsearch');
-$logger->warning('tadam', [
+$logger = $container->get(\Psr\Log\LoggerInterface::class);
+/*$logger->warning('tadam', [
 	'data' => [
 		'asda' => 123
 	]
@@ -30,7 +30,7 @@ $logger->debug('tadam', [
 			'asda' => 123,
 		]
 	]
-]);
+]);*/
 $logger->alert('tadam', [
 	'data' => [
 
@@ -43,7 +43,7 @@ $logger->alert('tadam', [
 		'a3sda' => 123,
 		'a3gsda' => 123,
 	]
-]);
+]);/*
 $logger->emergency('tadam', [
 	'data' => [
 
@@ -96,4 +96,4 @@ $logger->notice('tadam', [
 	'asdas1d' => 'adsdasd,',
 	'asdasd2' => 'adsdasd,',
 	'asdas4d' => 'adsdasd,',
-]);
+]);*/

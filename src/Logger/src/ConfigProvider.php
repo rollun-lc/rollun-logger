@@ -9,10 +9,12 @@ namespace rollun\logger;
 use Psr\Log\LoggerInterface;
 use rollun\logger\Formatter\ContextToString;
 use rollun\logger\Formatter\FluentdFormatter;
+use rollun\logger\Formatter\LogStashUdpFormatter;
 use rollun\logger\Processor\ExceptionBacktrace;
 use rollun\logger\Processor\Factory\LifeCycleTokenReferenceInjectorFactory;
 use rollun\logger\Processor\IdMaker;
 use rollun\logger\Processor\LifeCycleTokenInjector;
+use rollun\logger\Writer\Udp;
 use Zend\Log\LoggerAbstractServiceFactory;
 use Zend\Log\LoggerServiceFactory;
 use Zend\Log\FilterPluginManagerFactory;
@@ -95,6 +97,39 @@ class ConfigProvider
                             'formatter' => FluentdFormatter::class
                         ],
                     ],
+                    [
+                        'name' => Udp::class,
+
+                        'options' => [
+                            'client' => [
+                                'host' => getenv('LOGSTASH_HOST'),
+                                'port' => getenv('LOGSTASH_PORT'),
+                            ],
+                            'formatter' => new LogStashUdpFormatter(
+                                getenv("LOGSTASH_INDEX"),
+                                [
+                                    'timestamp' => 'timestamp',
+                                    'message' => 'message',
+                                    'level' => 'level',
+                                    'priority' => 'priority',
+                                    'context' => 'context',
+                                    'lifecycle_token' => 'lifecycle_token',
+                                    'parent_lifecycle_token' => 'parent_lifecycle_token',
+                                    '_index_name' => '_index_name'
+                                ]
+                            ),
+                            'filters' => [
+                                [
+                                    'name' => 'priority',
+                                    'options' => [
+                                        'operator' => '<',
+                                        'priority' => 4,
+                                    ],
+                                ],
+                            ],
+                        ],
+
+                    ]
                 ],
                 'processors' => [
                     [
@@ -103,7 +138,6 @@ class ConfigProvider
                     [
                         'name' => ExceptionBacktrace::class
                     ],
-
                     [
                         'name' => LifeCycleTokenInjector::class,
                     ],
