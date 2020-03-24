@@ -31,12 +31,8 @@ class LogStashUdpFormatter implements FormatterInterface
     {
         $event['timestamp'] = $event['timestamp'] instanceof DateTime ? $event['timestamp']->format('c') : $event['timestamp'];
         $event['context'] = json_encode($event['context']);
-
-        $dataToInsert = $this->columnMap ? $this->mapEventIntoColumn($event, $this->columnMap) : $event;
         $event['_index_name'] = $this->index;
-
-
-
+        $dataToInsert = $this->columnMap ? $this->mapEventIntoColumn($event, $this->columnMap) : $event;
         return json_encode($dataToInsert);
     }
 
