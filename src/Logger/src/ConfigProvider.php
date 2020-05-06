@@ -128,8 +128,30 @@ class ConfigProvider
                                 ],
                             ],
                         ],
-
-                    ]
+                    ],
+                    [
+                        'name'    => \rollun\logger\Writer\HttpAsyncMetric::class,
+                        'options' => [
+                            'url'       => getenv('METRIC_URL'),
+                            'filters'   => [
+                                [
+                                    'name'    => 'priority',
+                                    'options' => [
+                                        'operator' => '>=',
+                                        'priority' => 4,
+                                    ],
+                                ],
+                                [
+                                    'name'    => 'priority',
+                                    'options' => [
+                                        'operator' => '<=',
+                                        'priority' => 5,
+                                    ],
+                                ],
+                            ],
+                            'formatter' => \rollun\logger\Formatter\Metric::class,
+                        ],
+                    ],
                 ],
                 'processors' => [
                     [
