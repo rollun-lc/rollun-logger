@@ -19,7 +19,7 @@ class Metric extends Db
     {
         $event = [
             'value'     => isset($event['context']['value']) ? $event['context']['value'] : null,
-            'timestamp' => time(),
+            'timestamp' => (new \DateTime('now', new \DateTimeZone('UTC')))->getTimestamp()
         ];
 
         return $event;

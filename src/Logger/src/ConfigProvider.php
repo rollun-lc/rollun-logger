@@ -138,14 +138,20 @@ class ConfigProvider
                                     'name'    => 'priority',
                                     'options' => [
                                         'operator' => '>=',
-                                        'priority' => 4,
+                                        'priority' => 4, // we should send only warnings or notices
                                     ],
                                 ],
                                 [
                                     'name'    => 'priority',
                                     'options' => [
                                         'operator' => '<=',
-                                        'priority' => 5,
+                                        'priority' => 5, // we should send only warnings or notices
+                                    ],
+                                ],
+                                [
+                                    'name'    => 'regex',
+                                    'options' => [
+                                        'regex' => '/^METRICS$/'
                                     ],
                                 ],
                             ],

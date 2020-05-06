@@ -80,7 +80,7 @@ class HttpAsync extends AbstractWriter
      */
     protected function doWrite(array $event)
     {
-        // parse url
+        // parse host, path, port from url
         $parts = $this->parseUrl($event);
 
         // call formatter
@@ -88,7 +88,7 @@ class HttpAsync extends AbstractWriter
             $event = $this->getFormatter()->format($event);
         }
 
-        // prepare data
+        // array to json
         $data = json_encode($event);
 
         // prepare port
