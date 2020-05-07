@@ -19,7 +19,9 @@ composer require rollun-com/rollun-logger
 
 #### Writes
 
-- **Http** - логирует данные по указаному [URI](https://en.wikipedia.org/wiki/Uniform_Resource_Identifier) пути.
+- **Http** - логирует данные по указанному [URI](https://en.wikipedia.org/wiki/Uniform_Resource_Identifier) пути.
+- **HttpAsync** - асинхронно логирует данные по указанному [URL](https://en.wikipedia.org/wiki/URL) пути.
+- **HttpAsyncMetric** - расширяет HttpAsync и асинхронно логирует метрику по указанному [URL](https://en.wikipedia.org/wiki/URL) пути.
 
 #### Formatters
 
@@ -188,3 +190,23 @@ return
         ],
     ];
 ```
+
+### Метрика
+При помощи логера **HttpAsyncMetric** есть возможность отправлять метрику по определенному URL.
+
+Для настройки достаточно добавить переменную окружения METRIC_URL.
+```php
+METRIC_URL=http://localhost/api/v1/Metric
+```
+Принято, что в метрику попадают только warning и notice. Также для метрик используется специальное название события.
+
+Пример отправки метрик:
+```php
+$logger->warning('METRICS', ['metricId' => 'metric-1', 'value' => 100]);
+// в результате будет отправлен асинхронный POST запрос на http://localhost/api/v1/Metric/metric-1 с телом {"value": 100,"timestamp": 1586881668}
+
+$logger->notice('METRICS', ['metricId' => 'metric-2', 'value' => 200]);
+// в результате будет отправлен асинхронный POST запрос на http://localhost/api/v1/Metric/metric-2 с телом {"value": 200,"timestamp": 1586881668}
+```
+
+

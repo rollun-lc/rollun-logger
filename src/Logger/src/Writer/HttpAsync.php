@@ -32,7 +32,7 @@ class HttpAsync extends AbstractWriter
      */
     public function __construct($options = null)
     {
-        if (isset($options['url'])) {
+        if (!empty($options['url'])) {
             if (!filter_var($options['url'], FILTER_VALIDATE_URL)) {
                 throw new \InvalidArgumentException('URL is invalid');
             }
