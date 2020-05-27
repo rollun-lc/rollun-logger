@@ -11,6 +11,20 @@
 composer require rollun-com/rollun-logger
 ```
 
+Обязательные переменные окружения:
+
+    * Для логера:    
+        - LOGSTASH_HOST - хост. logstash отправляет данные в elasticsearch.
+        - LOGSTASH_PORT - порт.
+        - LOGSTASH_INDEX - индекс. Рекомендуется писать то же название, что и в SERVICE_NAME только в ловеркейсе и через нижнее подчеркивание.
+        
+    * Для Jaeger:
+        - TRACER_HOST - хост.
+        - TRACER_PORT - порт.
+        
+    * Для метрики:    
+        - METRIC_URL - урл метрики   
+
 ### Getting Started
 
 По скольку это расширение к `zend-log`, базовою документацию можно почитать 
