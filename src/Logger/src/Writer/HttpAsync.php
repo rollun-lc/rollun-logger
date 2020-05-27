@@ -119,6 +119,11 @@ class HttpAsync extends AbstractWriter
     protected function send(string $host, int $port, string $out)
     {
         $fp = fsockopen($host, $port, $errno, $errstr, 0.1);
+
+        if ($fp === false) {
+            throw new \RuntimeException("Cannot open socket connection. Message: '$errstr'");
+        }
+
         $result = fwrite($fp, $out);
         fclose($fp);
 
