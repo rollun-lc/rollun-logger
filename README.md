@@ -8,3 +8,4 @@
 [Пример конфигурации](config/autoload/local.test.php#68);
 
 * [Документация](https://rollun-com.github.io/rollun-datastore)
+* [Формат логов](https://github.com/rollun-com/rollun-logger/blob/master/LOG_FORMAT.md)
