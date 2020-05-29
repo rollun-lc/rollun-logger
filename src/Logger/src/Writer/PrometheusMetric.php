@@ -31,6 +31,16 @@ class PrometheusMetric extends AbstractWriter
     protected $port = '9091';
 
     /**
+     * @var CollectorRegistry
+     */
+    protected $collectorRegistry;
+
+    /**
+     * @var null|PushGateway
+     */
+    protected $pushGateway = null;
+
+    /**
      * @inheritDoc
      */
     public function __construct($options = null)
@@ -42,6 +52,8 @@ class PrometheusMetric extends AbstractWriter
         if (!empty($options['port'])) {
             $this->port = $options['port'];
         }
+
+        $this->collectorRegistry = new CollectorRegistry(new InMemory());
 
         parent::__construct($options);
     }
@@ -81,17 +93,26 @@ class PrometheusMetric extends AbstractWriter
         // prepare namespace
         $namespace = str_replace('-', '_', trim(strtolower(getenv('SERVICE_NAME'))));
 
-        $registry = new CollectorRegistry(new InMemory());
-
-        $counter = $registry->getOrRegisterCounter($namespace, $event['context']['metricId'], '');
-        $counter->incBy($event['context']['value']);
-
-        $pushGateway = new PushGateway("{$this->host}:{$this->port}");
+        $gauge = $this->collectorRegistry->getOrRegisterGauge($namespace, $event['context']['metricId'], '');
+        $gauge->set($event['context']['value']);
 
         try {
-            $pushGateway->push($registry, self::JOB_NAME, []);
+            $this->getPushGateway()->push($this->collectorRegistry, self::JOB_NAME, []);
         } catch (\RuntimeException $e) {
             // skip unexpected status code exception
+            // @todo we should logging errors
         }
+    }
+
+    /**
+     * @return PushGateway
+     */
+    protected function getPushGateway(): PushGateway
+    {
+        if (is_null($this->pushGateway)) {
+            $this->pushGateway = new PushGateway("{$this->host}:{$this->port}");
+        }
+
+        return $this->pushGateway;
     }
 }
