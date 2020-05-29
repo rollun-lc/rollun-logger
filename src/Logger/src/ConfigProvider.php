@@ -1,7 +1,7 @@
 <?php
 /**
  * @copyright Copyright © 2014 Rollun LC (http://rollun.com/)
- * @license LICENSE.md New BSD License
+ * @license   LICENSE.md New BSD License
  */
 
 namespace rollun\logger;
@@ -15,6 +15,9 @@ use rollun\logger\Processor\Factory\LifeCycleTokenReferenceInjectorFactory;
 use rollun\logger\Processor\IdMaker;
 use rollun\logger\Processor\LifeCycleTokenInjector;
 use rollun\logger\Writer\Udp;
+use rollun\logger\Writer\HttpAsyncMetric;
+use rollun\logger\Writer\PrometheusMetric;
+use rollun\logger\Formatter\Metric;
 use Zend\Log\LoggerAbstractServiceFactory;
 use Zend\Log\LoggerServiceFactory;
 use Zend\Log\FilterPluginManagerFactory;
@@ -33,8 +36,8 @@ class ConfigProvider
     public function __invoke()
     {
         return [
-            "dependencies" => $this->getDependencies(),
-            "log" => $this->getLog(),
+            "dependencies"   => $this->getDependencies(),
+            "log"            => $this->getLog(),
             'log_processors' => $this->getLogProcessors(),
             'log_formatters' => $this->getLogFormatters(),
         ];
@@ -45,7 +48,7 @@ class ConfigProvider
         return [
             'factories' => [
                 LifeCycleTokenInjector::class => LifeCycleTokenReferenceInjectorFactory::class,
-                IdMaker::class => InvokableFactory::class
+                IdMaker::class                => InvokableFactory::class
             ],
         ];
     }
@@ -54,7 +57,7 @@ class ConfigProvider
     {
         return [
             'factories' => [
-                ContextToString::class => InvokableFactory::class,
+                ContextToString::class  => InvokableFactory::class,
                 FluentdFormatter::class => InvokableFactory::class,
             ],
         ];
@@ -62,6 +65,7 @@ class ConfigProvider
 
     /**
      * Return dependencies config
+     *
      * @return array
      */
     public function getDependencies()
@@ -70,30 +74,31 @@ class ConfigProvider
             'abstract_factories' => [
                 LoggerAbstractServiceFactory::class,
             ],
-            'factories' => [
-                Logger::class => LoggerServiceFactory::class,
-                'LogFilterManager' => FilterPluginManagerFactory::class,
+            'factories'          => [
+                Logger::class         => LoggerServiceFactory::class,
+                'LogFilterManager'    => FilterPluginManagerFactory::class,
                 'LogFormatterManager' => FormatterPluginManagerFactory::class,
                 'LogProcessorManager' => ProcessorPluginManagerFactory::class,
-                'LogWriterManager' => WriterPluginManagerFactory::class,
+                'LogWriterManager'    => WriterPluginManagerFactory::class,
             ],
-            'aliases' => [],
+            'aliases'            => [],
         ];
     }
 
     /**
      * Return default config for logger.
+     *
      * @return array
      */
     public function getLog()
     {
         return [
             LoggerInterface::class => [
-                'writers' => [
+                'writers'    => [
                     [
-                        'name' => Stream::class,
+                        'name'    => Stream::class,
                         'options' => [
-                            'stream' => 'php://stdout',
+                            'stream'    => 'php://stdout',
                             'formatter' => FluentdFormatter::class
                         ],
                     ],
@@ -101,26 +106,26 @@ class ConfigProvider
                         'name' => Udp::class,
 
                         'options' => [
-                            'client' => [
+                            'client'    => [
                                 'host' => getenv('LOGSTASH_HOST'),
                                 'port' => getenv('LOGSTASH_PORT'),
                             ],
                             'formatter' => new LogStashUdpFormatter(
                                 getenv("LOGSTASH_INDEX"),
                                 [
-                                    'timestamp' => 'timestamp',
-                                    'message' => 'message',
-                                    'level' => 'level',
-                                    'priority' => 'priority',
-                                    'context' => 'context',
-                                    'lifecycle_token' => 'lifecycle_token',
+                                    'timestamp'              => 'timestamp',
+                                    'message'                => 'message',
+                                    'level'                  => 'level',
+                                    'priority'               => 'priority',
+                                    'context'                => 'context',
+                                    'lifecycle_token'        => 'lifecycle_token',
                                     'parent_lifecycle_token' => 'parent_lifecycle_token',
-                                    '_index_name' => '_index_name'
+                                    '_index_name'            => '_index_name'
                                 ]
                             ),
-                            'filters' => [
+                            'filters'   => [
                                 [
-                                    'name' => 'priority',
+                                    'name'    => 'priority',
                                     'options' => [
                                         'operator' => '<',
                                         'priority' => 4,
@@ -130,7 +135,7 @@ class ConfigProvider
                         ],
                     ],
                     [
-                        'name'    => \rollun\logger\Writer\HttpAsyncMetric::class,
+                        'name'    => HttpAsyncMetric::class,
                         'options' => [
                             'url'       => getenv('METRIC_URL'),
                             'filters'   => [
@@ -155,7 +160,36 @@ class ConfigProvider
                                     ],
                                 ],
                             ],
-                            'formatter' => \rollun\logger\Formatter\Metric::class,
+                            'formatter' => Metric::class,
+                        ],
+                    ],
+                    [
+                        'name'    => PrometheusMetric::class,
+                        'options' => [
+                            'host'    => getenv('PROMETHEUS_HOST'),
+                            'port'    => getenv('PROMETHEUS_PORT'),
+                            'filters' => [
+                                [
+                                    'name'    => 'priority',
+                                    'options' => [
+                                        'operator' => '>=',
+                                        'priority' => 4, // we should send only warnings or notices
+                                    ],
+                                ],
+                                [
+                                    'name'    => 'priority',
+                                    'options' => [
+                                        'operator' => '<=',
+                                        'priority' => 5, // we should send only warnings or notices
+                                    ],
+                                ],
+                                [
+                                    'name'    => 'regex',
+                                    'options' => [
+                                        'regex' => '/^METRICS$/'
+                                    ],
+                                ],
+                            ]
                         ],
                     ],
                 ],
