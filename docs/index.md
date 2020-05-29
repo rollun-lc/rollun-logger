@@ -11,7 +11,7 @@
 composer require rollun-com/rollun-logger
 ```
 
-Обязательные переменные окружения:
+Переменные окружения:
 
     * Для логера:    
         - LOGSTASH_HOST - хост. logstash отправляет данные в elasticsearch.
@@ -24,6 +24,8 @@ composer require rollun-com/rollun-logger
         
     * Для метрики:    
         - METRIC_URL - урл метрики   
+        - PROMETHEUS_HOST - хост Prometheus
+        - PROMETHEUS_PORT - порт Prometheus. По умолчанию 9091
 
 ### Getting Started
 
