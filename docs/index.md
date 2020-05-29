@@ -35,7 +35,8 @@ composer require rollun-com/rollun-logger
 
 - **Http** - логирует данные по указанному [URI](https://en.wikipedia.org/wiki/Uniform_Resource_Identifier) пути.
 - **HttpAsync** - асинхронно логирует данные по указанному [URL](https://en.wikipedia.org/wiki/URL) пути.
-- **HttpAsyncMetric** - расширяет HttpAsync и асинхронно логирует метрику по указанному [URL](https://en.wikipedia.org/wiki/URL) пути.
+- **HttpAsyncMetric** - расширяет HttpAsync и асинхронно пишет метрику по указанному [URL](https://en.wikipedia.org/wiki/URL) пути. Writer подключен по умолчанию и пишет логи на урл который указан в переменных окружения (METRIC_URL).
+- **PrometheusMetric** - пишет метрику на Prometheus методом pushGateway. Есть возможность указать Prometheus хост и порт. Writer подключен по умолчанию и пишет логи на хост и порт который указан в переменных окружения (PROMETHEUS_HOST, PROMETHEUS_PORT).    
 
 #### Formatters
 
@@ -206,12 +207,8 @@ return
 ```
 
 ### Метрика
-При помощи логера **HttpAsyncMetric** есть возможность отправлять метрику по определенному URL.
+При помощи врайтеров **HttpAsyncMetric** и **PrometheusMetric** есть возможность отправлять метрику.
 
-Для настройки достаточно добавить переменную окружения METRIC_URL.
-```php
-METRIC_URL=http://localhost/api/v1/Metric
-```
 Принято, что в метрику попадают только warning и notice. Также для метрик используется специальное название события.
 
 Пример отправки метрик:
