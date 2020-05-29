@@ -166,6 +166,7 @@ class ConfigProvider
                     [
                         'name'    => PrometheusMetric::class,
                         'options' => [
+                            // @todo add more properties
                             'host'    => getenv('PROMETHEUS_HOST'),
                             'port'    => getenv('PROMETHEUS_PORT'),
                             'filters' => [
