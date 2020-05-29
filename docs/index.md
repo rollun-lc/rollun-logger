@@ -242,6 +242,7 @@ use rollun\dic\InsideConstruct;
 ```
 После этого вам нужно будет проделать следующее: 
  * в начале функции `$span = $this->tracer->start(sprintf('%s:write', static::class));`
+ * в функции если хотите добавить тег `$span->addTag(new StringTag(FileLoaderInterface::FILE_PATH, $filePath));`
  * в конце функции `$this->tracer->finish($span);`
  * в конце скрипта `$tracer->flush();`
 
