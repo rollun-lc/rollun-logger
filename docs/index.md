@@ -214,7 +214,7 @@ return
  * SERVICE_NAME **обязательно** - для определения кто оправляет трейс
  * TRACER_HOST **обязательно** - для определения на какой хост отправить трейс
  * TRACER_PORT **не обязательно** - по умолчанию 6832. Для определения на какой порт отправлять трейс
- * TRACER_DEBUG_ENABLE **не обязательно** - по умолчанию включен. Трейсы пишуться только при включенном TRACER_DEBUG_ENABLE. По сути этот параметр влияет на настройки [sampling](https://www.jaegertracing.io/docs/1.17/sampling/#client-sampling-configuration). 
+ * TRACER_DEBUG_ENABLE **не обязательно** - по умолчанию включен. Трейсы пишуться только при включенном параметре. По сути этот параметр влияет на настройки [sampling](https://www.jaegertracing.io/docs/1.17/sampling/#client-sampling-configuration). 
  
  смотри [пример](../.env.dist).
  
