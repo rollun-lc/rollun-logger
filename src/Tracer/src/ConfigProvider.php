@@ -17,10 +17,10 @@ class ConfigProvider
     {
         return [
             Tracer::class  => [
+                'serviceName' => getenv('SERVICE_NAME'),
                 'host'        => getenv('TRACER_HOST'),
                 'port'        => getenv('TRACER_PORT'),
-                'serviceName' => getenv('SERVICE_NAME'),
-                'debugEnable' => !empty(getenv('APP_DEBUG')) && getenv('APP_DEBUG') !== 'false',
+                'debugEnable' => getenv('TRACER_DEBUG_ENABLE') === 'false' ? false : true,
             ],
             'dependencies' => $this->getDependencies(),
         ];
