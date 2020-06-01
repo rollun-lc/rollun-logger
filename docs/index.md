@@ -225,6 +225,7 @@ declare(strict_types=1);
 
 namespace App\Handler;
 
+use Jaeger\Log\ErrorLog;
 use Jaeger\Tag\ErrorTag;
 use Jaeger\Tag\StringTag;
 use Jaeger\Tracer\Tracer;
@@ -274,11 +275,14 @@ class Foo
         // adding error tag
         $span->addTag(new ErrorTag());
 
+        // add error log
+        $span->addLog(new ErrorLog('message 1', 'stack 1'));
+
         $this->tracer->finish($span);
     }
 }
 ```
-Из примера видно, что нужно открывать и закрывать операции, поддерживаются вложенные операции. Во время выполнения кода нужно добавлять разного рода теги для отладки. В примере мы показали текстовый тег и ошибку. Библиотека поддерживает и другие [теги](https://github.com/code-tool/jaeger-client-php/tree/master/src/Tag).
+Из примера видно, что нужно открывать и закрывать операции, поддерживаются вложенные операции. Во время выполнения кода нужно добавлять разного рода теги для отладки. В примере мы показали текстовый тег, тег ошибку, а также добавили лог ошибки. Библиотека поддерживает и другие [теги](https://github.com/code-tool/jaeger-client-php/tree/master/src/Tag).
  
 
 ### Метрика
