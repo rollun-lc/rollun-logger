@@ -208,6 +208,85 @@ return
     ];
 ```
 
+### Jaeger tracing
+С помощью Jaeger мы выполняем трассировку сервисов для отладки. Для хранения трейсов используется ElasticSearch.
+Для подключения необходимо установить несколько переменных окружения:
+ * SERVICE_NAME **обязательно** - для определения кто оправляет трейс
+ * TRACER_HOST **обязательно** - для определения на какой хост отправить трейс
+ * TRACER_PORT **не обязательно** - по умолчанию 6832. Для определения на какой порт отправлять трейс
+ * TRACER_DEBUG_ENABLE **не обязательно** - по умолчанию включен. Трейсы пишуться только при включенном параметре. По сути этот параметр влияет на настройки [sampling](https://www.jaegertracing.io/docs/1.17/sampling/#client-sampling-configuration). 
+ 
+ смотри [пример](../.env.dist).
+ 
+Пример использования
+```php
+<?php
+declare(strict_types=1);
+
+namespace App\Handler;
+
+use Jaeger\Log\ErrorLog;
+use Jaeger\Tag\ErrorTag;
+use Jaeger\Tag\StringTag;
+use Jaeger\Tracer\Tracer;
+use rollun\dic\InsideConstruct;
+
+/**
+ * Class Foo
+ */
+class Foo
+{
+    /**
+     * @var Tracer
+     */
+    protected $tracer;
+
+    public function __construct(Tracer $tracer = null)
+    {
+        InsideConstruct::init(
+            [
+                'tracer' => Tracer::class,
+            ]
+        );
+    }
+
+    public function run()
+    {
+        $this->operationA();
+    }
+
+    protected function operationA()
+    {
+        $span = $this->tracer->start('Operation A', [new StringTag('description', 'Hello world A!')]);
+
+        // adding string tag
+        $span->addTag(new StringTag('shortDesc', 'Hello world!!!'));
+
+        $this->operationB();
+
+        $this->tracer->finish($span);
+
+    }
+
+    protected function operationB()
+    {
+        $span = $this->tracer->start('Operation B', [new StringTag('description', 'Hello world B!')]);
+
+        // adding error tag
+        $span->addTag(new ErrorTag());
+
+        // add error log
+        $span->addLog(new ErrorLog('message 1', 'stack 1'));
+
+        $this->tracer->finish($span);
+    }
+}
+```
+Результат:
+![alt text](assets/img/tracer.png)
+Из примера видно, что нужно открывать и закрывать операции, поддерживаются вложенные операции. Во время выполнения кода нужно добавлять разного рода теги для отладки. Тег нужен для быстрого поиска трейтов. В примере мы показали текстовый тег, тег ошибку, а также добавили лог ошибки. Библиотека поддерживает и другие [теги](https://github.com/code-tool/jaeger-client-php/tree/master/src/Tag).
+ 
+
 ### Метрика
 При помощи врайтеров **HttpAsyncMetric** и **PrometheusMetric** есть возможность отправлять метрику.
 

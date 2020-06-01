@@ -68,11 +68,9 @@ class PrometheusMetric extends AbstractWriter
             $event = $this->getFormatter()->format($event);
         }
 
-        if (!$this->isValid($event)) {
-            return '';
+        if ($this->isValid($event)) {
+            parent::write($event);
         }
-
-        parent::write($event);
     }
 
     /**
@@ -97,7 +95,8 @@ class PrometheusMetric extends AbstractWriter
         $gauge->set($event['context']['value']);
 
         try {
-            $this->getPushGateway()->push($this->collectorRegistry, self::JOB_NAME, []);
+            // @todo add to destructor
+            $this->getPushGateway()->pushAdd($this->collectorRegistry, self::JOB_NAME, []);
         } catch (\RuntimeException $e) {
             // skip unexpected status code exception
             // @todo we should logging errors
