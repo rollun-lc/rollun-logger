@@ -1,7 +1,7 @@
 <?php
 /**
  * @copyright Copyright © 2014 Rollun LC (http://rollun.com/)
- * @license LICENSE.md New BSD License
+ * @license   LICENSE.md New BSD License
  */
 
 namespace rollun\tracer;
@@ -16,6 +16,12 @@ class ConfigProvider
     public function __invoke()
     {
         return [
+            Tracer::class  => [
+                'host'        => getenv('TRACER_HOST'),
+                'port'        => getenv('TRACER_PORT'),
+                'serviceName' => getenv('SERVICE_NAME'),
+                'debugEnable' => !empty(getenv('APP_DEBUG')) && getenv('APP_DEBUG') !== 'false',
+            ],
             'dependencies' => $this->getDependencies(),
         ];
     }
@@ -23,6 +29,7 @@ class ConfigProvider
 
     /**
      * Return dependencies config
+     *
      * @return array
      */
     public function getDependencies()
@@ -30,10 +37,10 @@ class ConfigProvider
         return [
             'abstract_factories' => [
             ],
-            'factories' => [
+            'factories'          => [
                 Tracer::class => TracerFactory::class,
             ],
-            'aliases' => [],
+            'aliases'            => [],
         ];
     }
 }

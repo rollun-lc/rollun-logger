@@ -210,43 +210,75 @@ return
 
 ### Jaeger tracing
 С помощью Jaeger мы выполняем трассировку сервисов для отладки. Для хранения трейсов используется ElasticSearch.
-Для подключения нужно настроить конфиг, обычно это config/autoload/tracer.global.php
-
-Пример:
+Для подключения необходимо установить несколько переменных окружения:
+ * SERVICE_NAME **обязательно** - для определения кто оправляет трейс
+ * TRACER_HOST **обязательно** - для определения на какой хост отправить трейс
+ * TRACER_PORT **не обязательно** - для определения на какой порт отправлять трейс
+ * APP_DEBUG **не обязательно** - трейсы пишуться только при включенном APP_DEBUG. По сути этот параметр влияет на настройки [sampling](https://www.jaegertracing.io/docs/1.17/sampling/#client-sampling-configuration). 
+ 
+ смотри [пример](../.env.dist).
+ 
+Пример использования
 ```php
 <?php
-use Jaeger\Tracer\Tracer;
+declare(strict_types=1);
 
-return [
-    Tracer::class => [
-        'host'        => getenv('TRACER_HOST'),
-        'port'        => getenv('TRACER_PORT'),
-        'serviceName' => getenv('SERVICE_NAME'),
-        'debugEnable' => getenv('APP_DEBUG') !== false ? getenv('APP_DEBUG') : false
-    ]
-];
-```
-Для использования нужно передать Tracer при помощи dic
-```php
-<?php
+namespace App\Handler;
+
+use Jaeger\Tag\ErrorTag;
+use Jaeger\Tag\StringTag;
 use Jaeger\Tracer\Tracer;
 use rollun\dic\InsideConstruct;
 
-...
-   public function __construct(Tracer $tracer = null) {
-        InsideConstruct::init([
-            'tracer' => Tracer::class,
-        ]);
-    }
-...
-```
-После этого вам нужно будет проделать следующее: 
- * в начале функции `$span = $this->tracer->start(sprintf('%s:write', static::class));`
- * в функции если хотите добавить тег `$span->addTag(new StringTag(FileLoaderInterface::FILE_PATH, $filePath));`
- * в конце функции `$this->tracer->finish($span);`
- * в конце скрипта `$tracer->flush();`
+/**
+ * Class Foo
+ */
+class Foo
+{
+    /**
+     * @var Tracer
+     */
+    protected $tracer;
 
-Пример реализации можно посмотреть здесь https://github.com/rollun-com/service-catalog/blob/master/src/Catalog/src/Loaders/Directory.php
+    public function __construct(Tracer $tracer = null)
+    {
+        InsideConstruct::init(
+            [
+                'tracer' => Tracer::class,
+            ]
+        );
+    }
+
+    public function run()
+    {
+        $this->operationA();
+    }
+
+    protected function operationA()
+    {
+        $span = $this->tracer->start('Operation A', [new StringTag('description', 'Hello world A!')]);
+
+        // adding string tag
+        $span->addTag(new StringTag('shortDesc', 'Hello world!!!'));
+
+        $this->operationB();
+
+        $this->tracer->finish($span);
+
+    }
+
+    protected function operationB()
+    {
+        $span = $this->tracer->start('Operation B', [new StringTag('description', 'Hello world B!')]);
+
+        // adding error tag
+        $span->addTag(new ErrorTag());
+
+        $this->tracer->finish($span);
+    }
+}
+```
+Из примера видно, что нужно открывать и закрывать операции, поддерживаются вложенные операции. Во время выполнения кода нужно добавлять разного рода теги для отладки. В примере мы показали текстовый тег и ошибку. Библиотека поддерживает и другие [теги](https://github.com/code-tool/jaeger-client-php/tree/master/src/Tag).
  
 
 ### Метрика
