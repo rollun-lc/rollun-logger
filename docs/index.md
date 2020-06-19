@@ -26,6 +26,10 @@ composer require rollun-com/rollun-logger
         - METRIC_URL - урл метрики   
         - PROMETHEUS_HOST - хост Prometheus
         - PROMETHEUS_PORT - порт Prometheus. По умолчанию 9091
+     
+    * Для Slack:    
+        - SLACK_TOKEN - Slack Bot User OAuth Access Token
+        - SLACK_CHANNEL - Slack channel id    
 
 ### Getting Started
 
@@ -39,10 +43,12 @@ composer require rollun-com/rollun-logger
 - **HttpAsync** - асинхронно логирует данные по указанному [URL](https://en.wikipedia.org/wiki/URL) пути.
 - **HttpAsyncMetric** - расширяет HttpAsync и асинхронно пишет метрику по указанному [URL](https://en.wikipedia.org/wiki/URL) пути. Writer подключен по умолчанию и пишет логи на урл который указан в переменных окружения (METRIC_URL).
 - **PrometheusMetric** - пишет метрику на Prometheus методом pushGateway. Есть возможность указать Prometheus хост и порт. На данный момент поддерживается только тип метрики "Измеритель"(gauge). Writer подключен по умолчанию и пишет логи на хост и порт который указан в переменных окружения (PROMETHEUS_HOST, PROMETHEUS_PORT).    
+- **Slack** - пишет логи в Slack канал. Отправляться только сообщения с уровнем меньше чем 4 (меньше warning, например error). Для того чтобы бот писал сообщения в канал, его нужно добавить в тот канал который вам нужен. Для этого зайдите в Slack, откройте нужный вам канал, нажмите на кнопку `Add apps` и там выберите `RollunApp`. Также нужно указать переменные окружения которые указаны выше для Slack.
 
 #### Formatters
 
 - **ContextToString** - декодирует `$event` в `json`.
+- **SlackFormatter** - добавляет в `$event` `slackMessage` поле где подготовленное сообщение для Slack.
 
 
 #### Processors
