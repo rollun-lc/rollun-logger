@@ -6,6 +6,7 @@ namespace rollun\logger\Writer;
 use Prometheus\CollectorRegistry;
 use Prometheus\PushGateway;
 use Prometheus\Storage\InMemory;
+use Prometheus\Storage\Redis;
 use Zend\Log\Writer\AbstractWriter;
 
 /**
@@ -55,6 +56,9 @@ class PrometheusMetric extends AbstractWriter
 
         $this->collectorRegistry = new CollectorRegistry(new InMemory());
 
+//        Redis::setDefaultOptions(['host' => '127.0.0.1', 'port' => 6379, 'read_timeout' => '10']);
+//        $this->collectorRegistry = new CollectorRegistry(new Redis());
+
         parent::__construct($options);
     }
 
@@ -93,6 +97,9 @@ class PrometheusMetric extends AbstractWriter
 
         $gauge = $this->collectorRegistry->getOrRegisterGauge($namespace, $event['context']['metricId'], '');
         $gauge->set($event['context']['value']);
+
+//        $counter = $this->collectorRegistry->getOrRegisterCounter($namespace, $event['context']['metricId'], '');
+//        $counter->incBy($event['context']['value']);
 
         try {
             // @todo add to destructor
