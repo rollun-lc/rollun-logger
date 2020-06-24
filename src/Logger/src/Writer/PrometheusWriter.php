@@ -63,7 +63,7 @@ class PrometheusWriter extends AbstractWriter
         }
 
         // prepare prometheus data
-        $event['prometheusMetricId'] = isset($event['context']['metricId']) ? (string)$event['context']['metricId'] : null;
+        $event['prometheusMetricId'] = $event['message'];
         $event['prometheusValue'] = isset($event['context']['value']) ? (float)$event['context']['value'] : null;
         $event['prometheusLabels'] = isset($event['context']['labels']) ? (array)$event['context']['labels'] : [];
 

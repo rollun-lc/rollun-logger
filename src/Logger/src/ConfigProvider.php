@@ -10,7 +10,6 @@ use Psr\Log\LoggerInterface;
 use rollun\logger\Formatter\ContextToString;
 use rollun\logger\Formatter\FluentdFormatter;
 use rollun\logger\Formatter\LogStashUdpFormatter;
-use rollun\logger\Formatter\PrometheusFormatter;
 use rollun\logger\Formatter\SlackFormatter;
 use rollun\logger\Processor\ExceptionBacktrace;
 use rollun\logger\Processor\Factory\LifeCycleTokenReferenceInjectorFactory;
@@ -184,36 +183,6 @@ class ConfigProvider
                                 ],
                             ],
                             'formatter' => Metric::class,
-                        ],
-                    ],
-                    [
-                        'name'    => PrometheusWriter::class,
-                        'options' => [
-                            //PrometheusFactory::COLLECTOR => COLLECTOR::class, - не обязательный параметр.
-                            //PrometheusFactory::JOB_NAME  => 'logger_job', - не обязательный параметр.
-                            PrometheusFactory::TYPE => PrometheusFactory::TYPE_GAUGE,
-                            'filters'               => [
-                                [
-                                    'name'    => 'priority',
-                                    'options' => [
-                                        'operator' => '>=',
-                                        'priority' => 4, // we should send only warnings or notices
-                                    ],
-                                ],
-                                [
-                                    'name'    => 'priority',
-                                    'options' => [
-                                        'operator' => '<=',
-                                        'priority' => 5, // we should send only warnings or notices
-                                    ],
-                                ],
-                                [
-                                    'name'    => 'regex',
-                                    'options' => [
-                                        'regex' => '/^METRICS$/'
-                                    ],
-                                ],
-                            ]
                         ],
                     ],
                     [
