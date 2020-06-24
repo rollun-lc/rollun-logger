@@ -62,6 +62,11 @@ class PrometheusWriter extends AbstractWriter
             $event = $this->getFormatter()->format($event);
         }
 
+        // prepare prometheus data
+        $event['prometheusMetricId'] = isset($event['context']['metricId']) ? (string)$event['context']['metricId'] : null;
+        $event['prometheusValue'] = isset($event['context']['value']) ? (float)$event['context']['value'] : null;
+        $event['prometheusLabels'] = isset($event['context']['labels']) ? (array)$event['context']['labels'] : [];
+
         if ($this->isValid($event)) {
             parent::write($event);
         }
@@ -74,7 +79,7 @@ class PrometheusWriter extends AbstractWriter
      */
     protected function isValid(array $event): bool
     {
-        return !empty(getenv('PROMETHEUS_HOST')) && !empty(getenv('SERVICE_NAME')) && !empty($event['context']['metricId']) && isset($event['context']['value']);
+        return !empty(getenv('PROMETHEUS_HOST')) && !empty(getenv('SERVICE_NAME')) && !empty($event['prometheusMetricId']) && !empty($event['prometheusValue']);
     }
 
     /**
@@ -87,29 +92,39 @@ class PrometheusWriter extends AbstractWriter
 
         $methodName = 'write' . ucfirst($this->type);
         if (method_exists($this, $methodName)) {
-            $this->{$methodName}($event);
+            $this->{$methodName}($event['prometheusMetricId'], $event['prometheusValue'], $event['prometheusLabels']);
         }
     }
 
     /**
-     * @param array $event
+     * @param string $metricId
+     * @param float  $value
+     * @param array  $labels
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Prometheus\Exception\MetricsRegistrationException
      */
-    protected function writeGauge(array $event)
+    protected function writeGauge(string $metricId, float $value, array $labels)
     {
-        $gauge = $this->collector->getOrRegisterGauge($this->namespace, $event['context']['metricId'], '');
-        $gauge->set($event['context']['value']);
+        $gauge = $this->collector->getOrRegisterGauge($this->namespace, $metricId, '');
+        $gauge->set($value);
 
-        $this->pushGateway->pushAdd($this->collector, $this->jobName, []);
+        $this->pushGateway->pushAdd($this->collector, $this->jobName, $labels);
     }
 
     /**
-     * @param array $event
+     * @param string $metricId
+     * @param float  $value
+     * @param array  $labels
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Prometheus\Exception\MetricsRegistrationException
      */
-    protected function writeCounter(array $event)
+    protected function writeCounter(string $metricId, float $value, array $labels)
     {
-        $counter = $this->collector->getOrRegisterCounter($this->namespace, $event['context']['metricId'], '');
-        $counter->incBy($event['context']['value']);
+        $counter = $this->collector->getOrRegisterCounter($this->namespace, $metricId, '');
+        $counter->incBy($value);
 
-        $this->pushGateway->pushAdd($this->collector, $this->jobName, []);
+        $this->pushGateway->pushAdd($this->collector, $this->jobName, $labels);
     }
 }

@@ -26,6 +26,8 @@ composer require rollun-com/rollun-logger
         - METRIC_URL - урл метрики   
         - PROMETHEUS_HOST - хост Prometheus
         - PROMETHEUS_PORT - порт Prometheus. По умолчанию 9091
+        - PROMETHEUS_REDIS_HOST - хост от Redis. Нужно указать если будет использоваться Redis адаптер для хранения.
+        - PROMETHEUS_REDIS_PORT - порт от Redis. По умолчанию 6379
      
     * Для Slack:    
         - SLACK_TOKEN - Slack Bot User OAuth Access Token
@@ -42,7 +44,7 @@ composer require rollun-com/rollun-logger
 - **Http** - логирует данные по указанному [URI](https://en.wikipedia.org/wiki/Uniform_Resource_Identifier) пути.
 - **HttpAsync** - асинхронно логирует данные по указанному [URL](https://en.wikipedia.org/wiki/URL) пути.
 - **HttpAsyncMetric** - расширяет HttpAsync и асинхронно пишет метрику по указанному [URL](https://en.wikipedia.org/wiki/URL) пути. Writer подключен по умолчанию и пишет логи на урл который указан в переменных окружения (METRIC_URL).
-- **PrometheusMetric** - пишет метрику на Prometheus методом pushGateway. Есть возможность указать Prometheus хост и порт. На данный момент поддерживается только тип метрики "Измеритель"(gauge). Writer подключен по умолчанию и пишет логи на хост и порт который указан в переменных окружения (PROMETHEUS_HOST, PROMETHEUS_PORT).    
+- **PrometheusWriter** - пишет метрику на Prometheus методом pushGateway. Для работы нужно указать PROMETHEUS_HOST и PROMETHEUS_PORT в переменных окружения. На данный момент поддерживается только тип метрики "Измеритель"(gauge) и "Счетчик"(counter). Для того чтобы использовался Redis адаптер для хранения данных нужно указать PROMETHEUS_REDIS_HOST и PROMETHEUS_REDIS_PORT в переменных окружения.      
 - **Slack** - пишет логи в Slack канал. Отправляться только сообщения с уровнем меньше чем 4 (меньше warning, например error). Для того чтобы бот писал сообщения в канал, его нужно добавить в тот канал который вам нужен. Для этого зайдите в Slack, откройте нужный вам канал, нажмите на кнопку `Add apps` и там выберите `RollunApp`. Также нужно указать переменные окружения которые указаны выше для Slack.
 
 #### Formatters
@@ -294,7 +296,7 @@ class Foo
  
 
 ### Метрика
-При помощи врайтеров **HttpAsyncMetric** и **PrometheusMetric** есть возможность отправлять метрику.
+При помощи врайтеров **HttpAsyncMetric** и **PrometheusWriter** есть возможность отправлять метрику.
 
 Принято, что в метрику попадают только warning и notice. Также для метрик используется специальное название события.
 

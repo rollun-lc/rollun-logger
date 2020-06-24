@@ -5,8 +5,6 @@ namespace rollun\logger\Writer\Factory;
 
 use Interop\Container\ContainerInterface;
 use rollun\logger\Prometheus\Collector;
-use rollun\logger\Prometheus\Prometheus;
-use rollun\logger\Prometheus\PrometheusInterface;
 use rollun\logger\Prometheus\PushGateway;
 use rollun\logger\Writer\PrometheusWriter;
 use Zend\ServiceManager\Factory\FactoryInterface;

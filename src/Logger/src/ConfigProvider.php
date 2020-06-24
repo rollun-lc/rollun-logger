@@ -10,6 +10,7 @@ use Psr\Log\LoggerInterface;
 use rollun\logger\Formatter\ContextToString;
 use rollun\logger\Formatter\FluentdFormatter;
 use rollun\logger\Formatter\LogStashUdpFormatter;
+use rollun\logger\Formatter\PrometheusFormatter;
 use rollun\logger\Formatter\SlackFormatter;
 use rollun\logger\Processor\ExceptionBacktrace;
 use rollun\logger\Processor\Factory\LifeCycleTokenReferenceInjectorFactory;
