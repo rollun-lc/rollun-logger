@@ -14,15 +14,7 @@ use Prometheus\Storage\Redis;
  */
 class Collector
 {
-    /**
-     * @var string
-     */
-    protected $redisHost;
-
-    /**
-     * @var string
-     */
-    protected $redisPort = '6379';
+    const DEFAULT_REDIS_PORT = 6379;
 
     /**
      * @var CollectorRegistry
@@ -34,19 +26,18 @@ class Collector
      */
     public function __construct()
     {
-        if (!empty(getenv('PROMETHEUS_REDIS_HOST'))) {
-            $this->redisHost = getenv('PROMETHEUS_REDIS_HOST');
-        }
-        if (!empty(getenv('PROMETHEUS_REDIS_PORT'))) {
-            $this->redisPort = getenv('PROMETHEUS_REDIS_PORT');
+        // prepare Redis data
+        $redisHost = getenv('PROMETHEUS_REDIS_HOST');
+        $redisPort = empty(getenv('PROMETHEUS_REDIS_PORT')) ? self::DEFAULT_REDIS_PORT : getenv('PROMETHEUS_REDIS_PORT');
+
+        if (!empty($redisHost) && !empty($redisPort)) {
+            Redis::setDefaultOptions(['host' => (string)$redisHost, 'port' => (int)$redisPort, 'read_timeout' => '10']);
+            $adapter = new Redis();
+        } else {
+            $adapter = new InMemory();
         }
 
-        if (!empty($this->redisHost) && !empty($this->redisPort)) {
-            Redis::setDefaultOptions(['host' => $this->redisHost, 'port' => $this->redisPort, 'read_timeout' => '10']);
-            $this->collector = new CollectorRegistry(new Redis());
-        } else {
-            $this->collector = new CollectorRegistry(new InMemory());
-        }
+        $this->collector = new CollectorRegistry($adapter);
     }
 
     /**
