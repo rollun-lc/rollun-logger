@@ -202,6 +202,64 @@ class ConfigProvider
                             'formatter' => SlackFormatter::class,
                         ],
                     ],
+                    [
+                        PrometheusFactory::COLLECTOR => Collector::class, // не обязательный параметр.
+                        PrometheusFactory::JOB_NAME  => 'logger_job',  // не обязательный параметр.
+                        'name'                       => PrometheusWriter::class,
+                        'options'                    => [
+                            PrometheusFactory::TYPE => PrometheusFactory::TYPE_GAUGE,
+                            'filters'               => [
+                                [
+                                    'name'    => 'regex',
+                                    'options' => [
+                                        'regex' => '/^METRICS_GAUGE/'
+                                    ],
+                                ],
+                                [
+                                    'name'    => 'priority',
+                                    'options' => [
+                                        'operator' => '>=',
+                                        'priority' => 4, // we should send only warnings or notices
+                                    ],
+                                ],
+                                [
+                                    'name'    => 'priority',
+                                    'options' => [
+                                        'operator' => '<=',
+                                        'priority' => 5, // we should send only warnings or notices
+                                    ],
+                                ],
+                            ]
+                        ],
+                    ],
+                    [
+                        'name'    => PrometheusWriter::class,
+                        'options' => [
+                            PrometheusFactory::TYPE => PrometheusFactory::TYPE_COUNTER,
+                            'filters'               => [
+                                [
+                                    'name'    => 'regex',
+                                    'options' => [
+                                        'regex' => '/^METRICS_COUNTER/'
+                                    ],
+                                ],
+                                [
+                                    'name'    => 'priority',
+                                    'options' => [
+                                        'operator' => '>=',
+                                        'priority' => 4, // we should send only warnings or notices
+                                    ],
+                                ],
+                                [
+                                    'name'    => 'priority',
+                                    'options' => [
+                                        'operator' => '<=',
+                                        'priority' => 5, // we should send only warnings or notices
+                                    ],
+                                ],
+                            ]
+                        ],
+                    ],
                 ],
                 'processors' => [
                     [

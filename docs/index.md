@@ -310,59 +310,13 @@ $logger->notice('METRICS', ['metricId' => 'metric-2', 'value' => 200]);
 ### Метрика при помощи PrometheusWriter
 Отправляет метрику в prometheus.
 
-Пример конфига для подключения PrometheusWriter:
-```php
-use Psr\Log\LoggerInterface;
-use rollun\logger\Prometheus\Collector;
-use rollun\logger\Writer\Factory\PrometheusFactory;
-use rollun\logger\Writer\PrometheusWriter;
-return [
-"log"          => [
-        LoggerInterface::class => [
-            'writers' => [
-                [
-                    PrometheusFactory::COLLECTOR => Collector::class, // не обязательный параметр.
-                    PrometheusFactory::JOB_NAME  => 'logger_job',  // не обязательный параметр.
-                    'name'    => PrometheusWriter::class,
-                    'options' => [
-                        PrometheusFactory::TYPE => PrometheusFactory::TYPE_GAUGE,
-                        'filters'               => [
-                            [
-                                'name'    => 'regex',
-                                'options' => [
-                                    'regex' => '/^metric_1/'
-                                ],
-                            ],
-                        ]
-                    ],
-                ],
-                [
-                    'name'    => PrometheusWriter::class,
-                    'options' => [
-                        PrometheusFactory::TYPE => PrometheusFactory::TYPE_COUNTER,
-                        'filters'               => [
-                            [
-                                'name'    => 'regex',
-                                'options' => [
-                                    'regex' => '/^metric_2/'
-                                ],
-                            ],
-                        ]
-                    ],
-                ],
-            ],
-        ],
-    ],
-];
-```
-
 Пример как записать метрику. Пример использует конфиг который указан выше. В данном случае используется два типа метрик (измеритель, счетчик). 
 ```php
 // измеритель
-$this->logger->notice('metric_1', ['value' => 1, 'labels' => ['operation' => 'create']]);
+$logger->notice('METRICS_GAUGE', ['metricId' => 'metric_1', 'value' => 250, 'labels' => ['operation' => 'create']]);
 
 // счетчик
-$this->logger->notice('metric_2', ['value' => 1, 'labels' => ['operation' => 'create']]);
+$logger->notice('METRICS_COUNTER', ['metricId' => 'metric_2', 'value' => 1]);
 ```
 
 
