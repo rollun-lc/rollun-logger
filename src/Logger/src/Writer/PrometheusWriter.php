@@ -40,6 +40,11 @@ class PrometheusWriter extends AbstractWriter
     protected $namespace;
 
     /**
+     * @var string
+     */
+    protected $serviceName;
+
+    /**
      * @inheritDoc
      */
     public function __construct(CollectorRegistry $collector, PushGateway $pushGateway, string $jobName, string $type, array $options = null)
@@ -48,6 +53,7 @@ class PrometheusWriter extends AbstractWriter
         $this->pushGateway = $pushGateway;
         $this->jobName = $jobName;
         $this->type = $type;
+        $this->serviceName = (string)getenv('SERVICE_NAME');
 
         parent::__construct($options);
     }
@@ -65,6 +71,7 @@ class PrometheusWriter extends AbstractWriter
         // prepare prometheus data
         $event['prometheusMetricId'] = isset($event['context']['metricId']) ? (string)$event['context']['metricId'] : null;
         $event['prometheusValue'] = isset($event['context']['value']) ? (float)$event['context']['value'] : null;
+        $event['prometheusGroups'] = isset($event['context']['groups']) ? (array)$event['context']['groups'] : [];
         $event['prometheusLabels'] = isset($event['context']['labels']) ? (array)$event['context']['labels'] : [];
 
         if ($this->isValid($event)) {
@@ -79,7 +86,7 @@ class PrometheusWriter extends AbstractWriter
      */
     protected function isValid(array $event): bool
     {
-        return !empty(getenv('PROMETHEUS_HOST')) && !empty(getenv('SERVICE_NAME')) && !empty($event['prometheusMetricId']) && !empty($event['prometheusValue']);
+        return !empty(getenv('PROMETHEUS_HOST')) && !empty($this->serviceName) && !empty($event['prometheusMetricId']) && !empty($event['prometheusValue']);
     }
 
     /**
@@ -88,43 +95,45 @@ class PrometheusWriter extends AbstractWriter
     protected function doWrite(array $event)
     {
         // prepare namespace
-        $this->namespace = str_replace('-', '_', trim(strtolower(getenv('SERVICE_NAME'))));
+        $this->namespace = str_replace('-', '_', trim(strtolower($this->serviceName)));
 
         $methodName = 'write' . ucfirst($this->type);
         if (method_exists($this, $methodName)) {
-            $this->{$methodName}($event['prometheusMetricId'], $event['prometheusValue'], $event['prometheusLabels']);
+            $this->{$methodName}($event['prometheusMetricId'], $event['prometheusValue'], $event['prometheusGroups'], $event['prometheusLabels']);
         }
     }
 
     /**
      * @param string $metricId
      * @param float  $value
+     * @param array  $groups
      * @param array  $labels
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Prometheus\Exception\MetricsRegistrationException
      */
-    protected function writeGauge(string $metricId, float $value, array $labels)
+    protected function writeGauge(string $metricId, float $value, array $groups, array $labels)
     {
-        $gauge = $this->collector->getOrRegisterGauge($this->namespace, $metricId, '');
-        $gauge->set($value);
+        $gauge = $this->collector->getOrRegisterGauge($this->namespace, $metricId, $this->serviceName, $labels);
+        $gauge->set($value, $labels);
 
-        $this->pushGateway->pushAdd($this->collector, $this->jobName, $labels);
+        $this->pushGateway->pushAdd($this->collector, $this->jobName, $groups);
     }
 
     /**
      * @param string $metricId
      * @param float  $value
+     * @param array  $groups
      * @param array  $labels
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Prometheus\Exception\MetricsRegistrationException
      */
-    protected function writeCounter(string $metricId, float $value, array $labels)
+    protected function writeCounter(string $metricId, float $value, array $groups, array $labels)
     {
-        $counter = $this->collector->getOrRegisterCounter($this->namespace, $metricId, '');
-        $counter->incBy($value);
+        $counter = $this->collector->getOrRegisterCounter($this->namespace, $metricId, $this->serviceName, $labels);
+        $counter->incBy($value, $labels);
 
-        $this->pushGateway->pushAdd($this->collector, $this->jobName, $labels);
+        $this->pushGateway->pushAdd($this->collector, $this->jobName, $groups);
     }
 }

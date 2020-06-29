@@ -44,7 +44,7 @@ composer require rollun-com/rollun-logger
 - **Http** - логирует данные по указанному [URI](https://en.wikipedia.org/wiki/Uniform_Resource_Identifier) пути.
 - **HttpAsync** - асинхронно логирует данные по указанному [URL](https://en.wikipedia.org/wiki/URL) пути.
 - **HttpAsyncMetric** - расширяет HttpAsync и асинхронно пишет метрику по указанному [URL](https://en.wikipedia.org/wiki/URL) пути. Writer подключен по умолчанию и пишет логи на урл который указан в переменных окружения (METRIC_URL).
-- **PrometheusWriter** - пишет метрику на Prometheus методом pushGateway. Для работы нужно указать PROMETHEUS_HOST и PROMETHEUS_PORT в переменных окружения. На данный момент поддерживается только тип метрики "Измеритель"(gauge) и "Счетчик"(counter). Для того чтобы использовался Redis адаптер для хранения данных нужно указать PROMETHEUS_REDIS_HOST и PROMETHEUS_REDIS_PORT в переменных окружения.      
+- **PrometheusWriter** - пишет метрику на Prometheus методом pushGateway. Для работы нужно указать PROMETHEUS_HOST, PROMETHEUS_PORT и SERVICE_NAME в переменных окружения. На данный момент поддерживается только тип метрики "Измеритель"(gauge) и "Счетчик"(counter). Для того чтобы использовался Redis адаптер для хранения данных нужно указать PROMETHEUS_REDIS_HOST и PROMETHEUS_REDIS_PORT в переменных окружения.      
 - **Slack** - пишет логи в Slack канал. Отправляться только сообщения с уровнем меньше чем 4 (меньше warning, например error). Для того чтобы бот писал сообщения в канал, его нужно добавить в тот канал который вам нужен. Для этого зайдите в Slack, откройте нужный вам канал, нажмите на кнопку `Add apps` и там выберите `RollunApp`. Также нужно указать переменные окружения которые указаны выше для Slack.
 
 #### Formatters
@@ -312,11 +312,13 @@ $logger->notice('METRICS', ['metricId' => 'metric-2', 'value' => 200]);
 
 Пример как записать метрику. Пример использует конфиг который указан выше. В данном случае используется два типа метрик (измеритель, счетчик). 
 ```php
-// измеритель
-$logger->notice('METRICS_GAUGE', ['metricId' => 'metric_1', 'value' => 250, 'labels' => ['operation' => 'create']]);
+// измерители
+$logger->notice('METRICS_GAUGE', ['metricId' => 'metric_1', 'value' => 50, 'groups' => ['group1' => 'val1'], 'labels' => ['red']]);
+$logger->notice('METRICS_GAUGE', ['metricId' => 'metric_2', 'value' => 12]);
 
-// счетчик
-$logger->notice('METRICS_COUNTER', ['metricId' => 'metric_2', 'value' => 1]);
+// счетчики
+$logger->notice('METRICS_COUNTER', ['metricId' => 'metric_3', 'value' => 10, 'groups' => ['group1' => 'val1'], 'labels' => ['red']]);
+$logger->notice('METRICS_COUNTER', ['metricId' => 'metric_4', 'value' => 1]);
 ```
 
 
