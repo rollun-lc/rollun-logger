@@ -26,6 +26,8 @@ composer require rollun-com/rollun-logger
         - METRIC_URL - урл метрики   
         - PROMETHEUS_HOST - хост Prometheus
         - PROMETHEUS_PORT - порт Prometheus. По умолчанию 9091
+        - PROMETHEUS_REDIS_HOST - хост от Redis. Нужно указать если будет использоваться Redis адаптер для хранения.
+        - PROMETHEUS_REDIS_PORT - порт от Redis. По умолчанию 6379
 
 ### Getting Started
 
@@ -38,7 +40,7 @@ composer require rollun-com/rollun-logger
 - **Http** - логирует данные по указанному [URI](https://en.wikipedia.org/wiki/Uniform_Resource_Identifier) пути.
 - **HttpAsync** - асинхронно логирует данные по указанному [URL](https://en.wikipedia.org/wiki/URL) пути.
 - **HttpAsyncMetric** - расширяет HttpAsync и асинхронно пишет метрику по указанному [URL](https://en.wikipedia.org/wiki/URL) пути. Writer подключен по умолчанию и пишет логи на урл который указан в переменных окружения (METRIC_URL).
-- **PrometheusMetric** - пишет метрику на Prometheus методом pushGateway. Есть возможность указать Prometheus хост и порт. На данный момент поддерживается только тип метрики "Измеритель"(gauge). Writer подключен по умолчанию и пишет логи на хост и порт который указан в переменных окружения (PROMETHEUS_HOST, PROMETHEUS_PORT).    
+- **PrometheusWriter** - пишет метрику на Prometheus методом pushGateway. Для работы нужно указать PROMETHEUS_HOST, PROMETHEUS_PORT и SERVICE_NAME в переменных окружения. На данный момент поддерживается только тип метрики "Измеритель"(gauge) и "Счетчик"(counter). Для того чтобы использовался Redis адаптер для хранения данных нужно указать PROMETHEUS_REDIS_HOST и PROMETHEUS_REDIS_PORT в переменных окружения.    
 
 #### Formatters
 
@@ -287,9 +289,7 @@ class Foo
 Из примера видно, что нужно открывать и закрывать операции, поддерживаются вложенные операции. Во время выполнения кода нужно добавлять разного рода теги для отладки. Тег нужен для быстрого поиска трейтов. В примере мы показали текстовый тег, тег ошибку, а также добавили лог ошибки. Библиотека поддерживает и другие [теги](https://github.com/code-tool/jaeger-client-php/tree/master/src/Tag).
  
 
-### Метрика
-При помощи врайтеров **HttpAsyncMetric** и **PrometheusMetric** есть возможность отправлять метрику.
-
+### Метрика при помощи HttpAsyncMetric
 Принято, что в метрику попадают только warning и notice. Также для метрик используется специальное название события.
 
 Пример отправки метрик:
@@ -299,6 +299,20 @@ $logger->warning('METRICS', ['metricId' => 'metric-1', 'value' => 100]);
 
 $logger->notice('METRICS', ['metricId' => 'metric-2', 'value' => 200]);
 // в результате будет отправлен асинхронный POST запрос на http://localhost/api/v1/Metric/metric-2 с телом {"value": 200,"timestamp": 1586881668}
+```
+
+### Метрика при помощи PrometheusWriter
+Отправляет метрику в prometheus.
+
+Пример как записать метрику. Пример использует конфиг который указан выше. В данном случае используется два типа метрик (измеритель, счетчик). 
+```php
+// измерители
+$logger->notice('METRICS_GAUGE', ['metricId' => 'metric_1', 'value' => 50, 'groups' => ['group1' => 'val1'], 'labels' => ['red']]);
+$logger->notice('METRICS_GAUGE', ['metricId' => 'metric_2', 'value' => 12]);
+
+// счетчики
+$logger->notice('METRICS_COUNTER', ['metricId' => 'metric_3', 'value' => 10, 'groups' => ['group1' => 'val1'], 'labels' => ['red']]);
+$logger->notice('METRICS_COUNTER', ['metricId' => 'metric_4', 'value' => 1]);
 ```
 
 
