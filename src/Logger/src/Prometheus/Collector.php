@@ -3,14 +3,17 @@ declare(strict_types=1);
 
 namespace rollun\logger\Prometheus;
 
-use Prometheus\CollectorRegistry;
+use Prometheus\Storage\Adapter;
 use Prometheus\Storage\InMemory;
 use Prometheus\Storage\Redis;
 
 /**
  * Class Collector
  *
- * @author r.ratsun <r.ratsun.rollun@gmail.com>
+ * @author    r.ratsun <r.ratsun.rollun@gmail.com>
+ *
+ * @copyright Copyright © 2014 Rollun LC (http://rollun.com/)
+ * @license   LICENSE.md New BSD License
  */
 class Collector
 {
@@ -20,6 +23,11 @@ class Collector
      * @var CollectorRegistry
      */
     protected $collector;
+
+    /**
+     * @var Adapter
+     */
+    protected $adapter;
 
     /**
      * Prometheus constructor.
@@ -32,19 +40,27 @@ class Collector
 
         if (!empty($redisHost) && !empty($redisPort)) {
             Redis::setDefaultOptions(['host' => (string)$redisHost, 'port' => (int)$redisPort, 'read_timeout' => '10']);
-            $adapter = new Redis();
+            $this->adapter = new Redis();
         } else {
-            $adapter = new InMemory();
+            $this->adapter = new InMemory();
         }
 
-        $this->collector = new CollectorRegistry($adapter);
+        $this->collector = new CollectorRegistry($this->getAdapter());
     }
 
     /**
      * @return CollectorRegistry
      */
-    public function __invoke(): CollectorRegistry
+    public function getCollectorRegistry(): CollectorRegistry
     {
         return $this->collector;
+    }
+
+    /**
+     * @return Adapter
+     */
+    public function getAdapter(): Adapter
+    {
+        return $this->adapter;
     }
 }

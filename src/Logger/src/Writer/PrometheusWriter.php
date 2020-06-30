@@ -4,16 +4,27 @@ declare(strict_types=1);
 namespace rollun\logger\Writer;
 
 use Prometheus\CollectorRegistry;
+use Prometheus\Storage\Adapter;
+use Prometheus\Storage\InMemory;
+use rollun\logger\Prometheus\Collector;
 use rollun\logger\Prometheus\PushGateway;
 use Zend\Log\Writer\AbstractWriter;
 
 /**
  * Class PrometheusWriter
  *
- * @author r.ratsun <r.ratsun.rollun@gmail.com>
+ * @author    r.ratsun <r.ratsun.rollun@gmail.com>
+ *
+ * @copyright Copyright © 2014 Rollun LC (http://rollun.com/)
+ * @license   LICENSE.md New BSD License
  */
 class PrometheusWriter extends AbstractWriter
 {
+    const METHOD_POST = 'post';
+    const METHOD_PUT = 'put';
+    const METHOD_DELETE = 'delete';
+    const METHODS = [self::METHOD_POST, self::METHOD_PUT, self::METHOD_DELETE];
+
     /**
      * @var CollectorRegistry
      */
@@ -47,7 +58,7 @@ class PrometheusWriter extends AbstractWriter
     /**
      * @inheritDoc
      */
-    public function __construct(CollectorRegistry $collector, PushGateway $pushGateway, string $jobName, string $type, array $options = null)
+    public function __construct(Collector $collector, PushGateway $pushGateway, string $jobName, string $type, array $options = null)
     {
         $this->collector = $collector;
         $this->pushGateway = $pushGateway;
@@ -70,9 +81,11 @@ class PrometheusWriter extends AbstractWriter
 
         // prepare prometheus data
         $event['prometheusMetricId'] = isset($event['context']['metricId']) ? (string)$event['context']['metricId'] : null;
-        $event['prometheusValue'] = isset($event['context']['value']) ? (float)$event['context']['value'] : null;
+        $event['prometheusValue'] = isset($event['context']['value']) ? (float)$event['context']['value'] : 0;
         $event['prometheusGroups'] = isset($event['context']['groups']) ? (array)$event['context']['groups'] : [];
         $event['prometheusLabels'] = isset($event['context']['labels']) ? (array)$event['context']['labels'] : [];
+        $event['prometheusMethod'] = isset($event['context']['method']) ? (string)$event['context']['method'] : self::METHOD_POST;
+        $event['prometheusRefresh'] = !empty($event['context']['refresh']);
 
         if ($this->isValid($event)) {
             parent::write($event);
@@ -86,7 +99,7 @@ class PrometheusWriter extends AbstractWriter
      */
     protected function isValid(array $event): bool
     {
-        return !empty(getenv('PROMETHEUS_HOST')) && !empty($this->serviceName) && !empty($event['prometheusMetricId']) && !empty($event['prometheusValue']);
+        return !empty(getenv('PROMETHEUS_HOST')) && !empty($this->serviceName) && !empty($event['prometheusMetricId']) && in_array($event['prometheusMethod'], self::METHODS);
     }
 
     /**
@@ -99,41 +112,97 @@ class PrometheusWriter extends AbstractWriter
 
         $methodName = 'write' . ucfirst($this->type);
         if (method_exists($this, $methodName)) {
-            $this->{$methodName}($event['prometheusMetricId'], $event['prometheusValue'], $event['prometheusGroups'], $event['prometheusLabels']);
+            $this->{$methodName}($event);
         }
     }
 
     /**
-     * @param string $metricId
-     * @param float  $value
-     * @param array  $groups
-     * @param array  $labels
+     * @param array $event
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Prometheus\Exception\MetricsRegistrationException
      */
-    protected function writeGauge(string $metricId, float $value, array $groups, array $labels)
+    protected function writeGauge(array $event)
     {
-        $gauge = $this->collector->getOrRegisterGauge($this->namespace, $metricId, $this->serviceName, $labels);
-        $gauge->set($value, $labels);
+        $gauge = $this->getCollectorRegistry()->getOrRegisterGauge($this->namespace, $event['prometheusMetricId'], $this->serviceName, $event['prometheusLabels']);
+        $gauge->set($event['prometheusValue'], $event['prometheusLabels']);
 
-        $this->pushGateway->pushAdd($this->collector, $this->jobName, $groups);
+        $this->send($event['prometheusMethod'], $event['prometheusGroups']);
     }
 
     /**
-     * @param string $metricId
-     * @param float  $value
-     * @param array  $groups
-     * @param array  $labels
+     * @param array $event
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Prometheus\Exception\MetricsRegistrationException
      */
-    protected function writeCounter(string $metricId, float $value, array $groups, array $labels)
+    protected function writeCounter(array $event)
     {
-        $counter = $this->collector->getOrRegisterCounter($this->namespace, $metricId, $this->serviceName, $labels);
-        $counter->incBy($value, $labels);
+        if (!$this->getAdapter() instanceof InMemory) {
+            $counter = $this->getCollectorRegistry()->getOrRegisterCounter($this->namespace, $event['prometheusMetricId'], $this->serviceName, $event['prometheusLabels']);
 
-        $this->pushGateway->pushAdd($this->collector, $this->jobName, $groups);
+            if ($event['prometheusRefresh']) {
+                $counter->set($event['prometheusValue'], $event['prometheusLabels']);
+            } else {
+                $counter->incBy($event['prometheusValue'], $event['prometheusLabels']);
+            }
+
+            $this->send($event['prometheusMethod'], $event['prometheusLabels']);
+        }
+    }
+
+    /**
+     * @return CollectorRegistry
+     */
+    protected function getCollectorRegistry(): CollectorRegistry
+    {
+        return $this->collector->getCollectorRegistry();
+    }
+
+    /**
+     * @return Adapter
+     */
+    protected function getAdapter(): Adapter
+    {
+        return $this->collector->getAdapter();
+    }
+
+    /**
+     * @param string $method
+     * @param array  $groups
+     */
+    protected function send(string $method, array $groups)
+    {
+        $this->{$method}($groups);
+    }
+
+    /**
+     * @param array $groups
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    protected function post(array $groups)
+    {
+        $this->pushGateway->pushAdd($this->getCollectorRegistry(), $this->jobName, $groups);
+    }
+
+    /**
+     * @param array $groups
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    protected function put(array $groups)
+    {
+        $this->pushGateway->push($this->getCollectorRegistry(), $this->jobName, $groups);
+    }
+
+    /**
+     * @param array $groups
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    protected function delete(array $groups)
+    {
+        $this->pushGateway->delete($this->getCollectorRegistry(), $this->jobName, $groups);
     }
 }

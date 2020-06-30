@@ -12,7 +12,10 @@ use Zend\ServiceManager\Factory\FactoryInterface;
 /**
  * Class PrometheusFactory
  *
- * @author r.ratsun <r.ratsun.rollun@gmail.com>
+ * @author    r.ratsun <r.ratsun.rollun@gmail.com>
+ *
+ * @copyright Copyright © 2014 Rollun LC (http://rollun.com/)
+ * @license   LICENSE.md New BSD License
  */
 class PrometheusFactory implements FactoryInterface
 {
@@ -50,6 +53,6 @@ class PrometheusFactory implements FactoryInterface
             throw new \InvalidArgumentException('Unknown prometheus type');
         }
 
-        return new PrometheusWriter($container->get($collectorClass)(), $container->get(PushGateway::class), $jobName, $config[static::TYPE], $config);
+        return new PrometheusWriter($container->get($collectorClass), $container->get(PushGateway::class), $jobName, $config[static::TYPE], $config);
     }
 }

@@ -12,7 +12,10 @@ use Psr\Http\Message\ResponseInterface;
 /**
  * Class PushGateway
  *
- * @author r.ratsun <r.ratsun.rollun@gmail.com>
+ * @author    r.ratsun <r.ratsun.rollun@gmail.com>
+ *
+ * @copyright Copyright © 2014 Rollun LC (http://rollun.com/)
+ * @license   LICENSE.md New BSD License
  */
 class PushGateway
 {
@@ -57,8 +60,8 @@ class PushGateway
      * Uses HTTP POST.
      *
      * @param CollectorRegistry $collectorRegistry
-     * @param                   $job
-     * @param                   $groupingKey
+     * @param string            $job
+     * @param string            $groupingKey
      *
      * @throws GuzzleException
      */
@@ -69,23 +72,24 @@ class PushGateway
 
     /**
      * Deletes metrics from the Push Gateway.
-     * Uses HTTP POST.
+     * Uses HTTP DELETE.
      *
-     * @param string $job
-     * @param array  $groupingKey
+     * @param CollectorRegistry $collectorRegistry
+     * @param string            $job
+     * @param array             $groupingKey
      *
      * @throws GuzzleException
      */
-    public function delete(string $job, array $groupingKey = null): void
+    public function delete(CollectorRegistry $collectorRegistry, string $job, array $groupingKey = null): void
     {
-        $this->doRequest(null, $job, $groupingKey, 'delete');
+        $this->doRequest($collectorRegistry, $job, $groupingKey, 'delete');
     }
 
     /**
      * @param CollectorRegistry $collectorRegistry
      * @param string            $job
      * @param array             $groupingKey
-     * @param                   $method
+     * @param string            $method
      *
      * @return ResponseInterface
      * @throws GuzzleException
@@ -107,9 +111,9 @@ class PushGateway
             'timeout'         => 20,
         ];
         if ($method != 'delete') {
-            $renderer = new RenderTextFormat();
-            $requestOptions['body'] = $renderer->render($collectorRegistry->getMetricFamilySamples());
+            $requestOptions['body'] = (new RenderTextFormat())->render($collectorRegistry->getMetricFamilySamples());
         }
+
         $response = $client->request($method, $url, $requestOptions);
 
         return $response;
