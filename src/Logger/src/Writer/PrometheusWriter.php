@@ -5,7 +5,6 @@ namespace rollun\logger\Writer;
 
 use Prometheus\CollectorRegistry;
 use Prometheus\Storage\Adapter;
-use Prometheus\Storage\InMemory;
 use rollun\logger\Prometheus\Collector;
 use rollun\logger\Prometheus\PushGateway;
 use Zend\Log\Writer\AbstractWriter;
@@ -138,17 +137,15 @@ class PrometheusWriter extends AbstractWriter
      */
     protected function writeCounter(array $event)
     {
-        if (!$this->getAdapter() instanceof InMemory) {
-            $counter = $this->getCollectorRegistry()->getOrRegisterCounter($this->namespace, $event['prometheusMetricId'], $this->serviceName, $event['prometheusLabels']);
+        $counter = $this->getCollectorRegistry()->getOrRegisterCounter($this->namespace, $event['prometheusMetricId'], $this->serviceName, $event['prometheusLabels']);
 
-            if ($event['prometheusRefresh']) {
-                $counter->set($event['prometheusValue'], $event['prometheusLabels']);
-            } else {
-                $counter->incBy($event['prometheusValue'], $event['prometheusLabels']);
-            }
-
-            $this->send($event['prometheusMethod'], $event['prometheusLabels']);
+        if ($event['prometheusRefresh']) {
+            $counter->set($event['prometheusValue'], $event['prometheusLabels']);
+        } else {
+            $counter->incBy($event['prometheusValue'], $event['prometheusLabels']);
         }
+
+        $this->send($event['prometheusMethod'], $event['prometheusLabels']);
     }
 
     /**
