@@ -306,13 +306,25 @@ $logger->notice('METRICS', ['metricId' => 'metric-2', 'value' => 200]);
 
 Пример как записать метрику. Пример использует конфиг который указан выше. В данном случае используется два типа метрик (измеритель, счетчик). 
 ```php
+use rollun\logger\Writer\PrometheusWriter;
+
+// Возможные настройки метрики
+$data = [
+    'metricId' => 'metric_25', // уникальное имя метрики
+    'value'    => 1, // значение метрики
+    'groups'   => ['group1' => 'val1'], // группы для которых пишется метрика. при помощи групп можно структурировать метрику. 
+    'labels'   => ['label1', 'label2'], // ярлыки метрики. используется если название метрики не достаточно и вы хотите использовать вспомогательные ярлыки.
+    'method'   => PrometheusWriter::METHOD_POST, // способ отправки. Разница описана здесь https://github.com/prometheus/pushgateway#put-method
+    'refresh'  => true, // если вы хотите сбросить накопленное значение и начать заново нужно передать true. Имеет смысл только если вы используете тип counter. 
+];
+
 // измерители
 $logger->notice('METRICS_GAUGE', ['metricId' => 'metric_1', 'value' => 50, 'groups' => ['group1' => 'val1'], 'labels' => ['red']]);
-$logger->notice('METRICS_GAUGE', ['metricId' => 'metric_2', 'value' => 12]);
+$logger->notice('METRICS_GAUGE', ['metricId' => 'metric_2', 'value' => 12, 'method'   => PrometheusWriter::METHOD_PUT]);
 
 // счетчики
 $logger->notice('METRICS_COUNTER', ['metricId' => 'metric_3', 'value' => 10, 'groups' => ['group1' => 'val1'], 'labels' => ['red']]);
-$logger->notice('METRICS_COUNTER', ['metricId' => 'metric_4', 'value' => 1]);
+$logger->notice('METRICS_COUNTER', ['metricId' => 'metric_4', 'value' => 1, 'refresh'  => true]);
 ```
 
 

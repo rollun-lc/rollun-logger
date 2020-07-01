@@ -22,8 +22,9 @@ $data = [
     'metricId' => 'metric_25',
     'value'    => 1,
     'groups'   => ['group1' => 'val1'],
+    'labels'   => [],
     'method'   => PrometheusWriter::METHOD_POST,
-//    'refresh'  => true,
+    'refresh'  => true,
 ];
 
 $logger->notice('METRICS_COUNTER', $data);
