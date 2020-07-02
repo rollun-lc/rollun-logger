@@ -26,6 +26,8 @@ composer require rollun-com/rollun-logger
         - METRIC_URL - урл метрики   
         - PROMETHEUS_HOST - хост Prometheus
         - PROMETHEUS_PORT - порт Prometheus. По умолчанию 9091
+        - PROMETHEUS_REDIS_HOST - хост от Redis. Нужно указать если будет использоваться Redis адаптер для хранения.
+        - PROMETHEUS_REDIS_PORT - порт от Redis. По умолчанию 6379
         
     * Для Slack:    
         - SLACK_TOKEN - Slack Bot User OAuth Access Token
@@ -42,13 +44,13 @@ composer require rollun-com/rollun-logger
 - **Http** - логирует данные по указанному [URI](https://en.wikipedia.org/wiki/Uniform_Resource_Identifier) пути.
 - **HttpAsync** - асинхронно логирует данные по указанному [URL](https://en.wikipedia.org/wiki/URL) пути.
 - **HttpAsyncMetric** - расширяет HttpAsync и асинхронно пишет метрику по указанному [URL](https://en.wikipedia.org/wiki/URL) пути. Writer подключен по умолчанию и пишет логи на урл который указан в переменных окружения (METRIC_URL).
-- **Slack** - пишет логи в Slack канал. Отправляться только сообщения с уровнем меньше чем 4 (меньше warning, например error). Для того чтобы бот писал сообщения в канал, его нужно добавить в тот канал который вам нужен. Для этого зайдите в Slack, откройте нужный вам канал, нажмите на кнопку `Add apps` и там выберите `RollunApp`. Также нужно указать переменные окружения которые указаны выше для Slack.
-- **PrometheusMetric** - пишет метрику на Prometheus методом pushGateway. Есть возможность указать Prometheus хост и порт. На данный момент поддерживается только тип метрики "Измеритель"(gauge). Writer подключен по умолчанию и пишет логи на хост и порт который указан в переменных окружения (PROMETHEUS_HOST, PROMETHEUS_PORT).    
+- **PrometheusWriter** - пишет метрику на Prometheus методом pushGateway. Для работы нужно указать PROMETHEUS_HOST, PROMETHEUS_PORT и SERVICE_NAME в переменных окружения. На данный момент поддерживается только тип метрики "Измеритель"(gauge) и "Счетчик"(counter). Для того чтобы использовался Redis адаптер для хранения данных нужно указать PROMETHEUS_REDIS_HOST и PROMETHEUS_REDIS_PORT в переменных окружения.
+- **Slack** - пишет логи в Slack канал. Отправляться только сообщения с уровнем меньше чем 4 (меньше warning, например error). Для того чтобы бот писал сообщения в канал, его нужно добавить в тот канал который вам нужен. Для этого зайдите в Slack, откройте нужный вам канал, нажмите на кнопку `Add apps` и там выберите `RollunApp`. Также нужно указать переменные окружения которые указаны выше для Slack.    
 
 #### Formatters
 
 - **ContextToString** - декодирует `$event` в `json`.
-- **SlackFormatter** - добавляет в `$event` `slackMessage` поле где подготовленное сообщение для Slack.
+- **SlackFormatter** - добавляет в `$event` `slackMessage` поле, где подготовленное сообщение для Slack.
 
 
 #### Processors
@@ -293,9 +295,7 @@ class Foo
 Из примера видно, что нужно открывать и закрывать операции, поддерживаются вложенные операции. Во время выполнения кода нужно добавлять разного рода теги для отладки. Тег нужен для быстрого поиска трейтов. В примере мы показали текстовый тег, тег ошибку, а также добавили лог ошибки. Библиотека поддерживает и другие [теги](https://github.com/code-tool/jaeger-client-php/tree/master/src/Tag).
  
 
-### Метрика
-При помощи врайтеров **HttpAsyncMetric** и **PrometheusMetric** есть возможность отправлять метрику.
-
+### Метрика при помощи HttpAsyncMetric
 Принято, что в метрику попадают только warning и notice. Также для метрик используется специальное название события.
 
 Пример отправки метрик:
@@ -307,4 +307,28 @@ $logger->notice('METRICS', ['metricId' => 'metric-2', 'value' => 200]);
 // в результате будет отправлен асинхронный POST запрос на http://localhost/api/v1/Metric/metric-2 с телом {"value": 200,"timestamp": 1586881668}
 ```
 
+### Метрика при помощи PrometheusWriter
+Отправляет метрику в prometheus.
 
+Пример как записать метрику. Пример использует конфиг который указан выше. В данном случае используется два типа метрик (измеритель, счетчик). 
+```php
+use rollun\logger\Writer\PrometheusWriter;
+
+// Возможные настройки метрики
+$data = [
+    'metricId' => 'metric_25', // уникальное имя метрики
+    'value'    => 1, // значение метрики
+    'groups'   => ['group1' => 'val1'], // группы для которых пишется метрика. при помощи групп можно структурировать метрику. 
+    'labels'   => ['label1', 'label2'], // ярлыки метрики. используется если название метрики не достаточно и вы хотите использовать вспомогательные ярлыки.
+    'method'   => PrometheusWriter::METHOD_POST, // способ отправки. Разница описана здесь https://github.com/prometheus/pushgateway#put-method
+    'refresh'  => true, // если вы хотите сбросить накопленное значение и начать заново нужно передать true. Имеет смысл только если вы используете тип counter. 
+];
+
+// измерители
+$logger->notice('METRICS_GAUGE', ['metricId' => 'metric_1', 'value' => 50, 'groups' => ['group1' => 'val1'], 'labels' => ['red']]);
+$logger->notice('METRICS_GAUGE', ['metricId' => 'metric_2', 'value' => 12, 'method'   => PrometheusWriter::METHOD_PUT]);
+
+// счетчики
+$logger->notice('METRICS_COUNTER', ['metricId' => 'metric_3', 'value' => 10, 'groups' => ['group1' => 'val1'], 'labels' => ['red']]);
+$logger->notice('METRICS_COUNTER', ['metricId' => 'metric_4', 'value' => 1, 'refresh'  => true]);
+```

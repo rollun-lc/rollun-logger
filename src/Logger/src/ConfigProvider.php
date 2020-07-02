@@ -15,10 +15,13 @@ use rollun\logger\Processor\ExceptionBacktrace;
 use rollun\logger\Processor\Factory\LifeCycleTokenReferenceInjectorFactory;
 use rollun\logger\Processor\IdMaker;
 use rollun\logger\Processor\LifeCycleTokenInjector;
+use rollun\logger\Prometheus\Collector;
+use rollun\logger\Prometheus\PushGateway;
+use rollun\logger\Writer\Factory\PrometheusFactory;
+use rollun\logger\Writer\PrometheusWriter;
 use rollun\logger\Writer\Slack;
 use rollun\logger\Writer\Udp;
 use rollun\logger\Writer\HttpAsyncMetric;
-use rollun\logger\Writer\PrometheusMetric;
 use rollun\logger\Formatter\Metric;
 use Zend\Log\LoggerAbstractServiceFactory;
 use Zend\Log\LoggerServiceFactory;
@@ -42,6 +45,7 @@ class ConfigProvider
             "log"            => $this->getLog(),
             'log_processors' => $this->getLogProcessors(),
             'log_formatters' => $this->getLogFormatters(),
+            'log_writers'    => $this->getLogWriters(),
         ];
     }
 
@@ -66,6 +70,18 @@ class ConfigProvider
     }
 
     /**
+     * @return array
+     */
+    protected function getLogWriters()
+    {
+        return [
+            'factories' => [
+                PrometheusWriter::class => PrometheusFactory::class,
+            ],
+        ];
+    }
+
+    /**
      * Return dependencies config
      *
      * @return array
@@ -82,6 +98,10 @@ class ConfigProvider
                 'LogFormatterManager' => FormatterPluginManagerFactory::class,
                 'LogProcessorManager' => ProcessorPluginManagerFactory::class,
                 'LogWriterManager'    => WriterPluginManagerFactory::class,
+            ],
+            'invokables'         => [
+                PushGateway::class => PushGateway::class,
+                Collector::class   => Collector::class
             ],
             'aliases'            => [],
         ];
@@ -166,12 +186,18 @@ class ConfigProvider
                         ],
                     ],
                     [
-                        'name'    => PrometheusMetric::class,
-                        'options' => [
-                            // @todo add more properties
-                            'host'    => getenv('PROMETHEUS_HOST'),
-                            'port'    => getenv('PROMETHEUS_PORT'),
-                            'filters' => [
+                        PrometheusFactory::COLLECTOR => Collector::class, // не обязательный параметр.
+                        PrometheusFactory::JOB_NAME  => 'logger_job',  // не обязательный параметр.
+                        'name'                       => PrometheusWriter::class,
+                        'options'                    => [
+                            PrometheusFactory::TYPE => PrometheusFactory::TYPE_GAUGE,
+                            'filters'               => [
+                                [
+                                    'name'    => 'regex',
+                                    'options' => [
+                                        'regex' => '/^METRICS_GAUGE/'
+                                    ],
+                                ],
                                 [
                                     'name'    => 'priority',
                                     'options' => [
@@ -186,10 +212,32 @@ class ConfigProvider
                                         'priority' => 5, // we should send only warnings or notices
                                     ],
                                 ],
+                            ]
+                        ],
+                    ],
+                    [
+                        'name'    => PrometheusWriter::class,
+                        'options' => [
+                            PrometheusFactory::TYPE => PrometheusFactory::TYPE_COUNTER,
+                            'filters'               => [
                                 [
                                     'name'    => 'regex',
                                     'options' => [
-                                        'regex' => '/^METRICS$/'
+                                        'regex' => '/^METRICS_COUNTER/'
+                                    ],
+                                ],
+                                [
+                                    'name'    => 'priority',
+                                    'options' => [
+                                        'operator' => '>=',
+                                        'priority' => 4, // we should send only warnings or notices
+                                    ],
+                                ],
+                                [
+                                    'name'    => 'priority',
+                                    'options' => [
+                                        'operator' => '<=',
+                                        'priority' => 5, // we should send only warnings or notices
                                     ],
                                 ],
                             ]
