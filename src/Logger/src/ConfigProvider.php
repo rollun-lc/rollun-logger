@@ -10,6 +10,7 @@ use Psr\Log\LoggerInterface;
 use rollun\logger\Formatter\ContextToString;
 use rollun\logger\Formatter\FluentdFormatter;
 use rollun\logger\Formatter\LogStashUdpFormatter;
+use rollun\logger\Formatter\SlackFormatter;
 use rollun\logger\Processor\ExceptionBacktrace;
 use rollun\logger\Processor\Factory\LifeCycleTokenReferenceInjectorFactory;
 use rollun\logger\Processor\IdMaker;
@@ -18,6 +19,7 @@ use rollun\logger\Prometheus\Collector;
 use rollun\logger\Prometheus\PushGateway;
 use rollun\logger\Writer\Factory\PrometheusFactory;
 use rollun\logger\Writer\PrometheusWriter;
+use rollun\logger\Writer\Slack;
 use rollun\logger\Writer\Udp;
 use rollun\logger\Writer\HttpAsyncMetric;
 use rollun\logger\Formatter\Metric;
@@ -240,7 +242,24 @@ class ConfigProvider
                                 ],
                             ]
                         ],
-                    ]
+                    ],
+                    [
+                        'name'    => Slack::class,
+                        'options' => [
+                            'token'     => getenv('SLACK_TOKEN'),
+                            'channel'   => getenv('SLACK_CHANNEL'),
+                            'filters'   => [
+                                [
+                                    'name'    => 'priority',
+                                    'options' => [
+                                        'operator' => '<',
+                                        'priority' => 4,
+                                    ],
+                                ],
+                            ],
+                            'formatter' => SlackFormatter::class,
+                        ],
+                    ],
                 ],
                 'processors' => [
                     [
