@@ -70,26 +70,27 @@ class Udp extends AbstractWriter
         $this->client->close();
     }
 
-    /**
-     * @inheritDoc
-     */
     protected function doWrite(array $event)
     {
-        try {
-            $message = $this->formatter->format($event);
+        $message = $this->formatter->format($event);
+        $this->client->write($message);
 
-            $this->client->write($message);
-            if ($this->options['auto_flash']) {
-                $this->client->flush();
-            }
-        } catch (\Throwable $exception) {
-            if (self::MAX_ATTEMPTS > $this->attempts) {
+        $this->flushMessage();
+    }
+
+    private function flushMessage()
+    {
+        do {
+            try {
+                if ($this->options['auto_flash']) {
+                    $this->client->flush();
+                }
+            } catch (\Throwable $exception) {
                 $this->attempts++;
-                $this->doWrite($event);
             }
-            if (!$this->options['ignore_error']) {
-                throw new RuntimeException(sprintf('Error sending messages to Udp. Total attempts: %s', $this->attempts), 0, $exception);
-            }
+        } while (self::MAX_ATTEMPTS > $this->attempts);
+        if (!$this->options['ignore_error']) {
+            throw new RuntimeException(sprintf('Error sending messages to Udp. Total attempts: %s', $this->attempts), 0);
         }
     }
 }
