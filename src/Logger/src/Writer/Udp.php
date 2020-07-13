@@ -80,17 +80,18 @@ class Udp extends AbstractWriter
 
     private function flushMessage()
     {
-        do {
-            try {
-                if ($this->options['auto_flash']) {
-                    $this->client->flush();
-                }
-            } catch (\Throwable $exception) {
-                $this->attempts++;
+        try {
+            if ($this->options['auto_flash']) {
+                $this->client->flush();
             }
-        } while (self::MAX_ATTEMPTS > $this->attempts);
-        if (!$this->options['ignore_error']) {
-            throw new RuntimeException(sprintf('Error sending messages to Udp. Total attempts: %s', $this->attempts), 0);
+        } catch (\Throwable $exception) {
+            if (self::MAX_ATTEMPTS > $this->attempts) {
+                $this->attempts++;
+                $this->flushMessage();
+            }
+            if (!$this->options['ignore_error']) {
+                throw new RuntimeException(sprintf('Error sending messages to Udp. Total attempts: %s', $this->attempts), 0);
+            }
         }
     }
 }
