@@ -3,17 +3,15 @@
 
 namespace rollun\logger\Writer;
 
-use Elasticsearch\Client;
-use Elasticsearch\ClientBuilder;
 use InvalidArgumentException;
 use Jaeger\Transport\TUDPTransport;
-use rollun\logger\Formatter\Elasticsearch as ElasticsearchFormatter;
 use RuntimeException;
 use Traversable;
 use Zend\Log\Writer\AbstractWriter;
 
 class Udp extends AbstractWriter
 {
+    const MAX_ATTEMPTS = 3;
 
     /**
      * @var array
@@ -24,6 +22,11 @@ class Udp extends AbstractWriter
      * @var TUDPTransport
      */
     protected $client;
+
+    /**
+     * @var int
+     */
+    private $attempts = 0;
 
     public function __construct($client, array $options = [])
     {
@@ -79,16 +82,14 @@ class Udp extends AbstractWriter
             if ($this->options['auto_flash']) {
                 $this->client->flush();
             }
-
         } catch (\Throwable $exception) {
+            if (self::MAX_ATTEMPTS > $this->attempts) {
+                $this->attempts++;
+                $this->doWrite($event);
+            }
             if (!$this->options['ignore_error']) {
-                throw new RuntimeException('Error sending messages to Udp', 0, $exception);
+                throw new RuntimeException(sprintf('Error sending messages to Udp. Total attempts: %s', $this->attempts), 0, $exception);
             }
         }
-    }
-
-    public function flash()
-    {
-        $this->client->flush();
     }
 }
