@@ -61,7 +61,7 @@ class LoggingErrorListener
             );
         } catch (\Throwable $throwable) {
             $logger = new SimpleLogger();
-            $logger->alert($throwable->getMessage());// Logger not work, alert situation.
+            $logger->warning($throwable->getMessage());// Logger not work, warning situation.
             $logger->error($message);
         }
     }
