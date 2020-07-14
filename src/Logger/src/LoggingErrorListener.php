@@ -47,22 +47,16 @@ class LoggingErrorListener
             $error->getMessage()
         );
 
-        try {
-            $this->logger->error(
-                $message,
-                [
-                    "status_code" => $response->getStatusCode(),
-                    "method" => $request->getMethod(),
-                    "uri" => (string)$request->getUri(),
-                    "code" => $error->getCode(),
-                    "line" => $error->getLine(),
-                    "file" => $error->getFile(),
-                ]
-            );
-        } catch (\Throwable $throwable) {
-            $logger = new SimpleLogger();
-            $logger->warning($throwable->getMessage());// Logger not work, warning situation.
-            $logger->error($message);
-        }
+        $this->logger->error(
+            $message,
+            [
+                "status_code" => $response->getStatusCode(),
+                "method" => $request->getMethod(),
+                "uri" => (string)$request->getUri(),
+                "code" => $error->getCode(),
+                "line" => $error->getLine(),
+                "file" => $error->getFile(),
+            ]
+        );
     }
 }
