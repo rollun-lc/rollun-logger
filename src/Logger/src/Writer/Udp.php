@@ -70,6 +70,9 @@ class Udp extends AbstractWriter
         $this->client->close();
     }
 
+    /**
+     * @inheritDoc
+     */
     protected function doWrite(array $event)
     {
         $message = $this->formatter->format($event);
@@ -85,12 +88,12 @@ class Udp extends AbstractWriter
                 $this->client->flush();
             }
         } catch (\Throwable $exception) {
+            if (!$this->options['ignore_error']) {
+                throw new RuntimeException('Error sending messages to Udp', 0, $exception);
+            }
             if (self::MAX_ATTEMPTS > $this->attempts) {
                 $this->attempts++;
                 $this->flushMessage();
-            }
-            if (!$this->options['ignore_error']) {
-                throw new RuntimeException(sprintf('Error sending messages to Udp. Total attempts: %s', $this->attempts), 0);
             }
         }
     }

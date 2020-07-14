@@ -2,7 +2,6 @@
 
 namespace rollun\test\logger\Writer;
 
-use RuntimeException;
 use Jaeger\Transport\TUDPTransport;
 use PHPUnit\Framework\TestCase;
 use rollun\logger\Writer\Udp;
@@ -40,7 +39,7 @@ class UdpTest extends TestCase
     {
         $udpOptions = [
             'auto_flash' => true,
-            'ignore_error' => false,
+            'ignore_error' => true,
         ];
         $event = [
             'message' => 'foo',
@@ -48,8 +47,17 @@ class UdpTest extends TestCase
         ];
         $this->object = new Udp($this->clientMock, $udpOptions);
         $this->object->setFormatter($this->formatter);
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage(sprintf('Error sending messages to Udp. Total attempts: %s', Udp::MAX_ATTEMPTS));
+
         $this->object->write($event);
+        $actualAttempts = $this->getProperty($this->object, 'attempts');
+        $this->assertEquals(Udp::MAX_ATTEMPTS, $actualAttempts);
+    }
+
+    private function getProperty($object, $property)
+    {
+        $reflectedClass = new \ReflectionClass($object);
+        $reflection = $reflectedClass->getProperty($property);
+        $reflection->setAccessible(true);
+        return $reflection->getValue($object);
     }
 }
