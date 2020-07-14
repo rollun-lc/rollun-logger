@@ -23,11 +23,6 @@ class Udp extends AbstractWriter
      */
     protected $client;
 
-    /**
-     * @var int
-     */
-    private $attempts = 0;
-
     public function __construct($client, array $options = [])
     {
         if ($client instanceof Traversable) {
@@ -83,18 +78,17 @@ class Udp extends AbstractWriter
 
     private function flushMessage()
     {
-        try {
-            if ($this->options['auto_flash']) {
-                $this->client->flush();
+        for ($attempts = 0; $attempts <= self::MAX_ATTEMPTS; $attempts++) {
+            try {
+                if ($this->options['auto_flash']) {
+                    $this->client->flush();
+                    return;
+                }
+            } catch (\Throwable $exception) {
             }
-        } catch (\Throwable $exception) {
-            if (!$this->options['ignore_error']) {
-                throw new RuntimeException('Error sending messages to Udp', 0, $exception);
-            }
-            if (self::MAX_ATTEMPTS > $this->attempts) {
-                $this->attempts++;
-                $this->flushMessage();
-            }
+        }
+        if (!$this->options['ignore_error']) {
+            throw new RuntimeException('Error sending messages to Udp', 0);
         }
     }
 }
