@@ -24,6 +24,23 @@ class PrometheusWriter extends AbstractWriter
     const METHOD_DELETE = 'delete';
     const METHODS = [self::METHOD_POST, self::METHOD_PUT, self::METHOD_DELETE];
 
+    const PROMETHEUS_METRIC_ID = 'prometheusMetricId';
+    const PROMETHEUS_VALUE = 'prometheusValue';
+    const PROMETHEUS_GROUPS = 'prometheusGroups';
+    const PROMETHEUS_LABELS = 'prometheusLabels';
+    const PROMETHEUS_METHOD = 'prometheusMethod';
+    const PROMETHEUS_REFRESH = 'prometheusRefresh';
+    const PROMETHEUS_KEYS = [
+        self::PROMETHEUS_METRIC_ID,
+        self::PROMETHEUS_VALUE,
+        self::PROMETHEUS_GROUPS,
+        self::PROMETHEUS_LABELS,
+        self::PROMETHEUS_METHOD,
+        self::PROMETHEUS_REFRESH
+    ];
+
+    const SERVICE_NAME_KEY = 'service';
+
     /**
      * @var CollectorRegistry
      */
@@ -47,8 +64,13 @@ class PrometheusWriter extends AbstractWriter
     /**
      * @inheritDoc
      */
-    public function __construct(Collector $collector, PushGateway $pushGateway, string $jobName, string $type, array $options = null)
-    {
+    public function __construct(
+        Collector $collector,
+        PushGateway $pushGateway,
+        string $jobName,
+        string $type,
+        array $options = null
+    ) {
         $this->collector = $collector;
         $this->pushGateway = $pushGateway;
         $this->jobName = $jobName;
@@ -59,6 +81,7 @@ class PrometheusWriter extends AbstractWriter
 
     /**
      * @inheritDoc
+     * @throws \Exception
      */
     public function write(array $event)
     {
@@ -68,12 +91,17 @@ class PrometheusWriter extends AbstractWriter
         }
 
         // prepare prometheus data
-        $event['prometheusMetricId'] = isset($event['context']['metricId']) ? (string)$event['context']['metricId'] : null;
-        $event['prometheusValue'] = isset($event['context']['value']) ? (float)$event['context']['value'] : 0;
-        $event['prometheusGroups'] = isset($event['context']['groups']) ? (array)$event['context']['groups'] : [];
-        $event['prometheusLabels'] = isset($event['context']['labels']) ? (array)$event['context']['labels'] : [];
-        $event['prometheusMethod'] = isset($event['context']['method']) ? (string)$event['context']['method'] : self::METHOD_POST;
-        $event['prometheusRefresh'] = !empty($event['context']['refresh']);
+        $event[self::PROMETHEUS_METRIC_ID] = isset($event['context']['metricId'])
+            ? (string)$event['context']['metricId']
+            : null;
+        $event[self::PROMETHEUS_VALUE] = isset($event['context']['value']) ? (float)$event['context']['value'] : 0;
+        $event[self::PROMETHEUS_GROUPS] = isset($event['context']['groups']) ? (array)$event['context']['groups'] : [];
+        $event = $this->addServiceNameToGroup($event);
+        $event[self::PROMETHEUS_LABELS] = isset($event['context']['labels']) ? (array)$event['context']['labels'] : [];
+        $event[self::PROMETHEUS_METHOD] = isset($event['context']['method'])
+            ? (string)$event['context']['method']
+            : self::METHOD_POST;
+        $event[self::PROMETHEUS_REFRESH] = !empty($event['context']['refresh']);
 
         if ($this->isValid($event)) {
             parent::write($event);
@@ -82,12 +110,45 @@ class PrometheusWriter extends AbstractWriter
 
     /**
      * @param array $event
+     * @return array
+     */
+    private function addServiceNameToGroup(array $event): array
+    {
+        $serviceName = getenv('SERVICE_NAME');
+        $withName = getenv('WITH_SERVICE_NAME') === 'true';
+        if ($withName && $serviceName) {
+            $event[self::PROMETHEUS_GROUPS][self::SERVICE_NAME_KEY] = $serviceName;
+        }
+
+        return $event;
+    }
+
+    /**
+     * @param array $event
      *
      * @return bool
+     * @throws \Exception
      */
     protected function isValid(array $event): bool
     {
-        return !empty(getenv('PROMETHEUS_HOST')) && !empty($event['prometheusMetricId']) && in_array($event['prometheusMethod'], self::METHODS);
+        // check event array has prometheus keys
+        foreach (self::PROMETHEUS_KEYS as $key) {
+            if (!in_array($key, $event)) {
+                throw new \Exception(sprintf('Not provided Prometheus key: %s', $key));
+            }
+        }
+
+        // check prometheus method
+        if (!in_array($event[self::PROMETHEUS_METHOD], self::METHODS)) {
+            throw new \Exception(sprintf('PROMETHEUS_METHOD is not supported: %s', $event[self::PROMETHEUS_METHOD]));
+        }
+
+        // check required params
+        if (empty(getenv('PROMETHEUS_HOST')) || empty($event[self::PROMETHEUS_METRIC_ID])) {
+            throw new \Exception('Prometheus host or metric_id is not provided');
+        }
+
+        return true;
     }
 
     /**
@@ -109,10 +170,16 @@ class PrometheusWriter extends AbstractWriter
      */
     protected function writeGauge(array $event)
     {
-        $gauge = $this->getCollectorRegistry()->getOrRegisterGauge('', $event['prometheusMetricId'], '', $event['prometheusLabels']);
-        $gauge->set($event['prometheusValue'], $event['prometheusLabels']);
+        $gauge = $this->getCollectorRegistry()
+            ->getOrRegisterGauge(
+                '',
+                $event[self::PROMETHEUS_METRIC_ID],
+                '',
+                $event[self::PROMETHEUS_LABELS]
+            );
+        $gauge->set($event[self::PROMETHEUS_VALUE], $event[self::PROMETHEUS_LABELS]);
 
-        $this->send($event['prometheusMethod'], $event['prometheusGroups']);
+        $this->send($event[self::PROMETHEUS_METHOD], $event[self::PROMETHEUS_GROUPS]);
     }
 
     /**
@@ -123,15 +190,16 @@ class PrometheusWriter extends AbstractWriter
      */
     protected function writeCounter(array $event)
     {
-        $counter = $this->getCollectorRegistry()->getOrRegisterCounter('', $event['prometheusMetricId'], '', $event['prometheusLabels']);
+        $counter = $this->getCollectorRegistry()
+            ->getOrRegisterCounter('', $event[self::PROMETHEUS_METRIC_ID], '', $event[self::PROMETHEUS_LABELS]);
 
-        if ($event['prometheusRefresh']) {
-            $counter->set($event['prometheusValue'], $event['prometheusLabels']);
+        if ($event[self::PROMETHEUS_REFRESH]) {
+            $counter->set($event[self::PROMETHEUS_VALUE], $event[self::PROMETHEUS_LABELS]);
         } else {
-            $counter->incBy($event['prometheusValue'], $event['prometheusLabels']);
+            $counter->incBy($event[self::PROMETHEUS_VALUE], $event[self::PROMETHEUS_LABELS]);
         }
 
-        $this->send($event['prometheusMethod'], $event['prometheusGroups']);
+        $this->send($event[self::PROMETHEUS_METHOD], $event[self::PROMETHEUS_GROUPS]);
     }
 
     /**

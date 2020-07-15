@@ -28,6 +28,7 @@ composer require rollun-com/rollun-logger
         - PROMETHEUS_PORT - порт Prometheus. По умолчанию 9091
         - PROMETHEUS_REDIS_HOST - хост от Redis. Нужно указать если будет использоваться Redis адаптер для хранения.
         - PROMETHEUS_REDIS_PORT - порт от Redis. По умолчанию 6379
+        - WITH_SERVICE_NAME - по умолчанию true. Если true и так же установлена переменная SERVICE_NAME, метрика будет добавлена в группу со значением SERVICE_NAME
         
     * Для Slack:    
         - SLACK_TOKEN - Slack Bot User OAuth Access Token
