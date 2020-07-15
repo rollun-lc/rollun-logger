@@ -45,16 +45,6 @@ class PrometheusWriter extends AbstractWriter
     protected $type;
 
     /**
-     * @var string
-     */
-    protected $namespace;
-
-    /**
-     * @var string
-     */
-    protected $serviceName;
-
-    /**
      * @inheritDoc
      */
     public function __construct(Collector $collector, PushGateway $pushGateway, string $jobName, string $type, array $options = null)
@@ -63,7 +53,6 @@ class PrometheusWriter extends AbstractWriter
         $this->pushGateway = $pushGateway;
         $this->jobName = $jobName;
         $this->type = $type;
-        $this->serviceName = (string)getenv('SERVICE_NAME');
 
         parent::__construct($options);
     }
@@ -98,7 +87,7 @@ class PrometheusWriter extends AbstractWriter
      */
     protected function isValid(array $event): bool
     {
-        return !empty(getenv('PROMETHEUS_HOST')) && !empty($this->serviceName) && !empty($event['prometheusMetricId']) && in_array($event['prometheusMethod'], self::METHODS);
+        return !empty(getenv('PROMETHEUS_HOST')) && !empty($event['prometheusMetricId']) && in_array($event['prometheusMethod'], self::METHODS);
     }
 
     /**
@@ -106,9 +95,6 @@ class PrometheusWriter extends AbstractWriter
      */
     protected function doWrite(array $event)
     {
-        // prepare namespace
-        $this->namespace = str_replace('-', '_', trim(strtolower($this->serviceName)));
-
         $methodName = 'write' . ucfirst($this->type);
         if (method_exists($this, $methodName)) {
             $this->{$methodName}($event);
@@ -123,7 +109,7 @@ class PrometheusWriter extends AbstractWriter
      */
     protected function writeGauge(array $event)
     {
-        $gauge = $this->getCollectorRegistry()->getOrRegisterGauge($this->namespace, $event['prometheusMetricId'], $this->serviceName, $event['prometheusLabels']);
+        $gauge = $this->getCollectorRegistry()->getOrRegisterGauge('', $event['prometheusMetricId'], '', $event['prometheusLabels']);
         $gauge->set($event['prometheusValue'], $event['prometheusLabels']);
 
         $this->send($event['prometheusMethod'], $event['prometheusGroups']);
@@ -137,7 +123,7 @@ class PrometheusWriter extends AbstractWriter
      */
     protected function writeCounter(array $event)
     {
-        $counter = $this->getCollectorRegistry()->getOrRegisterCounter($this->namespace, $event['prometheusMetricId'], $this->serviceName, $event['prometheusLabels']);
+        $counter = $this->getCollectorRegistry()->getOrRegisterCounter('', $event['prometheusMetricId'], '', $event['prometheusLabels']);
 
         if ($event['prometheusRefresh']) {
             $counter->set($event['prometheusValue'], $event['prometheusLabels']);
