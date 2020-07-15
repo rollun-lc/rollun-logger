@@ -145,7 +145,7 @@ class PrometheusWriter extends AbstractWriter
             $counter->incBy($event['prometheusValue'], $event['prometheusLabels']);
         }
 
-        $this->send($event['prometheusMethod'], $event['prometheusLabels']);
+        $this->send($event['prometheusMethod'], $event['prometheusGroups']);
     }
 
     /**
