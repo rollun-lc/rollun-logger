@@ -94,12 +94,8 @@ class PushGateway
      * @return ResponseInterface
      * @throws GuzzleException
      */
-    protected function doRequest(
-        CollectorRegistry $collectorRegistry,
-        string $job,
-        array $groupingKey,
-        $method
-    ): ResponseInterface {
+    protected function doRequest(CollectorRegistry $collectorRegistry, string $job, array $groupingKey, $method): ResponseInterface
+    {
         $url = "http://{$this->host}:{$this->port}/metrics/job/" . $job;
         if (!empty($groupingKey)) {
             foreach ($groupingKey as $label => $value) {
@@ -118,6 +114,8 @@ class PushGateway
             $requestOptions['body'] = (new RenderTextFormat())->render($collectorRegistry->getMetricFamilySamples());
         }
 
-        return $client->request($method, $url, $requestOptions);
+        $response = $client->request($method, $url, $requestOptions);
+
+        return $response;
     }
 }

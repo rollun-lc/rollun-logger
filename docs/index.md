@@ -28,7 +28,6 @@ composer require rollun-com/rollun-logger
         - PROMETHEUS_PORT - порт Prometheus. По умолчанию 9091
         - PROMETHEUS_REDIS_HOST - хост от Redis. Нужно указать если будет использоваться Redis адаптер для хранения.
         - PROMETHEUS_REDIS_PORT - порт от Redis. По умолчанию 6379
-        - WITH_SERVICE_NAME - по умолчанию true. Если true и так же установлена переменная SERVICE_NAME, метрика будет добавлена в группу со значением SERVICE_NAME
         
     * Для Slack:    
         - SLACK_TOKEN - Slack Bot User OAuth Access Token
@@ -317,19 +316,20 @@ use rollun\logger\Writer\PrometheusWriter;
 
 // Возможные настройки метрики
 $data = [
-    'metricId' => 'metric_25', // уникальное имя метрики
-    'value'    => 1, // значение метрики
-    'groups'   => ['group1' => 'val1'], // группы для которых пишется метрика. при помощи групп можно структурировать метрику. 
-    'labels'   => ['label1', 'label2'], // ярлыки метрики. используется если название метрики не достаточно и вы хотите использовать вспомогательные ярлыки.
-    'method'   => PrometheusWriter::METHOD_POST, // способ отправки. Разница описана здесь https://github.com/prometheus/pushgateway#put-method
-    'refresh'  => true, // если вы хотите сбросить накопленное значение и начать заново нужно передать true. Имеет смысл только если вы используете тип counter. 
+    PrometheusWriter::METRIC_ID         => 'metric_25', // уникальное имя метрики
+    PrometheusWriter::VALUE             => 1, // значение метрики
+    PrometheusWriter::GROUPS            => ['group1' => 'val1'], // группы для которых пишется метрика. при помощи групп можно структурировать метрику. 
+    PrometheusWriter::LABELS            => ['label1', 'label2'], // ярлыки метрики. используется если название метрики не достаточно и вы хотите использовать вспомогательные ярлыки.
+    PrometheusWriter::METHOD            => PrometheusWriter::METHOD_POST, // способ отправки. Разница описана здесь https://github.com/prometheus/pushgateway#put-method
+    PrometheusWriter::REFRESH           => true, // если вы хотите сбросить накопленное значение и начать заново нужно передать true. Имеет смысл только если вы используете тип counter. 
+    PrometheusWriter::WITH_SERVICE_NAME => true, // Если true и так же установлена переменная окружения SERVICE_NAME, метрика будет добавлена в группу со значением переменной SERVICE_NAME (PrometheusWriter::GROUPS => ['group1' => 'val1', 'service' => 'serviceName'])         
 ];
 
 // измерители
-$logger->notice('METRICS_GAUGE', ['metricId' => 'metric_1', 'value' => 50, 'groups' => ['group1' => 'val1'], 'labels' => ['red']]);
-$logger->notice('METRICS_GAUGE', ['metricId' => 'metric_2', 'value' => 12, 'method'   => PrometheusWriter::METHOD_PUT]);
+$logger->notice('METRICS_GAUGE', [PrometheusWriter::METRIC_ID => 'metric_1', PrometheusWriter::VALUE => 50, PrometheusWriter::GROUPS => ['group1' => 'val1'], PrometheusWriter::LABELS => ['red']]);
+$logger->notice('METRICS_GAUGE', [PrometheusWriter::METRIC_ID => 'metric_2', PrometheusWriter::VALUE => 12, PrometheusWriter::METHOD => PrometheusWriter::METHOD_PUT, PrometheusWriter::WITH_SERVICE_NAME => true]);
 
 // счетчики
-$logger->notice('METRICS_COUNTER', ['metricId' => 'metric_3', 'value' => 10, 'groups' => ['group1' => 'val1'], 'labels' => ['red']]);
-$logger->notice('METRICS_COUNTER', ['metricId' => 'metric_4', 'value' => 1, 'refresh'  => true]);
+$logger->notice('METRICS_COUNTER', [PrometheusWriter::METRIC_ID => 'metric_3', PrometheusWriter::VALUE => 10, PrometheusWriter::GROUPS => ['group1' => 'val1'], PrometheusWriter::LABELS => ['red']]);
+$logger->notice('METRICS_COUNTER', [PrometheusWriter::METRIC_ID => 'metric_4', PrometheusWriter::VALUE => 1, PrometheusWriter::REFRESH => true]);
 ```

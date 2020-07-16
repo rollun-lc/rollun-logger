@@ -24,22 +24,13 @@ class PrometheusWriter extends AbstractWriter
     const METHOD_DELETE = 'delete';
     const METHODS = [self::METHOD_POST, self::METHOD_PUT, self::METHOD_DELETE];
 
-    const PROMETHEUS_METRIC_ID = 'prometheusMetricId';
-    const PROMETHEUS_VALUE = 'prometheusValue';
-    const PROMETHEUS_GROUPS = 'prometheusGroups';
-    const PROMETHEUS_LABELS = 'prometheusLabels';
-    const PROMETHEUS_METHOD = 'prometheusMethod';
-    const PROMETHEUS_REFRESH = 'prometheusRefresh';
-    const PROMETHEUS_KEYS = [
-        self::PROMETHEUS_METRIC_ID,
-        self::PROMETHEUS_VALUE,
-        self::PROMETHEUS_GROUPS,
-        self::PROMETHEUS_LABELS,
-        self::PROMETHEUS_METHOD,
-        self::PROMETHEUS_REFRESH
-    ];
-
-    const SERVICE_NAME_KEY = 'service';
+    const METRIC_ID = 'metricId';
+    const VALUE = 'value';
+    const GROUPS = 'groups';
+    const LABELS = 'labels';
+    const METHOD = 'method';
+    const REFRESH = 'refresh';
+    const WITH_SERVICE_NAME = 'service';
 
     /**
      * @var CollectorRegistry
@@ -91,20 +82,44 @@ class PrometheusWriter extends AbstractWriter
         }
 
         // prepare prometheus data
-        $event[self::PROMETHEUS_METRIC_ID] = isset($event['context']['metricId'])
-            ? (string)$event['context']['metricId']
-            : null;
-        $event[self::PROMETHEUS_VALUE] = isset($event['context']['value']) ? (float)$event['context']['value'] : 0;
-        $event[self::PROMETHEUS_GROUPS] = isset($event['context']['groups']) ? (array)$event['context']['groups'] : [];
-        $event = $this->addServiceNameToGroup($event);
-        $event[self::PROMETHEUS_LABELS] = isset($event['context']['labels']) ? (array)$event['context']['labels'] : [];
-        $event[self::PROMETHEUS_METHOD] = isset($event['context']['method'])
-            ? (string)$event['context']['method']
-            : self::METHOD_POST;
-        $event[self::PROMETHEUS_REFRESH] = !empty($event['context']['refresh']);
+        $event = $this->prepareData($event);
 
-        if ($this->isValid($event)) {
-            parent::write($event);
+        parent::write($event);
+    }
+
+    /**
+     * @param array $event
+     * @return array
+     * @throws \Exception
+     */
+    protected function prepareData(array $event): array
+    {
+        $this->validateInputData($event['context']);
+        $event['prometheusMetricId'] = (string)$event['context'][self::METRIC_ID];
+        $event['prometheusValue'] = isset($event['context'][self::VALUE]) ? (float)$event['context'][self::VALUE] : 0;
+        $event['prometheusGroups'] = isset($event['context'][self::GROUPS]) ? (array)$event['context'][self::GROUPS] : [];
+        $event = $this->addServiceNameToGroup($event);
+        $event['prometheusLabels'] = isset($event['context'][self::LABELS]) ? (array)$event['context'][self::LABELS] : [];
+        $event['prometheusMethod'] = $event['context'][self::METHOD];
+        $event['prometheusRefresh'] = !empty($event['context'][self::REFRESH]);
+        return $event;
+    }
+
+    /**
+     * @param array $context
+     * @throws \Exception
+     */
+    protected function validateInputData(array $context)
+    {
+        if (empty(getenv('PROMETHEUS_HOST'))) {
+            throw new \Exception('Prometheus host is not provided');
+        }
+        //required context data
+        if (empty($context[self::METRIC_ID])) {
+            throw new \Exception('MetricId is not provided');
+        }
+        if (!in_array($context[self::METHOD], self::METHODS)) {
+            throw new \Exception(sprintf('PROMETHEUS_METHOD is not supported: %s', $context[self::METHOD]));
         }
     }
 
@@ -112,43 +127,15 @@ class PrometheusWriter extends AbstractWriter
      * @param array $event
      * @return array
      */
-    private function addServiceNameToGroup(array $event): array
+    protected function addServiceNameToGroup(array $event): array
     {
         $serviceName = getenv('SERVICE_NAME');
-        $withName = getenv('WITH_SERVICE_NAME') === 'true';
+        $withName = $event['context'][self::WITH_SERVICE_NAME] === 'true';
         if ($withName && $serviceName) {
-            $event[self::PROMETHEUS_GROUPS][self::SERVICE_NAME_KEY] = $serviceName;
+            $event['prometheusGroups'][self::WITH_SERVICE_NAME] = $serviceName;
         }
 
         return $event;
-    }
-
-    /**
-     * @param array $event
-     *
-     * @return bool
-     * @throws \Exception
-     */
-    protected function isValid(array $event): bool
-    {
-        // check event array has prometheus keys
-        foreach (self::PROMETHEUS_KEYS as $key) {
-            if (!in_array($key, $event)) {
-                throw new \Exception(sprintf('Not provided Prometheus key: %s', $key));
-            }
-        }
-
-        // check prometheus method
-        if (!in_array($event[self::PROMETHEUS_METHOD], self::METHODS)) {
-            throw new \Exception(sprintf('PROMETHEUS_METHOD is not supported: %s', $event[self::PROMETHEUS_METHOD]));
-        }
-
-        // check required params
-        if (empty(getenv('PROMETHEUS_HOST')) || empty($event[self::PROMETHEUS_METRIC_ID])) {
-            throw new \Exception('Prometheus host or metric_id is not provided');
-        }
-
-        return true;
     }
 
     /**
@@ -170,16 +157,10 @@ class PrometheusWriter extends AbstractWriter
      */
     protected function writeGauge(array $event)
     {
-        $gauge = $this->getCollectorRegistry()
-            ->getOrRegisterGauge(
-                '',
-                $event[self::PROMETHEUS_METRIC_ID],
-                '',
-                $event[self::PROMETHEUS_LABELS]
-            );
-        $gauge->set($event[self::PROMETHEUS_VALUE], $event[self::PROMETHEUS_LABELS]);
+        $gauge = $this->getCollectorRegistry()->getOrRegisterGauge('', $event['prometheusMetricId'], '', $event['prometheusLabels']);
+        $gauge->set($event['prometheusValue'], $event['prometheusLabels']);
 
-        $this->send($event[self::PROMETHEUS_METHOD], $event[self::PROMETHEUS_GROUPS]);
+        $this->send($event['prometheusMethod'], $event['prometheusGroups']);
     }
 
     /**
@@ -190,16 +171,15 @@ class PrometheusWriter extends AbstractWriter
      */
     protected function writeCounter(array $event)
     {
-        $counter = $this->getCollectorRegistry()
-            ->getOrRegisterCounter('', $event[self::PROMETHEUS_METRIC_ID], '', $event[self::PROMETHEUS_LABELS]);
+        $counter = $this->getCollectorRegistry()->getOrRegisterCounter('', $event['prometheusMetricId'], '', $event['prometheusLabels']);
 
-        if ($event[self::PROMETHEUS_REFRESH]) {
-            $counter->set($event[self::PROMETHEUS_VALUE], $event[self::PROMETHEUS_LABELS]);
+        if ($event['prometheusRefresh']) {
+            $counter->set($event['prometheusValue'], $event['prometheusLabels']);
         } else {
-            $counter->incBy($event[self::PROMETHEUS_VALUE], $event[self::PROMETHEUS_LABELS]);
+            $counter->incBy($event['prometheusValue'], $event['prometheusLabels']);
         }
 
-        $this->send($event[self::PROMETHEUS_METHOD], $event[self::PROMETHEUS_GROUPS]);
+        $this->send($event['prometheusMethod'], $event['prometheusGroups']);
     }
 
     /**
