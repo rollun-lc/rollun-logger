@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace rollun\logger\Writer;
 
+use Prometheus\Collector as PrometheusCollector;
 use Prometheus\CollectorRegistry;
 use Prometheus\Storage\Adapter;
 use rollun\logger\Prometheus\Collector;
@@ -112,7 +113,7 @@ class PrometheusWriter extends AbstractWriter
         $gauge = $this->getCollectorRegistry()->getOrRegisterGauge('', $event['prometheusMetricId'], '', $event['prometheusLabels']);
         $gauge->set($event['prometheusValue'], $event['prometheusLabels']);
 
-        $this->send($event['prometheusMethod'], $event['prometheusGroups']);
+        $this->send($gauge, $event['prometheusMethod'], $event['prometheusGroups']);
     }
 
     /**
@@ -131,7 +132,7 @@ class PrometheusWriter extends AbstractWriter
             $counter->incBy($event['prometheusValue'], $event['prometheusLabels']);
         }
 
-        $this->send($event['prometheusMethod'], $event['prometheusGroups']);
+        $this->send($counter, $event['prometheusMethod'], $event['prometheusGroups']);
     }
 
     /**
@@ -151,41 +152,14 @@ class PrometheusWriter extends AbstractWriter
     }
 
     /**
-     * @param string $method
-     * @param array  $groups
-     */
-    protected function send(string $method, array $groups)
-    {
-        $this->{$method}($groups);
-    }
-
-    /**
-     * @param array $groups
+     * @param PrometheusCollector $collector
+     * @param string              $method
+     * @param array               $groups
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    protected function post(array $groups)
+    protected function send(PrometheusCollector $collector, string $method, array $groups)
     {
-        $this->pushGateway->pushAdd($this->getCollectorRegistry(), $this->jobName, $groups);
-    }
-
-    /**
-     * @param array $groups
-     *
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     */
-    protected function put(array $groups)
-    {
-        $this->pushGateway->push($this->getCollectorRegistry(), $this->jobName, $groups);
-    }
-
-    /**
-     * @param array $groups
-     *
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     */
-    protected function delete(array $groups)
-    {
-        $this->pushGateway->delete($this->getCollectorRegistry(), $this->jobName, $groups);
+        $this->pushGateway->doRequest($this->getCollectorRegistry(), $collector, $this->jobName, $groups, $method);
     }
 }
