@@ -32,6 +32,15 @@ class PrometheusWriter extends AbstractWriter
     const METHOD = 'method';
     const REFRESH = 'refresh';
     const WITH_SERVICE_NAME = 'service';
+    const KEYS = [
+         self::METRIC_ID,
+         self::VALUE,
+         self::GROUPS,
+         self::LABELS,
+         self::METHOD,
+         self::REFRESH,
+         self::WITH_SERVICE_NAME,
+    ];
 
     /**
      * @var CollectorRegistry
@@ -76,6 +85,7 @@ class PrometheusWriter extends AbstractWriter
         if ($this->hasFormatter()) {
             $event = $this->getFormatter()->format($event);
         }
+        $this->validateContextKeys($event['context']);
 
         // prepare prometheus data
         $event = $this->prepareData($event);
@@ -100,13 +110,26 @@ class PrometheusWriter extends AbstractWriter
         $serviceName = getenv('SERVICE_NAME');
         $withName = isset($event['context'][self::WITH_SERVICE_NAME]) ? (bool)$event['context'][self::WITH_SERVICE_NAME] : true;
         if ($withName && $serviceName) {
-            $event['prometheusGroups'][self::WITH_SERVICE_NAME] = $serviceName;
+            $event['prometheusGroups']['service'] = $serviceName;
         }
         // other
         $event['prometheusLabels'] = isset($event['context'][self::LABELS]) ? (array)$event['context'][self::LABELS] : [];
-        $event['prometheusMethod'] = isset($event['context']['method']) ? (string)$event['context']['method'] : self::METHOD_POST;
+        $event['prometheusMethod'] = isset($event['context'][self::METHOD]) ? (string)$event['context'][self::METHOD] : self::METHOD_POST;
         $event['prometheusRefresh'] = !empty($event['context'][self::REFRESH]);
         return $event;
+    }
+
+    /**
+     * @param array $context
+     * @throws \Exception
+     */
+    protected function validateContextKeys(array $context)
+    {
+        foreach ($context as $key => $value) {
+            if (!in_array($key, self::KEYS)) {
+                throw new \Exception(sprintf('Unknown Prometheus key is provided: %s', $key));
+            }
+        }
     }
 
     /**
