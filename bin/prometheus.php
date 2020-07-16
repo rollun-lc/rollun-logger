@@ -29,5 +29,32 @@ $data = [
 
 $logger->notice('METRICS_COUNTER', $data);
 
+//$logger->notice(
+//    'METRICS_COUNTER',
+//    [
+//        'metricId' => 'roma_inventory_change_1',
+//        'value'    => 1,
+//        'groups'   => [
+//            'service'     => 'roma_service_test',
+//            'marketplace' => 'ebay_plaisir',
+//            'action'      => 'update',
+//        ],
+//    ]
+//);
+//
+//$logger->notice(
+//    "METRICS_COUNTER",
+//    [
+//        'metricId' => 'roma_marketplace_lot_change_send_1',
+//        'value'    => 1,
+//        'groups'   => [
+//            'marketplace' => 'ebay_plaisir_inventory',
+//            'service'     => 'roma_service_test',
+//            'type'        => 'Observer',
+//            'action'      => 'update'
+//        ],
+//    ]
+//);
+
 echo 'Done !';
 die();
