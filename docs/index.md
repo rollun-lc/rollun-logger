@@ -322,7 +322,7 @@ $data = [
     PrometheusWriter::LABELS            => ['label1', 'label2'], // ярлыки метрики. используется если название метрики не достаточно и вы хотите использовать вспомогательные ярлыки.
     PrometheusWriter::METHOD            => PrometheusWriter::METHOD_POST, // способ отправки. Разница описана здесь https://github.com/prometheus/pushgateway#put-method
     PrometheusWriter::REFRESH           => true, // если вы хотите сбросить накопленное значение и начать заново нужно передать true. Имеет смысл только если вы используете тип counter. 
-    PrometheusWriter::WITH_SERVICE_NAME => true, // Если true и так же установлена переменная окружения SERVICE_NAME, метрика будет добавлена в группу со значением переменной SERVICE_NAME (PrometheusWriter::GROUPS => ['group1' => 'val1', 'service' => 'serviceName'])         
+    PrometheusWriter::WITH_SERVICE_NAME => true, // если данная пара ключ-значение не добавлена или же значение true, и так же установлена переменная окружения SERVICE_NAME, метрика будет добавлена в группу со значением переменной SERVICE_NAME (PrometheusWriter::GROUPS => ['group1' => 'val1', 'service' => 'serviceName']).   
 ];
 
 // измерители

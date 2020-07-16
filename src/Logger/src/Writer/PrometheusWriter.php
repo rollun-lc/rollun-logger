@@ -92,10 +92,17 @@ class PrometheusWriter extends AbstractWriter
      */
     protected function prepareData(array $event): array
     {
+        // required data
         $event['prometheusMetricId'] = isset($event['context'][self::METRIC_ID]) ? (string)$event['context'][self::METRIC_ID] : null;
         $event['prometheusValue'] = isset($event['context'][self::VALUE]) ? (float)$event['context'][self::VALUE] : 0;
+        // prepare groups
         $event['prometheusGroups'] = isset($event['context'][self::GROUPS]) ? (array)$event['context'][self::GROUPS] : [];
-        $event = $this->addServiceNameToGroup($event);
+        $serviceName = getenv('SERVICE_NAME');
+        $withName = isset($event['context'][self::WITH_SERVICE_NAME]) ? (bool)$event['context'][self::WITH_SERVICE_NAME] : true;
+        if ($withName && $serviceName) {
+            $event['prometheusGroups'][self::WITH_SERVICE_NAME] = $serviceName;
+        }
+        // other
         $event['prometheusLabels'] = isset($event['context'][self::LABELS]) ? (array)$event['context'][self::LABELS] : [];
         $event['prometheusMethod'] = isset($event['context']['method']) ? (string)$event['context']['method'] : self::METHOD_POST;
         $event['prometheusRefresh'] = !empty($event['context'][self::REFRESH]);
@@ -110,31 +117,17 @@ class PrometheusWriter extends AbstractWriter
     protected function isValid(array $event): bool
     {
         if (empty(getenv('PROMETHEUS_HOST'))) {
-            throw new \Exception('Prometheus host is not provided');
+            return false;
         }
         //required context data
-        if (empty($event['prometheusMetricId'])) {
-            throw new \Exception('MetricId is not provided');
+        if (empty($event['prometheusMetricId']) || empty($event['prometheusValue'])) {
+            throw new \Exception('Prometheus required data is not provided');
         }
         if (!in_array($event['prometheusMethod'], self::METHODS)) {
             throw new \Exception(sprintf('PROMETHEUS_METHOD is not supported: %s', $event['prometheusMethod']));
         }
+
         return true;
-    }
-
-    /**
-     * @param array $event
-     * @return array
-     */
-    protected function addServiceNameToGroup(array $event): array
-    {
-        $serviceName = getenv('SERVICE_NAME');
-        $withName = $event['context'][self::WITH_SERVICE_NAME] === true;
-        if ($withName && $serviceName) {
-            $event['prometheusGroups'][self::WITH_SERVICE_NAME] = $serviceName;
-        }
-
-        return $event;
     }
 
     /**
