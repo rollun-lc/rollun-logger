@@ -5,9 +5,11 @@ namespace rollun\logger\Prometheus;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use Prometheus\Collector;
 use Prometheus\CollectorRegistry;
 use Prometheus\RenderTextFormat;
 use Psr\Http\Message\ResponseInterface;
+use rollun\logger\Writer\PrometheusWriter;
 
 /**
  * Class PushGateway
@@ -41,52 +43,8 @@ class PushGateway
     }
 
     /**
-     * Pushes all metrics in a Collector, replacing all those with the same job.
-     * Uses HTTP PUT.
-     *
      * @param CollectorRegistry $collectorRegistry
-     * @param string            $job
-     * @param array             $groupingKey
-     *
-     * @throws GuzzleException
-     */
-    public function push(CollectorRegistry $collectorRegistry, string $job, array $groupingKey = null): void
-    {
-        $this->doRequest($collectorRegistry, $job, $groupingKey, 'put');
-    }
-
-    /**
-     * Pushes all metrics in a Collector, replacing only previously pushed metrics of the same name and job.
-     * Uses HTTP POST.
-     *
-     * @param CollectorRegistry $collectorRegistry
-     * @param string            $job
-     * @param string            $groupingKey
-     *
-     * @throws GuzzleException
-     */
-    public function pushAdd(CollectorRegistry $collectorRegistry, string $job, array $groupingKey = null): void
-    {
-        $this->doRequest($collectorRegistry, $job, $groupingKey, 'post');
-    }
-
-    /**
-     * Deletes metrics from the Push Gateway.
-     * Uses HTTP DELETE.
-     *
-     * @param CollectorRegistry $collectorRegistry
-     * @param string            $job
-     * @param array             $groupingKey
-     *
-     * @throws GuzzleException
-     */
-    public function delete(CollectorRegistry $collectorRegistry, string $job, array $groupingKey = null): void
-    {
-        $this->doRequest($collectorRegistry, $job, $groupingKey, 'delete');
-    }
-
-    /**
-     * @param CollectorRegistry $collectorRegistry
+     * @param Collector         $collector
      * @param string            $job
      * @param array             $groupingKey
      * @param string            $method
@@ -94,7 +52,7 @@ class PushGateway
      * @return ResponseInterface
      * @throws GuzzleException
      */
-    protected function doRequest(CollectorRegistry $collectorRegistry, string $job, array $groupingKey, $method): ResponseInterface
+    public function doRequest(CollectorRegistry $collectorRegistry, Collector $collector, string $job, array $groupingKey, string $method): ResponseInterface
     {
         $url = "http://{$this->host}:{$this->port}/metrics/job/" . $job;
         if (!empty($groupingKey)) {
@@ -110,12 +68,17 @@ class PushGateway
             'connect_timeout' => 10,
             'timeout'         => 20,
         ];
-        if ($method != 'delete') {
-            $requestOptions['body'] = (new RenderTextFormat())->render($collectorRegistry->getMetricFamilySamples());
+
+        if ($method != PrometheusWriter::METHOD_DELETE) {
+            $samples = $collectorRegistry->getMetricFamilySamples();
+            foreach ($samples as $sample) {
+                if ($sample->getName() == $collector->getName()) {
+                    $requestOptions['body'] = (new RenderTextFormat())->render([$sample]);
+                    break 1;
+                }
+            }
         }
 
-        $response = $client->request($method, $url, $requestOptions);
-
-        return $response;
+        return $client->request($method, $url, $requestOptions);
     }
 }
