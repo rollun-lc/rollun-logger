@@ -85,7 +85,6 @@ class PrometheusWriter extends AbstractWriter
         if ($this->hasFormatter()) {
             $event = $this->getFormatter()->format($event);
         }
-        $this->validateContextKeys($event['context']);
 
         // prepare prometheus data
         $event = $this->prepareData($event);
@@ -120,19 +119,6 @@ class PrometheusWriter extends AbstractWriter
     }
 
     /**
-     * @param array $context
-     * @throws \Exception
-     */
-    protected function validateContextKeys(array $context)
-    {
-        foreach ($context as $key => $value) {
-            if (!in_array($key, self::KEYS)) {
-                throw new \Exception(sprintf('Unknown Prometheus key is provided: %s', $key));
-            }
-        }
-    }
-
-    /**
      * @param array $event
      * @return bool
      * @throws \Exception
@@ -141,6 +127,12 @@ class PrometheusWriter extends AbstractWriter
     {
         if (empty(getenv('PROMETHEUS_HOST'))) {
             return false;
+        }
+        //validate context keys
+        foreach ($event['context'] as $key => $value) {
+            if (!in_array($key, self::KEYS)) {
+                throw new \Exception(sprintf('Unknown Prometheus key is provided: %s', $key));
+            }
         }
         //required context data
         if (empty($event['prometheusMetricId']) || empty($event['prometheusValue'])) {
