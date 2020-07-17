@@ -25,6 +25,23 @@ class PrometheusWriter extends AbstractWriter
     const METHOD_DELETE = 'delete';
     const METHODS = [self::METHOD_POST, self::METHOD_PUT, self::METHOD_DELETE];
 
+    const METRIC_ID = 'metricId';
+    const VALUE = 'value';
+    const GROUPS = 'groups';
+    const LABELS = 'labels';
+    const METHOD = 'method';
+    const REFRESH = 'refresh';
+    const WITH_SERVICE_NAME = 'service';
+    const KEYS = [
+         self::METRIC_ID,
+         self::VALUE,
+         self::GROUPS,
+         self::LABELS,
+         self::METHOD,
+         self::REFRESH,
+         self::WITH_SERVICE_NAME,
+    ];
+
     /**
      * @var CollectorRegistry
      */
@@ -60,6 +77,7 @@ class PrometheusWriter extends AbstractWriter
 
     /**
      * @inheritDoc
+     * @throws \Exception
      */
     public function write(array $event)
     {
@@ -69,12 +87,7 @@ class PrometheusWriter extends AbstractWriter
         }
 
         // prepare prometheus data
-        $event['prometheusMetricId'] = isset($event['context']['metricId']) ? (string)$event['context']['metricId'] : null;
-        $event['prometheusValue'] = isset($event['context']['value']) ? (float)$event['context']['value'] : 0;
-        $event['prometheusGroups'] = isset($event['context']['groups']) ? (array)$event['context']['groups'] : [];
-        $event['prometheusLabels'] = isset($event['context']['labels']) ? (array)$event['context']['labels'] : [];
-        $event['prometheusMethod'] = isset($event['context']['method']) ? (string)$event['context']['method'] : self::METHOD_POST;
-        $event['prometheusRefresh'] = !empty($event['context']['refresh']);
+        $event = $this->prepareData($event);
 
         if ($this->isValid($event)) {
             parent::write($event);
@@ -83,12 +96,53 @@ class PrometheusWriter extends AbstractWriter
 
     /**
      * @param array $event
-     *
+     * @return array
+     * @throws \Exception
+     */
+    protected function prepareData(array $event): array
+    {
+        // required data
+        $event['prometheusMetricId'] = isset($event['context'][self::METRIC_ID]) ? (string)$event['context'][self::METRIC_ID] : null;
+        $event['prometheusValue'] = isset($event['context'][self::VALUE]) ? (float)$event['context'][self::VALUE] : 0;
+        // prepare groups
+        $event['prometheusGroups'] = isset($event['context'][self::GROUPS]) ? (array)$event['context'][self::GROUPS] : [];
+        $serviceName = getenv('SERVICE_NAME');
+        $withName = isset($event['context'][self::WITH_SERVICE_NAME]) ? (bool)$event['context'][self::WITH_SERVICE_NAME] : true;
+        if ($withName && $serviceName) {
+            $event['prometheusGroups']['service'] = $serviceName;
+        }
+        // other
+        $event['prometheusLabels'] = isset($event['context'][self::LABELS]) ? (array)$event['context'][self::LABELS] : [];
+        $event['prometheusMethod'] = isset($event['context'][self::METHOD]) ? (string)$event['context'][self::METHOD] : self::METHOD_POST;
+        $event['prometheusRefresh'] = !empty($event['context'][self::REFRESH]);
+        return $event;
+    }
+
+    /**
+     * @param array $event
      * @return bool
+     * @throws \Exception
      */
     protected function isValid(array $event): bool
     {
-        return !empty(getenv('PROMETHEUS_HOST')) && !empty($event['prometheusMetricId']) && in_array($event['prometheusMethod'], self::METHODS);
+        if (empty(getenv('PROMETHEUS_HOST'))) {
+            return false;
+        }
+        //validate context keys
+        foreach ($event['context'] as $key => $value) {
+            if (!in_array($key, self::KEYS)) {
+                throw new \Exception(sprintf('Unknown Prometheus key is provided: %s', $key));
+            }
+        }
+        //required context data
+        if (empty($event['prometheusMetricId']) || empty($event['prometheusValue'])) {
+            throw new \Exception('Prometheus required data is not provided');
+        }
+        if (!in_array($event['prometheusMethod'], self::METHODS)) {
+            throw new \Exception(sprintf('PROMETHEUS_METHOD is not supported: %s', $event['prometheusMethod']));
+        }
+
+        return true;
     }
 
     /**
