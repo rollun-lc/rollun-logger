@@ -153,6 +153,12 @@ class ConfigProvider
                                         'priority' => 4,
                                     ],
                                 ],
+                                [
+                                    'name'    => 'regex',
+                                    'options' => [
+                                        'regex' => '/^((?!METRICS).)*$/'
+                                    ],
+                                ],
                             ],
                         ],
                     ],
@@ -249,6 +255,12 @@ class ConfigProvider
                             'token'     => getenv('SLACK_TOKEN'),
                             'channel'   => getenv('SLACK_CHANNEL'),
                             'filters'   => [
+                                [
+                                    'name'    => 'regex',
+                                    'options' => [
+                                        'regex' => '/^((?!METRICS).)*$/'
+                                    ],
+                                ],
                                 [
                                     'name'    => 'priority',
                                     'options' => [
