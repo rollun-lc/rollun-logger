@@ -136,7 +136,7 @@ class PrometheusWriter extends AbstractWriter
         }
         //required context data
         if (empty($event['prometheusMetricId'])) {
-            throw new \Exception('Prometheus required data is not provided');
+            throw new \Exception('Prometheus required data is not provided.' . json_encode($event));
         }
         if (!in_array($event['prometheusMethod'], self::METHODS)) {
             throw new \Exception(sprintf('PROMETHEUS_METHOD is not supported: %s', $event['prometheusMethod']));
