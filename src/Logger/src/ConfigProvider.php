@@ -201,7 +201,7 @@ class ConfigProvider
                                 [
                                     'name'    => 'regex',
                                     'options' => [
-                                        'regex' => '/^METRICS_GAUGE/'
+                                        'regex' => '/^METRICS_GAUGE$/'
                                     ],
                                 ],
                                 [
@@ -229,7 +229,7 @@ class ConfigProvider
                                 [
                                     'name'    => 'regex',
                                     'options' => [
-                                        'regex' => '/^METRICS_COUNTER/'
+                                        'regex' => '/^METRICS_COUNTER$/'
                                     ],
                                 ],
                                 [

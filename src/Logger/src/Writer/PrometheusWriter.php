@@ -96,6 +96,7 @@ class PrometheusWriter extends AbstractWriter
 
     /**
      * @param array $event
+     *
      * @return array
      * @throws \Exception
      */
@@ -104,6 +105,7 @@ class PrometheusWriter extends AbstractWriter
         // required data
         $event['prometheusMetricId'] = isset($event['context'][self::METRIC_ID]) ? (string)$event['context'][self::METRIC_ID] : null;
         $event['prometheusValue'] = isset($event['context'][self::VALUE]) ? (float)$event['context'][self::VALUE] : 0;
+
         // prepare groups
         $event['prometheusGroups'] = isset($event['context'][self::GROUPS]) ? (array)$event['context'][self::GROUPS] : [];
         $serviceName = getenv('SERVICE_NAME');
@@ -111,35 +113,36 @@ class PrometheusWriter extends AbstractWriter
         if ($withName && $serviceName) {
             $event['prometheusGroups']['service'] = $serviceName;
         }
+
         // other
         $event['prometheusLabels'] = isset($event['context'][self::LABELS]) ? (array)$event['context'][self::LABELS] : [];
         $event['prometheusMethod'] = isset($event['context'][self::METHOD]) ? (string)$event['context'][self::METHOD] : self::METHOD_POST;
         $event['prometheusRefresh'] = !empty($event['context'][self::REFRESH]);
+
         return $event;
     }
 
     /**
      * @param array $event
+     *
      * @return bool
-     * @throws \Exception
      */
     protected function isValid(array $event): bool
     {
-        if (empty(getenv('PROMETHEUS_HOST'))) {
+        if (empty(getenv('PROMETHEUS_HOST')) || empty($event['prometheusMetricId'])) {
             return false;
         }
+
         //validate context keys
         foreach ($event['context'] as $key => $value) {
             if (!in_array($key, self::KEYS)) {
-                throw new \Exception(sprintf('Unknown Prometheus key is provided: %s', $key));
+                return false;
             }
         }
+
         //required context data
-        if (empty($event['prometheusMetricId'])) {
-            throw new \Exception('Prometheus required data is not provided.' . json_encode($event));
-        }
         if (!in_array($event['prometheusMethod'], self::METHODS)) {
-            throw new \Exception(sprintf('PROMETHEUS_METHOD is not supported: %s', $event['prometheusMethod']));
+            return false;
         }
 
         return true;
