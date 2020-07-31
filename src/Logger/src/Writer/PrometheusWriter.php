@@ -135,7 +135,7 @@ class PrometheusWriter extends AbstractWriter
             }
         }
         //required context data
-        if (empty($event['prometheusMetricId']) || empty($event['prometheusValue'])) {
+        if (empty($event['prometheusMetricId'])) {
             throw new \Exception('Prometheus required data is not provided');
         }
         if (!in_array($event['prometheusMethod'], self::METHODS)) {
