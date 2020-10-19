@@ -117,14 +117,14 @@ class ConfigProvider
         return [
             LoggerInterface::class => [
                 'writers'    => [
-                    [
+                    'stream_stdout' => [
                         'name'    => Stream::class,
                         'options' => [
                             'stream'    => 'php://stdout',
                             'formatter' => FluentdFormatter::class
                         ],
                     ],
-                    [
+                    'udp_logstash' => [
                         'name' => Udp::class,
 
                         'options' => [
@@ -146,14 +146,14 @@ class ConfigProvider
                                 ]
                             ),
                             'filters'   => [
-                                [
+                                'priority_<_4' => [
                                     'name'    => 'priority',
                                     'options' => [
                                         'operator' => '<',
                                         'priority' => 4,
                                     ],
                                 ],
-                                [
+                                'regex_not_metrics' => [
                                     'name'    => 'regex',
                                     'options' => [
                                         'regex' => '/^((?!METRICS).)*$/'
@@ -162,26 +162,26 @@ class ConfigProvider
                             ],
                         ],
                     ],
-                    [
+                    'http_async_metric_metrics' => [
                         'name'    => HttpAsyncMetric::class,
                         'options' => [
                             'url'       => getenv('METRIC_URL'),
                             'filters'   => [
-                                [
+                                'priority_>=_4' => [
                                     'name'    => 'priority',
                                     'options' => [
                                         'operator' => '>=',
                                         'priority' => 4, // we should send only warnings or notices
                                     ],
                                 ],
-                                [
+                                'priority_<=_5' => [
                                     'name'    => 'priority',
                                     'options' => [
                                         'operator' => '<=',
                                         'priority' => 5, // we should send only warnings or notices
                                     ],
                                 ],
-                                [
+                                'regex_only_metrics' => [
                                     'name'    => 'regex',
                                     'options' => [
                                         'regex' => '/^METRICS$/'
@@ -191,27 +191,27 @@ class ConfigProvider
                             'formatter' => Metric::class,
                         ],
                     ],
-                    [
+                    'prometheus_metrics_gauge' => [
                         PrometheusFactory::COLLECTOR => Collector::class, // не обязательный параметр.
                         PrometheusFactory::JOB_NAME  => 'logger_job',  // не обязательный параметр.
                         'name'                       => PrometheusWriter::class,
                         'options'                    => [
                             PrometheusFactory::TYPE => PrometheusFactory::TYPE_GAUGE,
                             'filters'               => [
-                                [
+                                'regex_only_metrics_gauge' => [
                                     'name'    => 'regex',
                                     'options' => [
                                         'regex' => '/^METRICS_GAUGE$/'
                                     ],
                                 ],
-                                [
+                                'priority_>=_4' => [
                                     'name'    => 'priority',
                                     'options' => [
                                         'operator' => '>=',
                                         'priority' => 4, // we should send only warnings or notices
                                     ],
                                 ],
-                                [
+                                'priority_<=_5' => [
                                     'name'    => 'priority',
                                     'options' => [
                                         'operator' => '<=',
@@ -221,25 +221,25 @@ class ConfigProvider
                             ]
                         ],
                     ],
-                    [
+                    'prometheus_metrics_counter' => [
                         'name'    => PrometheusWriter::class,
                         'options' => [
                             PrometheusFactory::TYPE => PrometheusFactory::TYPE_COUNTER,
                             'filters'               => [
-                                [
+                                'regex_only_metrics_counter' => [
                                     'name'    => 'regex',
                                     'options' => [
                                         'regex' => '/^METRICS_COUNTER$/'
                                     ],
                                 ],
-                                [
+                                'priority_>=_4' => [
                                     'name'    => 'priority',
                                     'options' => [
                                         'operator' => '>=',
                                         'priority' => 4, // we should send only warnings or notices
                                     ],
                                 ],
-                                [
+                                'priority_<=_5' => [
                                     'name'    => 'priority',
                                     'options' => [
                                         'operator' => '<=',
@@ -249,19 +249,19 @@ class ConfigProvider
                             ]
                         ],
                     ],
-                    [
+                    'slack' => [
                         'name'    => Slack::class,
                         'options' => [
                             'token'     => getenv('SLACK_TOKEN'),
                             'channel'   => getenv('SLACK_CHANNEL'),
                             'filters'   => [
-                                [
+                                'regex_not_metrics' => [
                                     'name'    => 'regex',
                                     'options' => [
                                         'regex' => '/^((?!METRICS).)*$/'
                                     ],
                                 ],
-                                [
+                                'priority_<_4' => [
                                     'name'    => 'priority',
                                     'options' => [
                                         'operator' => '<',
