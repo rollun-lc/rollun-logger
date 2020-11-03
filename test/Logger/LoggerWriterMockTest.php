@@ -8,7 +8,7 @@ namespace ZendTest\Log;
 
 use PHPUnit\Framework\TestCase;
 use rollun\logger\Processor\IdMaker;
-use Zend\Log\Logger;
+use rollun\logger\Logger;
 use Psr\Log\LogLevel;
 use Zend\Log\Writer\WriterInterface;
 use Psr\Container\ContainerInterface;

@@ -7,7 +7,7 @@
 namespace ZendTest\Log;
 
 use PHPUnit\Framework\TestCase;
-use Zend\Log\Logger;
+use rollun\logger\Logger;
 use Psr\Log\LogLevel;
 use Psr\Container\ContainerInterface;
 use Zend\Db\TableGateway\TableGateway;
