@@ -18,7 +18,7 @@ use Psr\Log\LoggerInterface;
 use stdClass;
 use TypeError;
 use rollun\logger\Logger;
-use Zend\Log\Processor\Backtrace;
+use rollun\logger\Processor\Backtrace;
 use Zend\Log\Writer\Mock as MockWriter;
 use Zend\Log\Writer\Stream as StreamWriter;
 use Zend\Log\Filter\Mock as MockFilter;
@@ -376,7 +376,6 @@ class LoggerTest extends LoggerInterfaceTest
 
     public function testProcessorOutputAdded()
     {
-        $this->markTestIncomplete("Failed asserting that null matches expected '/app/test/Logger/LoggerTest/LoggerTest.php'.");
         $processor = new Backtrace();
         $this->logger->addProcessor($processor);
         $writer = new MockWriter;
