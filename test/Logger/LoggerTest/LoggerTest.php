@@ -220,7 +220,6 @@ class LoggerTest extends LoggerInterfaceTest
      */
     public function testAddFilterByNameWithParams($filter, $options)
     {
-        $this->markTestIncomplete("Writer Zend\Log\Writer\Mock failed to write log message. Error: Class 'Zend\Filter\Digits' not found");
         $writer = new MockWriter;
         $writer->addFilter($filter, $options);
         $this->logger->addWriter($writer);
