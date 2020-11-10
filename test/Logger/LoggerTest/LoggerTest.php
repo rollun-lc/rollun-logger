@@ -15,6 +15,7 @@ use ErrorException;
 use InvalidArgumentException;
 use PHPUnit\Framework\Error\Warning;
 use Psr\Log\LoggerInterface;
+use rollun\logger\WriterPluginManager;
 use stdClass;
 use TypeError;
 use rollun\logger\Logger;
@@ -79,7 +80,7 @@ class LoggerTest extends LoggerInterfaceTest
 
     public function testUsesWriterPluginManagerByDefault()
     {
-        $this->assertInstanceOf('Zend\Log\WriterPluginManager', $this->logger->getWriterPluginManager());
+        $this->assertInstanceOf(WriterPluginManager::class, $this->logger->getWriterPluginManager());
     }
 
     public function testPassingShortNameToPluginReturnsWriterByThatName()

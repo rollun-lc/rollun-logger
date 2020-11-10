@@ -17,7 +17,6 @@ use Zend\Log\Processor\ProcessorInterface;
 use Zend\Log\Processor\PsrPlaceholder;
 use Zend\Log\ProcessorPluginManager;
 use Zend\Log\Writer\WriterInterface;
-use Zend\Log\WriterPluginManager;
 use Zend\ServiceManager\AbstractPluginManager;
 use Zend\ServiceManager\ServiceManager;
 use Zend\Stdlib\ArrayUtils;

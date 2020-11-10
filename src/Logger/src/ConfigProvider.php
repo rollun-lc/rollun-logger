@@ -23,14 +23,10 @@ use rollun\logger\Writer\Slack;
 use rollun\logger\Writer\Udp;
 use rollun\logger\Writer\HttpAsyncMetric;
 use rollun\logger\Formatter\Metric;
-use Zend\Log\LoggerAbstractServiceFactory;
-use Zend\Log\LoggerServiceFactory;
 use Zend\Log\FilterPluginManagerFactory;
 use Zend\Log\FormatterPluginManagerFactory;
 use Zend\Log\ProcessorPluginManagerFactory;
 use Zend\Log\Writer\Stream;
-use Zend\Log\WriterPluginManagerFactory;
-use Zend\Log\Logger;
 use Zend\ServiceManager\Factory\InvokableFactory;
 
 class ConfigProvider
