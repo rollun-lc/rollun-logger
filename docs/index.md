@@ -168,15 +168,15 @@ return
         ],
         'dependencies' => [
             'abstract_factories' => [
-                'Zend\Log\LoggerAbstractServiceFactory',
+                \rollun\logger\LoggerAbstractServiceFactory::class,
                 'Zend\Db\Adapter\AdapterAbstractServiceFactory',
             ],
             'factories' => [
-                'Zend\Log\Logger' => 'Zend\Log\LoggerServiceFactory',
+                \rollun\logger\Logger::class => \rollun\logger\LoggerServiceFactory::class,
                 'LogFilterManager' => 'Zend\Log\FilterPluginManagerFactory',
                 'LogFormatterManager' => 'Zend\Log\FormatterPluginManagerFactory',
                 'LogProcessorManager' => 'Zend\Log\ProcessorPluginManagerFactory',
-                'LogWriterManager' => 'Zend\Log\WriterPluginManagerFactory',
+                'LogWriterManager' => \rollun\logger\WriterPluginManagerFactory::class,
             ],
             'aliases' => [
                 'logDbAdapter' => 'Zend\Db\Adapter\AdapterInterface',
