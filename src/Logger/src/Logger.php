@@ -39,7 +39,7 @@ class Logger implements PsrLoggerInterface
      * Key to specify fallback writer in config.
      * example:
      * [
-     *      Zend\Log\Logger::FALLBACK_WRITER_KEY => [
+     *      rollun\logger\Logger::FALLBACK_WRITER_KEY => [
      *          'name' => Zend\Log\Writer\Stream::class,
      *          'options' => [
      *              'stream' => 'your_file.log'
