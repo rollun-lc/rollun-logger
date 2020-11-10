@@ -17,7 +17,7 @@ use Psr\Log\NullLogger;
 use Zend\Log\Filter\Mock as MockFilter;
 use Zend\Log\Formatter\Simple as SimpleFormatter;
 use rollun\logger\Logger;
-use Zend\Log\Writer\Psr as PsrWriter;
+use rollun\logger\Writer\Psr as PsrWriter;
 
 /**
  * @coversDefaultClass PsrWriter
