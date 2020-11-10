@@ -12,6 +12,7 @@ namespace rollun\test\logger;
 use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
 use rollun\logger\Writer\FingersCrossed;
+use rollun\logger\Writer\Stream;
 use Zend\Log\Exception\InvalidArgumentException;
 use Zend\Log\Writer;
 use rollun\logger\WriterPluginManager;
@@ -65,7 +66,7 @@ class WriterPluginManagerCompatibilityTest extends TestCase
                     // intentionally fall-through
                 case Writer\MongoDB::class:
                     // intentionally fall-through
-                case Writer\Stream::class:
+                case Stream::class:
                     // always skip; these implementations have required arguments
                     break;
                 default:
