@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace rollun\logger\Writer;
 
-use Zend\Log\Writer\AbstractWriter;
-
 /**
  * Class HttpAsync
  *

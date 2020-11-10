@@ -21,7 +21,7 @@ use TypeError;
 use rollun\logger\Logger;
 use rollun\logger\Processor\Backtrace;
 use Zend\Log\Writer\Mock as MockWriter;
-use Zend\Log\Writer\Stream as StreamWriter;
+use rollun\logger\Writer\Stream as StreamWriter;
 use Zend\Log\Filter\Mock as MockFilter;
 use Zend\Stdlib\SplPriorityQueue;
 use Zend\Validator\Digits as DigitsFilter;
@@ -329,7 +329,7 @@ class LoggerTest extends LoggerInterfaceTest
 
         $writers = $logger->getWriters()->toArray();
         $this->assertCount(1, $writers);
-        $this->assertInstanceOf('Zend\Log\Writer\Stream', $writers[0]);
+        $this->assertInstanceOf(StreamWriter::class, $writers[0]);
         $this->assertEquals('foo', $writers[0]->getLogSeparator());
     }
 

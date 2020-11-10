@@ -10,6 +10,7 @@
 namespace rollun\logger;
 
 use rollun\logger\Writer\FingersCrossed;
+use rollun\logger\Writer\Stream;
 use Zend\Log\Exception\InvalidArgumentException;
 use Zend\Log\Writer;
 use Zend\Log\Writer\Factory\DbFactory;
@@ -35,7 +36,7 @@ class WriterPluginManager extends AbstractPluginManager
         'mongodb'        => Writer\MongoDB::class,
         'noop'           => Writer\Noop::class,
         'psr'            => Writer\Psr::class,
-        'stream'         => Writer\Stream::class,
+        'stream'         => Stream::class,
         'syslog'         => Writer\Syslog::class,
         'zendmonitor'    => Writer\ZendMonitor::class,
 
@@ -57,7 +58,7 @@ class WriterPluginManager extends AbstractPluginManager
         Writer\MongoDB::class        => MongoDbFactory::class,
         Writer\Noop::class           => WriterFactory::class,
         Writer\Psr::class            => WriterFactory::class,
-        Writer\Stream::class         => WriterFactory::class,
+        Stream::class                => WriterFactory::class,
         Writer\Syslog::class         => WriterFactory::class,
         Writer\FingersCrossed::class => WriterFactory::class,
         Writer\ZendMonitor::class    => WriterFactory::class,

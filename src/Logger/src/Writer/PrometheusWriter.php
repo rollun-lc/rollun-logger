@@ -8,7 +8,6 @@ use Prometheus\CollectorRegistry;
 use Prometheus\Storage\Adapter;
 use rollun\logger\Prometheus\Collector;
 use rollun\logger\Prometheus\PushGateway;
-use Zend\Log\Writer\AbstractWriter;
 
 /**
  * Class PrometheusWriter

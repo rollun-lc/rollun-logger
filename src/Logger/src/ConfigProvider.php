@@ -20,13 +20,12 @@ use rollun\logger\Prometheus\PushGateway;
 use rollun\logger\Writer\Factory\PrometheusFactory;
 use rollun\logger\Writer\PrometheusWriter;
 use rollun\logger\Writer\Slack;
+use rollun\logger\Writer\Stream;
 use rollun\logger\Writer\Udp;
 use rollun\logger\Writer\HttpAsyncMetric;
 use rollun\logger\Formatter\Metric;
 use Zend\Log\FilterPluginManagerFactory;
-use Zend\Log\FormatterPluginManagerFactory;
 use Zend\Log\ProcessorPluginManagerFactory;
-use Zend\Log\Writer\Stream;
 use Zend\ServiceManager\Factory\InvokableFactory;
 
 class ConfigProvider

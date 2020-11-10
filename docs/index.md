@@ -274,7 +274,7 @@ return [
 ибо на самом деле происходит слияние конфигурации и могут переопределиться не все параметры).  
 
 Что бы убрать ненужный фильтр, его можно переопределить на null. Это сработает если врайтер наследуеться от 
-[Zend\Log\Writer\AbstractWriter](https://github.com/avz-cmf/zend-psr3-log/blob/master/src/Writer/AbstractWriter.php#L95)
+[rollun\logger\Writer\AbstractWriter](https://github.com/avz-cmf/zend-psr3-log/blob/master/src/Writer/AbstractWriter.php#L95)
 и не переопределяет логику родительского конструктора по добавлению врайтеров, которая находиться 
 [тут](https://github.com/avz-cmf/zend-psr3-log/blob/74dc8053bc4c4ef520f1c9b42e2d0951b14de981/src/Writer/AbstractWriter.php#L95)  
 

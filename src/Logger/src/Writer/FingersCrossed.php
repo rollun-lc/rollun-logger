@@ -13,7 +13,6 @@ use Zend\Log\Exception;
 use Zend\Log\Filter\FilterInterface;
 use Zend\Log\Filter\Priority as PriorityFilter;
 use Zend\Log\Formatter\FormatterInterface;
-use Zend\Log\Writer\AbstractWriter;
 use Zend\Log\Writer\WriterInterface;
 use rollun\logger\WriterPluginManager;
 use Zend\ServiceManager\ServiceManager;

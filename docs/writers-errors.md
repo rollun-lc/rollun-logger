@@ -37,7 +37,7 @@ php, а директива catch_workers_output определяет будем 
 Передача экземпляра объекта:
 ```php
 use rollun\logger\Logger;
-use Zend\Log\Writer\Stream;
+use rollun\logger\Writer\Stream;
 
 $options = [
     Logger::FALLBACK_WRITER_KEY => [
@@ -50,7 +50,7 @@ $logger = new Logger($options);
 Конфигурация через абстрактную фабрику:
 ```php
 use rollun\logger\Logger;
-use Zend\Log\Writer\Stream;
+use rollun\logger\Writer\Stream;
 use rollun\logger\LoggerAbstractServiceFactory;
 
 return [

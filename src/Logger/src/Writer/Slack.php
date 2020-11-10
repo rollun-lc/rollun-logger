@@ -5,7 +5,6 @@ namespace rollun\logger\Writer;
 
 use Zend\Http\Client;
 use Zend\Http\Response;
-use Zend\Log\Writer\AbstractWriter;
 
 /**
  * Class Slack

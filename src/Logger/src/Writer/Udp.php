@@ -7,7 +7,6 @@ use InvalidArgumentException;
 use Jaeger\Transport\TUDPTransport;
 use RuntimeException;
 use Traversable;
-use Zend\Log\Writer\AbstractWriter;
 
 class Udp extends AbstractWriter
 {

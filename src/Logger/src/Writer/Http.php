@@ -8,7 +8,6 @@ namespace rollun\logger\Writer;
 
 use Traversable;
 use Zend\Http\Client;
-use Zend\Log\Writer\AbstractWriter;
 use Zend\Uri\Http as HttpUri;
 
 /**

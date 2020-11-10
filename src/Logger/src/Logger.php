@@ -40,7 +40,7 @@ class Logger implements PsrLoggerInterface
      * example:
      * [
      *      rollun\logger\Logger::FALLBACK_WRITER_KEY => [
-     *          'name' => Zend\Log\Writer\Stream::class,
+     *          'name' => rollun\logger\Writer\Stream::class,
      *          'options' => [
      *              'stream' => 'your_file.log'
      *          ]

@@ -11,9 +11,6 @@ use RuntimeException;
 use Traversable;
 use rollun\logger\Formatter\Elasticsearch as ElasticsearchFormatter;
 
-use Zend\Log\Formatter\FormatterInterface;
-use Zend\Log\Writer\AbstractWriter;
-
 /**
  * Class Elasticsearch
  * @package rollun\logger\Writer
