@@ -367,7 +367,7 @@ class LoggerTest extends LoggerInterfaceTest
         $this->logger->addProcessor('backtrace');
 
         $processors = $this->logger->getProcessors()->toArray();
-        $this->assertInstanceOf('Zend\Log\Processor\Backtrace', $processors[0]);
+        $this->assertInstanceOf(Backtrace::class, $processors[0]);
 
         $writer = new MockWriter;
         $this->logger->addWriter($writer);

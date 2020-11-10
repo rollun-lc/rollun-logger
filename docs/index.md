@@ -174,8 +174,8 @@ return
             'factories' => [
                 \rollun\logger\Logger::class => \rollun\logger\LoggerServiceFactory::class,
                 'LogFilterManager' => 'Zend\Log\FilterPluginManagerFactory',
-                'LogFormatterManager' => 'Zend\Log\FormatterPluginManagerFactory',
-                'LogProcessorManager' => 'Zend\Log\ProcessorPluginManagerFactory',
+                'LogFormatterManager' => \rollun\logger\FormatterPluginManager::class,
+                'LogProcessorManager' => \rollun\logger\ProcessorPluginManager::class,
                 'LogWriterManager' => \rollun\logger\WriterPluginManagerFactory::class,
             ],
             'aliases' => [

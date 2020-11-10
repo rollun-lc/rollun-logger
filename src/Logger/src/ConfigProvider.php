@@ -25,7 +25,6 @@ use rollun\logger\Writer\Udp;
 use rollun\logger\Writer\HttpAsyncMetric;
 use rollun\logger\Formatter\Metric;
 use Zend\Log\FilterPluginManagerFactory;
-use Zend\Log\ProcessorPluginManagerFactory;
 use Zend\ServiceManager\Factory\InvokableFactory;
 
 class ConfigProvider

@@ -14,8 +14,7 @@ use ErrorException;
 use Throwable;
 use Traversable;
 use Zend\Log\Processor\ProcessorInterface;
-use Zend\Log\Processor\PsrPlaceholder;
-use Zend\Log\ProcessorPluginManager;
+use rollun\logger\Processor\PsrPlaceholder;
 use Zend\Log\Writer\WriterInterface;
 use Zend\ServiceManager\AbstractPluginManager;
 use Zend\ServiceManager\ServiceManager;
@@ -493,9 +492,9 @@ class Logger implements PsrLoggerInterface
     /**
      * Logs with an arbitrary level.
      *
-     * @param mixed  $level
+     * @param mixed $level
      * @param string $message
-     * @param array  $context
+     * @param array $context
      *
      * @return void
      *
