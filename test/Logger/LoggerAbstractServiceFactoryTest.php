@@ -15,7 +15,7 @@ use rollun\logger\LoggerAbstractServiceFactory;
 use rollun\logger\ProcessorPluginManager;
 use rollun\logger\WriterPluginManager;
 use Zend\Log\Writer\Noop;
-use Zend\Log\Writer\Db as DbWriter;
+use rollun\logger\Writer\Db as DbWriter;
 use rollun\logger\WriterPluginManagerFactory;
 use Zend\ServiceManager\Config;
 use Zend\ServiceManager\Exception\ServiceNotFoundException;
@@ -100,7 +100,6 @@ class LoggerAbstractServiceFactoryTest extends TestCase
      */
     public function testRetrievesDatabaseServiceFromServiceManagerWhenEncounteringDbWriter()
     {
-        $this->markTestIncomplete('Unable to resolve service "Zend\Log\Writer\Db"');
         $db = $this->getMockBuilder('Zend\Db\Adapter\Adapter')
             ->disableOriginalConstructor()
             ->getMock();

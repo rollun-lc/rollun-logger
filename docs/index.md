@@ -194,7 +194,7 @@ return
                 ],
                 'writers' => [
                     'db_logs_test_log' => [
-                        'name' => 'Zend\Log\Writer\Db',
+                        'name' => \rollun\logger\Writer\Db::class,
                         'options' => [
                             'db' => 'logDbAdapter',
                             'table' => 'logs_test_log',

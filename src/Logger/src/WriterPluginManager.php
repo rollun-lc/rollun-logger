@@ -9,12 +9,13 @@
 
 namespace rollun\logger;
 
+use rollun\logger\Writer\Db;
+use rollun\logger\Writer\Factory\DbFactory;
 use rollun\logger\Writer\FingersCrossed;
 use rollun\logger\Writer\Psr;
 use rollun\logger\Writer\Stream;
 use Zend\Log\Exception\InvalidArgumentException;
 use Zend\Log\Writer;
-use Zend\Log\Writer\Factory\DbFactory;
 use Zend\Log\Writer\Factory\MongoDbFactory;
 use Zend\Log\Writer\Factory\MongoFactory;
 use Zend\Log\Writer\Factory\WriterFactory;
@@ -28,7 +29,7 @@ class WriterPluginManager extends AbstractPluginManager
 {
     protected $aliases = [
         'chromephp'      => Writer\ChromePhp::class,
-        'db'             => Writer\Db::class,
+        'db'             => Db::class,
         'fingerscrossed' => FingersCrossed::class,
         'firephp'        => Writer\FirePhp::class,
         'mail'           => Writer\Mail::class,
@@ -51,7 +52,7 @@ class WriterPluginManager extends AbstractPluginManager
 
     protected $factories = [
         Writer\ChromePhp::class      => WriterFactory::class,
-        Writer\Db::class             => DbFactory::class,
+        Db::class                    => DbFactory::class,
         Writer\FirePhp::class        => WriterFactory::class,
         Writer\Mail::class           => WriterFactory::class,
         Writer\Mock::class           => WriterFactory::class,

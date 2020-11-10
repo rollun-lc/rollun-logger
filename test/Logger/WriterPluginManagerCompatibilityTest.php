@@ -11,6 +11,7 @@ namespace rollun\test\logger;
 
 use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
+use rollun\logger\Writer\Db;
 use rollun\logger\Writer\FingersCrossed;
 use rollun\logger\Writer\Stream;
 use Zend\Log\Exception\InvalidArgumentException;
@@ -58,7 +59,7 @@ class WriterPluginManagerCompatibilityTest extends TestCase
             switch ($target) {
                 case Writer\Mail::class:
                     // intentionally fall-through
-                case Writer\Db::class:
+                case Db::class:
                     // intentionally fall-through
                 case FingersCrossed::class:
                     // intentionally fall-through
