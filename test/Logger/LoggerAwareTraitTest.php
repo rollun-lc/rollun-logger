@@ -12,6 +12,7 @@ namespace rollun\test\logger;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use rollun\logger\Logger;
+use rollun\logger\LoggerAwareTrait;
 
 class LoggerAwareTraitTest extends TestCase
 {
@@ -20,7 +21,7 @@ class LoggerAwareTraitTest extends TestCase
      */
     public function testSetLogger()
     {
-        $object = $this->getObjectForTrait('\Zend\Log\LoggerAwareTrait');
+        $object = $this->getObjectForTrait(LoggerAwareTrait::class);
 
         $this->assertAttributeEquals(null, 'logger', $object);
 
