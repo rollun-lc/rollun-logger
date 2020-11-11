@@ -5,10 +5,10 @@
  */
 
 use Psr\Log\LoggerInterface;
+use rollun\logger\FilterPluginManagerFactory;
 use rollun\logger\Processor\IdMaker;
 use rollun\logger\Writer\Elasticsearch;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Log\FilterPluginManagerFactory;
 use Zend\ServiceManager\Factory\InvokableFactory;
 use Zend\Log\Writer\Mock as WriterMock;
 use rollun\logger\LoggerAbstractServiceFactory;
