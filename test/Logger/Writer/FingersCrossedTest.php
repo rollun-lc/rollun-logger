@@ -12,7 +12,8 @@ namespace rollun\test\logger\Writer;
 use PHPUnit\Framework\TestCase;
 use rollun\logger\Filter\Priority;
 use rollun\logger\Writer\FingersCrossed as FingersCrossedWriter;
-use Zend\Log\Writer\Mock as MockWriter;
+use rollun\logger\Writer\Mock;
+use rollun\logger\Writer\Mock as MockWriter;
 
 class FingersCrossedTest extends TestCase
 {
@@ -52,14 +53,14 @@ class FingersCrossedTest extends TestCase
     public function setWriterByName()
     {
         $writer = new FingersCrossedWriter('mock');
-        $this->assertAttributeInstanceOf('Zend\Log\Writer\Mock', 'writer', $writer);
+        $this->assertAttributeInstanceOf(Mock::class, 'writer', $writer);
     }
 
     public function testConstructorOptions()
     {
         $options = ['writer' => 'mock', 'priority' => 3];
         $writer = new FingersCrossedWriter($options);
-        $this->assertAttributeInstanceOf('Zend\Log\Writer\Mock', 'writer', $writer);
+        $this->assertAttributeInstanceOf(Mock::class, 'writer', $writer);
 
         $filters = $this->readAttribute($writer, 'filters');
         $this->assertCount(1, $filters);

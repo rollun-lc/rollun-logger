@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace rollun\logger\Writer;
 
+use InvalidArgumentException;
+use RuntimeException;
+
 /**
  * Class HttpAsync
  *
@@ -32,7 +35,7 @@ class HttpAsync extends AbstractWriter
     {
         if (!empty($options['url'])) {
             if (!filter_var($options['url'], FILTER_VALIDATE_URL)) {
-                throw new \InvalidArgumentException('URL is invalid');
+                throw new InvalidArgumentException('URL is invalid');
             }
 
             $this->url = $options['url'];
@@ -44,10 +47,10 @@ class HttpAsync extends AbstractWriter
     /**
      * @inheritDoc
      */
-    public function write(array $event)
+    public function write(array $event): void
     {
         if (empty($this->url) || !$this->isServerAvailable || !$this->isValid($event)) {
-            return '';
+            return;
         }
 
         parent::write($event);
@@ -119,7 +122,7 @@ class HttpAsync extends AbstractWriter
         $fp = fsockopen($host, $port, $errno, $errstr, 0.1);
 
         if ($fp === false) {
-            throw new \RuntimeException("Cannot open socket connection. Message: '$errstr'");
+            throw new RuntimeException("Cannot open socket connection. Message: '$errstr'");
         }
 
         $result = fwrite($fp, $out);
@@ -127,7 +130,7 @@ class HttpAsync extends AbstractWriter
 
         if ($result === false) {
             $this->isServerAvailable = false;
-            throw new \RuntimeException("The response timeout from {$this->url} exceeds 100ms");
+            throw new RuntimeException("The response timeout from {$this->url} exceeds 100ms");
         }
     }
 }

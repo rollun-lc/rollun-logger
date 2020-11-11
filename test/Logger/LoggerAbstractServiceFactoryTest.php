@@ -13,8 +13,9 @@ use PHPUnit\Framework\TestCase;
 use rollun\logger\Logger;
 use rollun\logger\LoggerAbstractServiceFactory;
 use rollun\logger\ProcessorPluginManager;
+use rollun\logger\Writer\WriterInterface;
 use rollun\logger\WriterPluginManager;
-use Zend\Log\Writer\Noop;
+use rollun\logger\Writer\Noop;
 use rollun\logger\Writer\Db as DbWriter;
 use rollun\logger\WriterPluginManagerFactory;
 use Zend\ServiceManager\Config;
@@ -156,7 +157,7 @@ class LoggerAbstractServiceFactoryTest extends TestCase
     public function testWillInjectWriterPluginManagerIfAvailable()
     {
         $writers = new WriterPluginManager(new ServiceManager());
-        $mockWriter = $this->createMock('Zend\Log\Writer\WriterInterface');
+        $mockWriter = $this->createMock(WriterInterface::class);
         $writers->setService('CustomWriter', $mockWriter);
 
         $config = new Config([

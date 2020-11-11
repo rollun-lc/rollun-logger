@@ -11,14 +11,14 @@ namespace rollun\logger;
 
 use rollun\logger\Writer\Db;
 use rollun\logger\Writer\Factory\DbFactory;
+use rollun\logger\Writer\Factory\WriterFactory;
 use rollun\logger\Writer\FingersCrossed;
+use rollun\logger\Writer\Mock;
+use rollun\logger\Writer\Noop;
 use rollun\logger\Writer\Psr;
 use rollun\logger\Writer\Stream;
 use rollun\logger\Exception\InvalidArgumentException;
-use Zend\Log\Writer;
-use Zend\Log\Writer\Factory\MongoDbFactory;
-use Zend\Log\Writer\Factory\MongoFactory;
-use Zend\Log\Writer\Factory\WriterFactory;
+use rollun\logger\Writer\WriterInterface;
 use Zend\ServiceManager\AbstractPluginManager;
 use Zend\ServiceManager\Exception\InvalidServiceException;
 
@@ -28,61 +28,31 @@ use Zend\ServiceManager\Exception\InvalidServiceException;
 class WriterPluginManager extends AbstractPluginManager
 {
     protected $aliases = [
-        'chromephp'      => Writer\ChromePhp::class,
         'db'             => Db::class,
         'fingerscrossed' => FingersCrossed::class,
-        'firephp'        => Writer\FirePhp::class,
-        'mail'           => Writer\Mail::class,
-        'mock'           => Writer\Mock::class,
-        'mongo'          => Writer\Mongo::class,
-        'mongodb'        => Writer\MongoDB::class,
-        'noop'           => Writer\Noop::class,
+        'mock'           => Mock::class,
+        'noop'           => Noop::class,
         'psr'            => Psr::class,
         'stream'         => Stream::class,
-        'syslog'         => Writer\Syslog::class,
-        'zendmonitor'    => Writer\ZendMonitor::class,
-
-        // The following are for backwards compatibility only; users
-        // should update their code to use the noop writer instead.
-        'null'              => Writer\Noop::class,
-        Writer\Null::class  => Writer\Noop::class,
-        'zendlogwriternull' => Writer\Noop::class,
-
     ];
 
     protected $factories = [
-        Writer\ChromePhp::class      => WriterFactory::class,
         Db::class                    => DbFactory::class,
-        Writer\FirePhp::class        => WriterFactory::class,
-        Writer\Mail::class           => WriterFactory::class,
-        Writer\Mock::class           => WriterFactory::class,
-        Writer\Mongo::class          => MongoFactory::class,
-        Writer\MongoDB::class        => MongoDbFactory::class,
-        Writer\Noop::class           => WriterFactory::class,
+        Mock::class                  => WriterFactory::class,
+        Noop::class                  => WriterFactory::class,
         Psr::class                   => WriterFactory::class,
         Stream::class                => WriterFactory::class,
-        Writer\Syslog::class         => WriterFactory::class,
-        Writer\FingersCrossed::class => WriterFactory::class,
-        Writer\ZendMonitor::class    => WriterFactory::class,
         // Legacy (v2) due to alias resolution; canonical form of resolved
         // alias is used to look up the factory, while the non-normalized
         // resolved alias is used as the requested name passed to the factory.
-        'zendlogwriterchromephp'      => WriterFactory::class,
         'zendlogwriterdb'             => WriterFactory::class,
-        'zendlogwriterfirephp'        => WriterFactory::class,
-        'zendlogwritermail'           => WriterFactory::class,
         'zendlogwritermock'           => WriterFactory::class,
-        'zendlogwritermongo'          => WriterFactory::class,
-        'zendlogwritermongodb'        => WriterFactory::class,
         'zendlogwriternoop'           => WriterFactory::class,
         'zendlogwriterpsr'            => WriterFactory::class,
         'zendlogwriterstream'         => WriterFactory::class,
-        'zendlogwritersyslog'         => WriterFactory::class,
-        'zendlogwriterfingerscrossed' => WriterFactory::class,
-        'zendlogwriterzendmonitor'    => WriterFactory::class,
     ];
 
-    protected $instanceOf = Writer\WriterInterface::class;
+    protected $instanceOf = WriterInterface::class;
 
     /**
      * Allow many writers of the same type (v2)

@@ -6,10 +6,10 @@ namespace rollun\test\logger\LoggerTest;
 
 use PHPUnit\Framework\TestCase;
 use rollun\logger\Writer\Stream;
+use rollun\logger\Writer\WriterInterface;
 use RuntimeException;
 use rollun\logger\Logger;
-use Zend\Log\Writer\Mock;
-use Zend\Log\Writer\WriterInterface;
+use rollun\logger\Writer\Mock;
 
 class FallbackWriterTest extends TestCase
 {

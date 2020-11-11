@@ -10,13 +10,15 @@
 namespace rollun\test\logger;
 
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 use ReflectionProperty;
 use rollun\logger\Writer\Db;
 use rollun\logger\Writer\FingersCrossed;
 use rollun\logger\Writer\Stream;
 use rollun\logger\Exception\InvalidArgumentException;
-use Zend\Log\Writer;
+use rollun\logger\Writer\WriterInterface;
 use rollun\logger\WriterPluginManager;
+use Traversable;
 use Zend\ServiceManager\ServiceManager;
 use Zend\ServiceManager\Test\CommonPluginManagerTrait;
 
@@ -37,7 +39,7 @@ class WriterPluginManagerCompatibilityTest extends TestCase
 
     protected function getInstanceOf()
     {
-        return Writer\WriterInterface::class;
+        return WriterInterface::class;
     }
 
     /**
@@ -46,7 +48,8 @@ class WriterPluginManagerCompatibilityTest extends TestCase
      * Iterates through aliases, and for adapters that require extensions,
      * tests if the extension is loaded, skipping that alias if not.
      *
-     * @return \Traversable
+     * @return Traversable
+     * @throws ReflectionException
      */
     public function aliasProvider()
     {
@@ -57,15 +60,9 @@ class WriterPluginManagerCompatibilityTest extends TestCase
 
         foreach ($aliases as $alias => $target) {
             switch ($target) {
-                case Writer\Mail::class:
-                    // intentionally fall-through
                 case Db::class:
                     // intentionally fall-through
                 case FingersCrossed::class:
-                    // intentionally fall-through
-                case Writer\Mongo::class:
-                    // intentionally fall-through
-                case Writer\MongoDB::class:
                     // intentionally fall-through
                 case Stream::class:
                     // always skip; these implementations have required arguments

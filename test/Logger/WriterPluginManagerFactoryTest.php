@@ -10,7 +10,7 @@ namespace rollun\test\logger;
 use Interop\Container\ContainerInterface;
 use Interop\Container\Exception\ContainerException;
 use PHPUnit\Framework\TestCase;
-use Zend\Log\Writer\WriterInterface;
+use rollun\logger\Writer\WriterInterface;
 use rollun\logger\WriterPluginManager;
 use rollun\logger\WriterPluginManagerFactory;
 use Zend\ServiceManager\ServiceLocatorInterface;

@@ -15,12 +15,14 @@ use ErrorException;
 use InvalidArgumentException;
 use PHPUnit\Framework\Error\Warning;
 use Psr\Log\LoggerInterface;
+use rollun\logger\Writer\Mock;
+use rollun\logger\Writer\Noop;
 use rollun\logger\WriterPluginManager;
 use stdClass;
 use TypeError;
 use rollun\logger\Logger;
 use rollun\logger\Processor\Backtrace;
-use Zend\Log\Writer\Mock as MockWriter;
+use rollun\logger\Writer\Mock as MockWriter;
 use rollun\logger\Writer\Stream as StreamWriter;
 use rollun\logger\Filter\Mock as MockFilter;
 use Zend\Stdlib\SplPriorityQueue;
@@ -86,7 +88,7 @@ class LoggerTest extends LoggerInterfaceTest
     public function testPassingShortNameToPluginReturnsWriterByThatName()
     {
         $writer = $this->logger->writerPlugin('mock');
-        $this->assertInstanceOf('Zend\Log\Writer\Mock', $writer);
+        $this->assertInstanceOf(Mock::class, $writer);
     }
 
     public function testPassWriterAsString()
@@ -107,7 +109,7 @@ class LoggerTest extends LoggerInterfaceTest
     public function testSetWriters()
     {
         $writer1 = $this->logger->writerPlugin('mock');
-        $writer2 = $this->logger->writerPlugin('null');
+        $writer2 = $this->logger->writerPlugin('noop');
         $writers = new SplPriorityQueue();
         $writers->insert($writer1, 1);
         $writers->insert($writer2, 2);
@@ -116,39 +118,39 @@ class LoggerTest extends LoggerInterfaceTest
         $writers = $this->logger->getWriters();
         $this->assertInstanceOf('Zend\Stdlib\SplPriorityQueue', $writers);
         $writer = $writers->extract();
-        $this->assertInstanceOf('Zend\Log\Writer\Noop', $writer);
+        $this->assertInstanceOf(Noop::class, $writer);
         $writer = $writers->extract();
-        $this->assertInstanceOf('Zend\Log\Writer\Mock', $writer);
+        $this->assertInstanceOf(Mock::class, $writer);
     }
 
     public function testAddWriterWithPriority()
     {
         $writer1 = $this->logger->writerPlugin('mock');
         $this->logger->addWriter($writer1, 1);
-        $writer2 = $this->logger->writerPlugin('null');
+        $writer2 = $this->logger->writerPlugin('noop');
         $this->logger->addWriter($writer2, 2);
         $writers = $this->logger->getWriters();
 
         $this->assertInstanceOf('Zend\Stdlib\SplPriorityQueue', $writers);
         $writer = $writers->extract();
-        $this->assertInstanceOf('Zend\Log\Writer\Noop', $writer);
+        $this->assertInstanceOf(Noop::class, $writer);
         $writer = $writers->extract();
-        $this->assertInstanceOf('Zend\Log\Writer\Mock', $writer);
+        $this->assertInstanceOf(Mock::class, $writer);
     }
 
     public function testAddWithSamePriority()
     {
         $writer1 = $this->logger->writerPlugin('mock');
         $this->logger->addWriter($writer1, 1);
-        $writer2 = $this->logger->writerPlugin('null');
+        $writer2 = $this->logger->writerPlugin('noop');
         $this->logger->addWriter($writer2, 1);
         $writers = $this->logger->getWriters();
 
         $this->assertInstanceOf('Zend\Stdlib\SplPriorityQueue', $writers);
         $writer = $writers->extract();
-        $this->assertInstanceOf('Zend\Log\Writer\Mock', $writer);
+        $this->assertInstanceOf(Mock::class, $writer);
         $writer = $writers->extract();
-        $this->assertInstanceOf('Zend\Log\Writer\Noop', $writer);
+        $this->assertInstanceOf(Noop::class, $writer);
     }
 
     public function testLogging()
@@ -173,7 +175,6 @@ class LoggerTest extends LoggerInterfaceTest
 
     public function testAddFilter()
     {
-        $this->markTestIncomplete('TODO: move mock writer');
         $writer = new MockWriter;
         $filter = new MockFilter;
         $writer->addFilter($filter);
@@ -312,7 +313,7 @@ class LoggerTest extends LoggerInterfaceTest
 
         $writers = $logger->getWriters()->toArray();
         $this->assertCount(1, $writers);
-        $this->assertInstanceOf('Zend\Log\Writer\Mock', $writers[0]);
+        $this->assertInstanceOf(Mock::class, $writers[0]);
     }
 
     public function testOptionsWithWriterOptions()

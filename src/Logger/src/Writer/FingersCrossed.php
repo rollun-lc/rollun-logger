@@ -13,7 +13,6 @@ use Traversable;
 use rollun\logger\Filter\FilterInterface;
 use rollun\logger\Filter\Priority as PriorityFilter;
 use Zend\Log\Formatter\FormatterInterface;
-use Zend\Log\Writer\WriterInterface;
 use rollun\logger\WriterPluginManager;
 use Zend\ServiceManager\ServiceManager;
 use Zend\Stdlib\ArrayUtils;
@@ -179,7 +178,7 @@ class FingersCrossed extends AbstractWriter
      * @param array $event log data event
      * @return void
      */
-    public function write(array $event)
+    public function write(array $event): void
     {
         $this->doWrite($event);
     }

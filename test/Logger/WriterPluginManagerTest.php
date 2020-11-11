@@ -10,6 +10,7 @@
 namespace rollun\test\logger;
 
 use PHPUnit\Framework\TestCase;
+use rollun\logger\Writer\Mock;
 use rollun\logger\WriterPluginManager;
 use Zend\ServiceManager\ServiceManager;
 
@@ -27,7 +28,7 @@ class WriterPluginManagerTest extends TestCase
 
     public function testInvokableClassFirephp()
     {
-        $firephp = $this->plugins->get('firephp');
-        $this->assertInstanceOf('Zend\Log\Writer\Firephp', $firephp);
+        $mock = $this->plugins->get('mock');
+        $this->assertInstanceOf(Mock::class, $mock);
     }
 }

@@ -15,7 +15,7 @@ use Throwable;
 use Traversable;
 use Zend\Log\Processor\ProcessorInterface;
 use rollun\logger\Processor\PsrPlaceholder;
-use Zend\Log\Writer\WriterInterface;
+use rollun\logger\Writer\WriterInterface;
 use Zend\ServiceManager\AbstractPluginManager;
 use Zend\ServiceManager\ServiceManager;
 use Zend\Stdlib\ArrayUtils;
@@ -350,7 +350,7 @@ class Logger implements PsrLoggerInterface
     {
         foreach ($writers->toArray() as $writer) {
             if (!$writer instanceof WriterInterface) {
-                throw new Exception\InvalidArgumentException('Writers must be a SplPriorityQueue of Zend\Log\Writer');
+                throw new Exception\InvalidArgumentException('Writers must be a SplPriorityQueue of rollun\logger\Writer');
             }
         }
         $this->writers = $writers;

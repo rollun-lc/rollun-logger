@@ -10,7 +10,7 @@ use rollun\logger\Processor\IdMaker;
 use rollun\logger\Writer\Elasticsearch;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\ServiceManager\Factory\InvokableFactory;
-use Zend\Log\Writer\Mock as WriterMock;
+use rollun\logger\Writer\Mock as WriterMock;
 use rollun\logger\LoggerAbstractServiceFactory;
 use rollun\logger\LoggerServiceFactory;
 use rollun\logger\FormatterPluginManagerFactory;

@@ -19,7 +19,6 @@ use rollun\logger\Filter\Priority;
 use rollun\logger\FilterPluginManager;
 use rollun\logger\FormatterPluginManager;
 use Zend\Log\Formatter;
-use Zend\Log\Writer\WriterInterface;
 use Zend\ServiceManager\ServiceManager;
 use Zend\Stdlib\ErrorHandler;
 
@@ -265,7 +264,7 @@ abstract class AbstractWriter implements WriterInterface
      * @return void
      * @throws ErrorException
      */
-    public function write(array $event)
+    public function write(array $event): void
     {
         foreach ($this->filters as $filter) {
             if (!$filter->filter($event)) {
