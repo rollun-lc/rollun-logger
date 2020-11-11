@@ -144,12 +144,28 @@ call_user_func(function () {
 конфигурационный файл для [Service Manager](https://github.com/zendframework/zend-servicemanager).
 ```php
 <?php
+use rollun\logger\Formatter\ContextToString;
+use rollun\logger\FormatterPluginManager;
+use rollun\logger\Logger;
+use rollun\logger\LoggerAbstractServiceFactory;
+use rollun\logger\LoggerServiceFactory;
+use rollun\logger\Processor\Factory\LifeCycleTokenReferenceInjectorFactory;
+use rollun\logger\Processor\IdMaker;
+use rollun\logger\Processor\LifeCycleTokenInjector;
+use rollun\logger\ProcessorPluginManager;
+use rollun\logger\Writer\Db;
+use rollun\logger\WriterPluginManagerFactory;
+use Zend\Db\Adapter\AdapterAbstractServiceFactory;
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\Log\FilterPluginManagerFactory;
+use Zend\ServiceManager\Factory\InvokableFactory;
+
 
 return
     [
         'log_formatters' => [
             'factories' => [
-                'rollun\logger\Formatter\ContextToString' => 'Zend\ServiceManager\Factory\InvokableFactory',
+                'rollun\logger\Formatter\ContextToString' => InvokableFactory::class,
             ],
         ],
         'log_filters' => [
@@ -158,8 +174,8 @@ return
         ],
         'log_processors' => [
             'factories' => [
-                'rollun\logger\Processor\IdMaker' => 'Zend\ServiceManager\Factory\InvokableFactory',
-                'rollun\logger\Processor\LifeCycleTokenInjector' => 'rollun\logger\Processor\Factory\LifeCycleTokenReferenceInjectorFactory',
+                IdMaker::class => InvokableFactory::class,
+                LifeCycleTokenInjector::class => LifeCycleTokenReferenceInjectorFactory::class,
             ],
         ],
         'log_writers' => [
@@ -168,33 +184,33 @@ return
         ],
         'dependencies' => [
             'abstract_factories' => [
-                \rollun\logger\LoggerAbstractServiceFactory::class,
-                'Zend\Db\Adapter\AdapterAbstractServiceFactory',
+                LoggerAbstractServiceFactory::class,
+                AdapterAbstractServiceFactory::class,
             ],
             'factories' => [
-                \rollun\logger\Logger::class => \rollun\logger\LoggerServiceFactory::class,
-                'LogFilterManager' => 'Zend\Log\FilterPluginManagerFactory',
-                'LogFormatterManager' => \rollun\logger\FormatterPluginManager::class,
-                'LogProcessorManager' => \rollun\logger\ProcessorPluginManager::class,
-                'LogWriterManager' => \rollun\logger\WriterPluginManagerFactory::class,
+                Logger::class => LoggerServiceFactory::class,
+                'LogFilterManager' => FilterPluginManagerFactory::class,
+                'LogFormatterManager' => FormatterPluginManager::class,
+                'LogProcessorManager' => ProcessorPluginManager::class,
+                'LogWriterManager' => WriterPluginManagerFactory::class,
             ],
             'aliases' => [
-                'logDbAdapter' => 'Zend\Db\Adapter\AdapterInterface',
+                'logDbAdapter' => AdapterInterface::class,
             ],
         ],
         'log' => [
             'Psr\Log\LoggerInterface' => [
                 'processors' => [
                     [
-                        'name' => 'rollun\logger\Processor\IdMaker',
+                        'name' => IdMaker::class,
                     ],
                     [
-                        'name' => 'rollun\logger\Processor\LifeCycleTokenInjector',
+                        'name' => LifeCycleTokenInjector::class,
                     ],
                 ],
                 'writers' => [
                     'db_logs_test_log' => [
-                        'name' => \rollun\logger\Writer\Db::class,
+                        'name' => Db::class,
                         'options' => [
                             'db' => 'logDbAdapter',
                             'table' => 'logs_test_log',
@@ -207,7 +223,7 @@ return
                                 'context' => 'context',
                                 'lifecycle_token' => 'lifecycle_token',
                             ],
-                            'formatter' => 'rollun\logger\Formatter\ContextToString',
+                            'formatter' => ContextToString::class,
                         ],
                     ],
                 ],
@@ -220,6 +236,9 @@ return
 Чтобы была возможность мержить и переопределять конфигурацию врайтеров, то врайтеры и фильтры нужно добавлять под строчными ключами. 
 Т.е вместо:
 ```php
+use Psr\Log\LoggerInterface;
+use rollun\logger\Writer\Stream;
+
 return [
     'log' => [
         LoggerInterface::class => [
@@ -246,6 +265,9 @@ return [
 ```
 Нужно писать (добавлены ключи 'stream_stdout' и 'priority_<=_4'):
 ```php
+use Psr\Log\LoggerInterface;
+use rollun\logger\Writer\Stream;
+
 return [
     'log' => [
         LoggerInterface::class => [
