@@ -12,7 +12,6 @@ namespace rollun\logger\Formatter;
 
 use Traversable;
 use Zend\Log\Exception;
-use Zend\Log\Formatter\Base;
 
 class Simple extends Base
 {

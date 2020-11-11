@@ -9,6 +9,7 @@
 
 namespace rollun\logger;
 
+use rollun\logger\Formatter\Base;
 use rollun\logger\Formatter\Simple;
 use Zend\Log\Exception\InvalidArgumentException;
 use Zend\Log\Formatter;
@@ -19,7 +20,7 @@ use Zend\ServiceManager\Factory\InvokableFactory;
 class FormatterPluginManager extends AbstractPluginManager
 {
     protected $aliases = [
-        'base'             => Formatter\Base::class,
+        'base'             => Base::class,
         'simple'           => Simple::class,
         'xml'              => Formatter\Xml::class,
         'db'               => Formatter\Db::class,
@@ -28,7 +29,7 @@ class FormatterPluginManager extends AbstractPluginManager
     ];
 
     protected $factories = [
-        Formatter\Base::class             => InvokableFactory::class,
+        Base::class                       => InvokableFactory::class,
         Formatter\Simple::class           => InvokableFactory::class,
         Formatter\Xml::class              => InvokableFactory::class,
         Formatter\Db::class               => InvokableFactory::class,
