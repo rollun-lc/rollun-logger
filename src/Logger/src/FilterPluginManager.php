@@ -13,11 +13,12 @@ use rollun\logger\Filter\FilterInterface;
 use rollun\logger\Filter\Mock;
 use rollun\logger\Filter\Priority;
 use rollun\logger\Filter\Regex;
+use rollun\logger\Filter\SuppressFilter;
+use rollun\logger\Filter\Validator;
 use Zend\Log\Exception\InvalidArgumentException;
 use Zend\ServiceManager\AbstractPluginManager;
 use Zend\ServiceManager\Exception\InvalidServiceException;
 use Zend\ServiceManager\Factory\InvokableFactory;
-use Zend\Log\Filter;
 
 class FilterPluginManager extends AbstractPluginManager
 {
@@ -25,17 +26,17 @@ class FilterPluginManager extends AbstractPluginManager
         'mock' => Mock::class,
         'priority' => Priority::class,
         'regex' => Regex::class,
-        'suppress' => Filter\SuppressFilter::class,
-        'suppressfilter' => Filter\SuppressFilter::class,
-        'validator' => Filter\Validator::class,
+        'suppress' => SuppressFilter::class,
+        'suppressfilter' => SuppressFilter::class,
+        'validator' => Validator::class,
     ];
 
     protected $factories = [
         Mock::class => InvokableFactory::class,
         Priority::class => InvokableFactory::class,
         Regex::class => InvokableFactory::class,
-        Filter\SuppressFilter::class => InvokableFactory::class,
-        Filter\Validator::class => InvokableFactory::class,
+        SuppressFilter::class => InvokableFactory::class,
+        Validator::class => InvokableFactory::class,
         // Legacy (v2) due to alias resolution; canonical form of resolved
         // alias is used to look up the factory, while the non-normalized
         // resolved alias is used as the requested name passed to the factory.
@@ -70,8 +71,7 @@ class FilterPluginManager extends AbstractPluginManager
      */
     public function validate($instance)
     {
-        //TODO:: delete second condition
-        if (!$instance instanceof $this->instanceOf && !$instance instanceof Filter\FilterInterface) {
+        if (!$instance instanceof $this->instanceOf) {
             throw new InvalidServiceException(sprintf(
                 '%s can only create instances of %s; %s is invalid',
                 get_class($this),

@@ -158,7 +158,7 @@ use rollun\logger\Writer\Stream;
 use rollun\logger\WriterPluginManagerFactory;
 use Zend\Db\Adapter\AdapterAbstractServiceFactory;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Log\FilterPluginManagerFactory;
+use rollun\logger\FilterPluginManagerFactory;
 use Zend\ServiceManager\Factory\InvokableFactory;
 
 

@@ -10,7 +10,7 @@ namespace rollun\logger\Writer;
 
 use Traversable;
 use Zend\Log\Exception;
-use Zend\Log\Filter\FilterInterface;
+use rollun\logger\Filter\FilterInterface;
 use rollun\logger\Filter\Priority as PriorityFilter;
 use Zend\Log\Formatter\FormatterInterface;
 use Zend\Log\Writer\WriterInterface;

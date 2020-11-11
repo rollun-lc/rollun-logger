@@ -14,9 +14,9 @@ use ReflectionProperty;
 use rollun\logger\Filter\FilterInterface;
 use rollun\logger\Filter\Priority;
 use rollun\logger\Filter\Regex;
+use rollun\logger\Filter\Validator;
 use rollun\logger\FilterPluginManager;
 use Zend\Log\Exception\InvalidArgumentException;
-use Zend\Log\Filter;
 use Zend\ServiceManager\ServiceManager;
 use Zend\ServiceManager\Test\CommonPluginManagerTrait;
 
@@ -62,9 +62,7 @@ class FilterPluginManagerCompatibilityTest extends TestCase
                     // intentionally fall through
                 case Regex::class:
                     // intentionally fall through
-                case Filter\Timestamp::class:
-                    // intentionally fall through
-                case Filter\Validator::class:
+                case Validator::class:
                     // Skip, as these each have required arguments
                     break;
                 default:
