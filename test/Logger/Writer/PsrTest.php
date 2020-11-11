@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use Zend\Log\Filter\Mock as MockFilter;
+use rollun\logger\Filter\Mock as MockFilter;
 use Zend\Log\Formatter\Simple as SimpleFormatter;
 use rollun\logger\Logger;
 use rollun\logger\Writer\Psr as PsrWriter;

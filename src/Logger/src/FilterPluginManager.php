@@ -9,6 +9,7 @@
 
 namespace rollun\logger;
 
+use rollun\logger\Filter\Mock;
 use rollun\logger\Filter\Priority;
 use Zend\Log\Exception\InvalidArgumentException;
 use Zend\ServiceManager\AbstractPluginManager;
@@ -19,7 +20,7 @@ use Zend\Log\Filter;
 class FilterPluginManager extends AbstractPluginManager
 {
     protected $aliases = [
-        'mock'           => Filter\Mock::class,
+        'mock'           => Mock::class,
         'priority'       => Priority::class,
         'regex'          => Filter\Regex::class,
         'suppress'       => Filter\SuppressFilter::class,
@@ -28,7 +29,7 @@ class FilterPluginManager extends AbstractPluginManager
     ];
 
     protected $factories = [
-        Filter\Mock::class           => InvokableFactory::class,
+        Mock::class                  => InvokableFactory::class,
         Priority::class              => InvokableFactory::class,
         Filter\Regex::class          => InvokableFactory::class,
         Filter\SuppressFilter::class => InvokableFactory::class,
