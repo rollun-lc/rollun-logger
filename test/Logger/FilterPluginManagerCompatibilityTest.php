@@ -11,7 +11,9 @@ namespace rollun\test\logger;
 
 use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
+use rollun\logger\Filter\FilterInterface;
 use rollun\logger\Filter\Priority;
+use rollun\logger\Filter\Regex;
 use rollun\logger\FilterPluginManager;
 use Zend\Log\Exception\InvalidArgumentException;
 use Zend\Log\Filter;
@@ -35,7 +37,7 @@ class FilterPluginManagerCompatibilityTest extends TestCase
 
     protected function getInstanceOf()
     {
-        return Filter\FilterInterface::class;
+        return FilterInterface::class;
     }
 
     /**
@@ -45,6 +47,7 @@ class FilterPluginManagerCompatibilityTest extends TestCase
      * tests if the extension is loaded, skipping that alias if not.
      *
      * @return \Traversable
+     * @throws \ReflectionException
      */
     public function aliasProvider()
     {
@@ -57,7 +60,7 @@ class FilterPluginManagerCompatibilityTest extends TestCase
             switch ($target) {
                 case Priority::class:
                     // intentionally fall through
-                case Filter\Regex::class:
+                case Regex::class:
                     // intentionally fall through
                 case Filter\Timestamp::class:
                     // intentionally fall through

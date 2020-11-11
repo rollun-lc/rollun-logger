@@ -9,8 +9,10 @@
 
 namespace rollun\logger;
 
+use rollun\logger\Filter\FilterInterface;
 use rollun\logger\Filter\Mock;
 use rollun\logger\Filter\Priority;
+use rollun\logger\Filter\Regex;
 use Zend\Log\Exception\InvalidArgumentException;
 use Zend\ServiceManager\AbstractPluginManager;
 use Zend\ServiceManager\Exception\InvalidServiceException;
@@ -20,31 +22,31 @@ use Zend\Log\Filter;
 class FilterPluginManager extends AbstractPluginManager
 {
     protected $aliases = [
-        'mock'           => Mock::class,
-        'priority'       => Priority::class,
-        'regex'          => Filter\Regex::class,
-        'suppress'       => Filter\SuppressFilter::class,
+        'mock' => Mock::class,
+        'priority' => Priority::class,
+        'regex' => Regex::class,
+        'suppress' => Filter\SuppressFilter::class,
         'suppressfilter' => Filter\SuppressFilter::class,
-        'validator'      => Filter\Validator::class,
+        'validator' => Filter\Validator::class,
     ];
 
     protected $factories = [
-        Mock::class                  => InvokableFactory::class,
-        Priority::class              => InvokableFactory::class,
-        Filter\Regex::class          => InvokableFactory::class,
+        Mock::class => InvokableFactory::class,
+        Priority::class => InvokableFactory::class,
+        Regex::class => InvokableFactory::class,
         Filter\SuppressFilter::class => InvokableFactory::class,
-        Filter\Validator::class      => InvokableFactory::class,
+        Filter\Validator::class => InvokableFactory::class,
         // Legacy (v2) due to alias resolution; canonical form of resolved
         // alias is used to look up the factory, while the non-normalized
         // resolved alias is used as the requested name passed to the factory.
-        'zendlogfiltermock'           => InvokableFactory::class,
-        'zendlogfilterpriority'       => InvokableFactory::class,
-        'zendlogfilterregex'          => InvokableFactory::class,
+        'zendlogfiltermock' => InvokableFactory::class,
+        'zendlogfilterpriority' => InvokableFactory::class,
+        'zendlogfilterregex' => InvokableFactory::class,
         'zendlogfiltersuppressfilter' => InvokableFactory::class,
-        'zendlogfiltervalidator'      => InvokableFactory::class,
+        'zendlogfiltervalidator' => InvokableFactory::class,
     ];
 
-    protected $instanceOf = Filter\FilterInterface::class;
+    protected $instanceOf = FilterInterface::class;
 
     /**
      * Allow many filters of the same type (v2)
@@ -68,7 +70,8 @@ class FilterPluginManager extends AbstractPluginManager
      */
     public function validate($instance)
     {
-        if (! $instance instanceof $this->instanceOf) {
+        //TODO:: delete second condition
+        if (!$instance instanceof $this->instanceOf && !$instance instanceof Filter\FilterInterface) {
             throw new InvalidServiceException(sprintf(
                 '%s can only create instances of %s; %s is invalid',
                 get_class($this),
