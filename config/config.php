@@ -19,7 +19,7 @@ $appEnv = getenv('APP_ENV');
 
 $aggregator = new ConfigAggregator([
     \Zend\Validator\ConfigProvider::class,
-    \Zend\Log\ConfigProvider::class,
+    \Zend\Db\ConfigProvider::class,
     \rollun\tracer\ConfigProvider::class,
     \rollun\logger\ConfigProvider::class,
 

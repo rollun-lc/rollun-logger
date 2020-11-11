@@ -7,25 +7,27 @@
 use Psr\Log\LoggerInterface;
 use rollun\logger\Processor\IdMaker;
 use rollun\logger\Writer\Elasticsearch;
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\Log\FilterPluginManagerFactory;
 use Zend\ServiceManager\Factory\InvokableFactory;
 use Zend\Log\Writer\Mock as WriterMock;
-use Zend\Log\LoggerAbstractServiceFactory;
-use Zend\Log\LoggerServiceFactory;
-use Zend\Log\FilterPluginManagerFactory;
-use Zend\Log\FormatterPluginManagerFactory;
-use Zend\Log\ProcessorPluginManagerFactory;
-use Zend\Log\WriterPluginManagerFactory;
-use Zend\Log\Logger;
-use Zend\Log\Writer\Db as WriterDb;
+use rollun\logger\LoggerAbstractServiceFactory;
+use rollun\logger\LoggerServiceFactory;
+use rollun\logger\FormatterPluginManagerFactory;
+use rollun\logger\ProcessorPluginManagerFactory;
+use rollun\logger\WriterPluginManagerFactory;
+use rollun\logger\Logger;
+use rollun\logger\Writer\Db as WriterDb;
 use rollun\logger\Formatter\ContextToString;
 
 return [
 	'db' => [
-		'driver' => getenv('DB_DRIVER'),
+        'driver' => getenv('DB_DRIVER') ?: 'Pdo_Mysql',
 		'database' => getenv('DB_NAME'),
 		'username' => getenv('DB_USER'),
 		'password' => getenv('DB_PASS'),
-		'port' => getenv('DB_PORT'),
+        'hostname' => getenv('DB_HOST'),
+        'port' => getenv('DB_PORT') ?: 3306,
 	],
 	'log_formatters' => [
 		'factories' => [
@@ -49,7 +51,7 @@ return [
 			'LogWriterManager' => WriterPluginManagerFactory::class,
 		],
 		'aliases' => [
-			//'logDbAdapter' => AdapterInterface::class,
+			'logDbAdapter' => AdapterInterface::class,
 		],
 	],
 	'log' => [

@@ -4,16 +4,20 @@
  * @license LICENSE.md New BSD License
  */
 
-namespace ZendTest\Log;
+namespace rollun\test\logger;
 
 use PHPUnit\Framework\TestCase;
+use rollun\logger\LifeCycleToken;
 use rollun\logger\Logger;
 use Psr\Log\LogLevel;
 use Psr\Container\ContainerInterface;
+use rollun\logger\Processor\LifeCycleTokenInjector;
 use Zend\Db\TableGateway\TableGateway;
 
 class LoggerWithDbWriterTest extends TestCase
 {
+    const LIFECYCLE_TOKEN = 'token';
+
     /**
      * @var ContainerInterface
      */
@@ -29,8 +33,9 @@ class LoggerWithDbWriterTest extends TestCase
      */
     public function setUp()
     {
-        $this->markTestIncomplete('ServiceNotFoundException : Unable to resolve service "logWithDbWriter" to a factory;');
+//        $this->markTestIncomplete('ServiceNotFoundException : Unable to resolve service "logWithDbWriter" to a factory;');
         $this->logger = $this->getContainer()->get('logWithDbWriter');
+        $this->logger->addProcessor(new LifeCycleTokenInjector(new LifeCycleToken(self::LIFECYCLE_TOKEN)));
         $this->getLogs();
     }
 
@@ -58,10 +63,16 @@ class LoggerWithDbWriterTest extends TestCase
 
     public function testLoggingArray()
     {
-        $this->logger->log(LogLevel::INFO, 'test', ['lifecycle_token' => 'value1', 'context' => 'value2']);
+        $this->logger->log(LogLevel::INFO, 'test', ['context' => 'value']);
         $resultSet = $this->getLogs();
         $rowArray = $resultSet->toArray();
         $row = $rowArray[0];
-        $this->assertArraySubset(['level' => "info", 'priority' => "6", 'message' => "test"], $row);
+        $this->assertArraySubset([
+            'level' => 'info',
+            'priority' => '6',
+            'message' => 'test',
+            'lifecycle_token' => self::LIFECYCLE_TOKEN,
+            'context' => '{"context":"value"}'
+        ], $row);
     }
 }
