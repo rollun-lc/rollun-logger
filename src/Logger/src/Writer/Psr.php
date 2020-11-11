@@ -15,7 +15,7 @@ use Psr\Log\LogLevel;
 use Psr\Log\LoggerAwareTrait as PsrLoggerAwareTrait;
 use Psr\Log\LoggerInterface as PsrLoggerInterface;
 use Psr\Log\NullLogger;
-use Zend\Log\Exception\InvalidArgumentException;
+use rollun\logger\Exception\InvalidArgumentException;
 
 /**
  * Proxies log messages to an existing PSR-3 compliant logger.

@@ -10,8 +10,8 @@
 
 namespace rollun\logger\Formatter;
 
+use rollun\logger\Exception\InvalidArgumentException;
 use Traversable;
-use Zend\Log\Exception;
 
 class Simple extends Base
 {
@@ -31,7 +31,7 @@ class Simple extends Base
      * @see http://php.net/manual/en/function.date.php
      * @param null|string $format Format specifier for log messages
      * @param null|string $dateTimeFormat Format specifier for DateTime objects in event data
-     * @throws Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct($format = null, $dateTimeFormat = null)
     {
@@ -45,7 +45,7 @@ class Simple extends Base
         }
 
         if (isset($format) && !is_string($format)) {
-            throw new Exception\InvalidArgumentException('Format must be a string');
+            throw new InvalidArgumentException('Format must be a string');
         }
 
         $this->format = isset($format) ? $format : static::DEFAULT_FORMAT;

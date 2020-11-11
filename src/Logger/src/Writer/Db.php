@@ -10,9 +10,10 @@
 
 namespace rollun\logger\Writer;
 
+use rollun\logger\Exception\InvalidArgumentException;
+use rollun\logger\Exception\RuntimeException;
 use Traversable;
 use Zend\Db\Adapter\Adapter;
-use Zend\Log\Exception;
 use Zend\Log\Formatter\Db as DbFormatter;
 
 class Db extends AbstractWriter
@@ -52,10 +53,10 @@ class Db extends AbstractWriter
      * We used the Adapter instead of Zend\Db for a performance reason.
      *
      * @param Adapter|array|Traversable $db
-     * @param string $tableName
-     * @param array $columnMap
-     * @param string $separator
-     * @throws Exception\InvalidArgumentException
+     * @param string|null $tableName
+     * @param array|null $columnMap
+     * @param string|null $separator
+     * @throws InvalidArgumentException
      */
     public function __construct($db, $tableName = null, array $columnMap = null, $separator = null)
     {
@@ -72,12 +73,12 @@ class Db extends AbstractWriter
         }
 
         if (!$db instanceof Adapter) {
-            throw new Exception\InvalidArgumentException('You must pass a valid Zend\Db\Adapter\Adapter');
+            throw new InvalidArgumentException('You must pass a valid Zend\Db\Adapter\Adapter');
         }
 
         $tableName = (string) $tableName;
         if ('' === $tableName) {
-            throw new Exception\InvalidArgumentException(
+            throw new InvalidArgumentException(
             'You must specify a table name. Either directly in the constructor, or via options'
             );
         }
@@ -110,12 +111,12 @@ class Db extends AbstractWriter
      *
      * @param array $event event data
      * @return void
-     * @throws Exception\RuntimeException
+     * @throws RuntimeException
      */
     protected function doWrite(array $event)
     {
         if (null === $this->db) {
-            throw new Exception\RuntimeException('Database adapter is null');
+            throw new RuntimeException('Database adapter is null');
         }
 
         $event = $this->formatter->format($event);

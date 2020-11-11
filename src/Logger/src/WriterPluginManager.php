@@ -14,7 +14,7 @@ use rollun\logger\Writer\Factory\DbFactory;
 use rollun\logger\Writer\FingersCrossed;
 use rollun\logger\Writer\Psr;
 use rollun\logger\Writer\Stream;
-use Zend\Log\Exception\InvalidArgumentException;
+use rollun\logger\Exception\InvalidArgumentException;
 use Zend\Log\Writer;
 use Zend\Log\Writer\Factory\MongoDbFactory;
 use Zend\Log\Writer\Factory\MongoFactory;

@@ -16,7 +16,7 @@ use rollun\logger\Filter\Priority;
 use rollun\logger\Filter\Regex;
 use rollun\logger\Filter\Validator;
 use rollun\logger\FilterPluginManager;
-use Zend\Log\Exception\InvalidArgumentException;
+use rollun\logger\Exception\InvalidArgumentException;
 use Zend\ServiceManager\ServiceManager;
 use Zend\ServiceManager\Test\CommonPluginManagerTrait;
 

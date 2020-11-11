@@ -15,7 +15,7 @@ use rollun\logger\Filter\Priority;
 use rollun\logger\Filter\Regex;
 use rollun\logger\Filter\SuppressFilter;
 use rollun\logger\Filter\Validator;
-use Zend\Log\Exception\InvalidArgumentException;
+use rollun\logger\Exception\InvalidArgumentException;
 use Zend\ServiceManager\AbstractPluginManager;
 use Zend\ServiceManager\Exception\InvalidServiceException;
 use Zend\ServiceManager\Factory\InvokableFactory;

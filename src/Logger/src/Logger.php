@@ -20,7 +20,7 @@ use Zend\ServiceManager\AbstractPluginManager;
 use Zend\ServiceManager\ServiceManager;
 use Zend\Stdlib\ArrayUtils;
 use Zend\Stdlib\SplPriorityQueue;
-use Zend\Log\Exception;
+use rollun\logger\Exception;
 use Psr\Log\InvalidArgumentException;
 use Psr\Log\LogLevel;
 use Psr\Log\LoggerInterface as PsrLoggerInterface;

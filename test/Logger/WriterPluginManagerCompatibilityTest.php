@@ -14,7 +14,7 @@ use ReflectionProperty;
 use rollun\logger\Writer\Db;
 use rollun\logger\Writer\FingersCrossed;
 use rollun\logger\Writer\Stream;
-use Zend\Log\Exception\InvalidArgumentException;
+use rollun\logger\Exception\InvalidArgumentException;
 use Zend\Log\Writer;
 use rollun\logger\WriterPluginManager;
 use Zend\ServiceManager\ServiceManager;

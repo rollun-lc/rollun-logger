@@ -10,7 +10,7 @@
 namespace rollun\logger\Filter;
 
 use Traversable;
-use Zend\Log\Exception\InvalidArgumentException;
+use rollun\logger\Exception\InvalidArgumentException;
 use Zend\Stdlib\ErrorHandler;
 
 class Regex implements FilterInterface

@@ -9,8 +9,9 @@
 
 namespace rollun\logger\Filter;
 
+use rollun\logger\Exception\InvalidArgumentException;
 use Traversable;
-use Zend\Log\Exception;
+
 
 class SuppressFilter implements FilterInterface
 {
@@ -22,8 +23,8 @@ class SuppressFilter implements FilterInterface
     /**
      * This is a simple boolean filter.
      *
-     * @param int|array|Traversable $suppress
-     * @throws Exception\InvalidArgumentException
+     * @param int|array|Traversable|false $suppress
+     * @throws InvalidArgumentException
      */
     public function __construct($suppress = false)
     {
@@ -34,7 +35,7 @@ class SuppressFilter implements FilterInterface
             $suppress = isset($suppress['suppress']) ? $suppress['suppress'] : false;
         }
         if (! is_bool($suppress)) {
-            throw new Exception\InvalidArgumentException(
+            throw new InvalidArgumentException(
                 sprintf('Suppress must be a boolean; received "%s"', gettype($suppress))
             );
         }

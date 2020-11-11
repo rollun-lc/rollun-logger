@@ -10,6 +10,7 @@
 namespace rollun\test\logger\Filter;
 
 use PHPUnit\Framework\TestCase;
+use rollun\logger\Exception\InvalidArgumentException;
 use rollun\logger\Filter\SuppressFilter;
 
 class SuppressFilterTest extends TestCase
@@ -40,7 +41,7 @@ class SuppressFilterTest extends TestCase
 
     public function testConstructorThrowsOnInvalidSuppressValue()
     {
-        $this->expectException('Zend\Log\Exception\InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Suppress must be a boolean');
         new SuppressFilter('foo');
     }

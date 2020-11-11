@@ -10,6 +10,7 @@
 namespace rollun\test\logger\Filter;
 
 use PHPUnit\Framework\TestCase;
+use rollun\logger\Exception\InvalidArgumentException;
 use rollun\logger\Filter\Priority;
 
 /**
@@ -39,7 +40,7 @@ class PriorityTest extends TestCase
 
     public function testConstructorThrowsOnInvalidPriority()
     {
-        $this->expectException('Zend\Log\Exception\InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('must be a number');
         new Priority('foo');
     }

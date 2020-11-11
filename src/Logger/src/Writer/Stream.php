@@ -9,8 +9,10 @@
 
 namespace rollun\logger\Writer;
 
+use ErrorException;
+use rollun\logger\Exception\InvalidArgumentException;
+use rollun\logger\Exception\RuntimeException;
 use Traversable;
-use Zend\Log\Exception;
 use rollun\logger\Formatter\Simple as SimpleFormatter;
 use Zend\Stdlib\ErrorHandler;
 
@@ -38,9 +40,8 @@ class Stream extends AbstractWriter
      * @param  null|string $logSeparator Log separator string
      * @param  null|int $filePermissions Permissions value, only applicable if a filename is given;
      *     when $streamOrUrl is an array of options, use the 'chmod' key to specify this.
-     * @return Stream
-     * @throws Exception\InvalidArgumentException
-     * @throws Exception\RuntimeException
+     * @throws InvalidArgumentException
+     * @throws RuntimeException|ErrorException
      */
     public function __construct($streamOrUrl, $mode = null, $logSeparator = null, $filePermissions = null)
     {
@@ -63,14 +64,14 @@ class Stream extends AbstractWriter
 
         if (is_resource($streamOrUrl)) {
             if ('stream' != get_resource_type($streamOrUrl)) {
-                throw new Exception\InvalidArgumentException(sprintf(
+                throw new InvalidArgumentException(sprintf(
                     'Resource is not a stream; received "%s',
                     get_resource_type($streamOrUrl)
                 ));
             }
 
             if ('a' != $mode) {
-                throw new Exception\InvalidArgumentException(sprintf(
+                throw new InvalidArgumentException(sprintf(
                     'Mode must be "a" on existing streams; received "%s"',
                     $mode
                 ));
@@ -86,7 +87,7 @@ class Stream extends AbstractWriter
             $this->stream = fopen($streamOrUrl, $mode, false);
             $error = ErrorHandler::stop();
             if (! $this->stream) {
-                throw new Exception\RuntimeException(sprintf(
+                throw new RuntimeException(sprintf(
                     '"%s" cannot be opened with mode "%s"',
                     $streamOrUrl,
                     $mode
@@ -108,7 +109,7 @@ class Stream extends AbstractWriter
      *
      * @param array $event event data
      * @return void
-     * @throws Exception\RuntimeException
+     * @throws RuntimeException
      */
     protected function doWrite(array $event)
     {
@@ -119,10 +120,10 @@ class Stream extends AbstractWriter
     /**
      * Set log separator string
      *
-     * @param  string $logSeparator
+     * @param string $logSeparator
      * @return Stream
      */
-    public function setLogSeparator($logSeparator)
+    public function setLogSeparator(string $logSeparator)
     {
         $this->logSeparator = (string) $logSeparator;
         return $this;

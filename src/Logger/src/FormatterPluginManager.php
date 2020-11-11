@@ -11,7 +11,7 @@ namespace rollun\logger;
 
 use rollun\logger\Formatter\Base;
 use rollun\logger\Formatter\Simple;
-use Zend\Log\Exception\InvalidArgumentException;
+use rollun\logger\Exception\InvalidArgumentException;
 use Zend\Log\Formatter;
 use Zend\ServiceManager\AbstractPluginManager;
 use Zend\ServiceManager\Exception\InvalidServiceException;

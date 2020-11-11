@@ -8,8 +8,8 @@
  */
 namespace rollun\logger\Writer;
 
+use rollun\logger\Exception\InvalidArgumentException;
 use Traversable;
-use Zend\Log\Exception;
 use rollun\logger\Filter\FilterInterface;
 use rollun\logger\Filter\Priority as PriorityFilter;
 use Zend\Log\Formatter\FormatterInterface;
@@ -104,7 +104,7 @@ class FingersCrossed extends AbstractWriter
      * @param  string|WriterInterface $writer
      * @param  array|null $options
      * @return self
-     * @throws Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function setWriter($writer, array $options = null)
     {
@@ -113,7 +113,7 @@ class FingersCrossed extends AbstractWriter
         }
 
         if (! $writer instanceof WriterInterface) {
-            throw new Exception\InvalidArgumentException(sprintf(
+            throw new InvalidArgumentException(sprintf(
                 'Writer must implement %s\WriterInterface; received "%s"',
                 __NAMESPACE__,
                 is_object($writer) ? get_class($writer) : gettype($writer)
@@ -142,7 +142,7 @@ class FingersCrossed extends AbstractWriter
      *
      * @param  string|WriterPluginManager $plugins
      * @return FingersCrossed
-     * @throws Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function setWriterPluginManager($plugins)
     {
@@ -150,7 +150,7 @@ class FingersCrossed extends AbstractWriter
             $plugins = new $plugins;
         }
         if (! $plugins instanceof WriterPluginManager) {
-            throw new Exception\InvalidArgumentException(sprintf(
+            throw new InvalidArgumentException(sprintf(
                 'Writer plugin manager must extend %s\WriterPluginManager; received %s',
                 __NAMESPACE__,
                 is_object($plugins) ? get_class($plugins) : gettype($plugins)
