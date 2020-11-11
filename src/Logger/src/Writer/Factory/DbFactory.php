@@ -12,7 +12,7 @@ use Zend\ServiceManager\Factory\FactoryInterface;
  * This factory configuring with incoming $options param
  *
  * Class DbFactory
- * @package Zend\Log\Writer\Factory
+ * @package rollun\logger\Writer\Factory;
  */
 class DbFactory implements FactoryInterface
 {
