@@ -154,6 +154,7 @@ use rollun\logger\Processor\IdMaker;
 use rollun\logger\Processor\LifeCycleTokenInjector;
 use rollun\logger\ProcessorPluginManager;
 use rollun\logger\Writer\Db;
+use rollun\logger\Writer\Stream;
 use rollun\logger\WriterPluginManagerFactory;
 use Zend\Db\Adapter\AdapterAbstractServiceFactory;
 use Zend\Db\Adapter\AdapterInterface;
@@ -200,6 +201,12 @@ return
         ],
         'log' => [
             'Psr\Log\LoggerInterface' => [
+                Logger::FALLBACK_WRITER_KEY => [
+                    'name' => Stream::class,
+                    'options' => [
+                        'stream' => 'data/fallback.log',
+                    ],
+                ],
                 'processors' => [
                     [
                         'name' => IdMaker::class,
