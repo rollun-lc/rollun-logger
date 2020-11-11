@@ -10,6 +10,7 @@
 namespace rollun\test\logger\Writer;
 
 use PHPUnit\Framework\TestCase;
+use rollun\logger\Filter\Priority;
 use rollun\logger\Writer\FingersCrossed as FingersCrossedWriter;
 use Zend\Log\Writer\Mock as MockWriter;
 
@@ -62,7 +63,7 @@ class FingersCrossedTest extends TestCase
 
         $filters = $this->readAttribute($writer, 'filters');
         $this->assertCount(1, $filters);
-        $this->assertInstanceOf('Zend\Log\Filter\Priority', $filters[0]);
+        $this->assertInstanceOf(Priority::class, $filters[0]);
         $this->assertAttributeEquals(3, 'priority', $filters[0]);
     }
 

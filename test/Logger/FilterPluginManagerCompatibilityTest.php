@@ -11,6 +11,7 @@ namespace rollun\test\logger;
 
 use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
+use rollun\logger\Filter\Priority;
 use rollun\logger\FilterPluginManager;
 use Zend\Log\Exception\InvalidArgumentException;
 use Zend\Log\Filter;
@@ -54,7 +55,7 @@ class FilterPluginManagerCompatibilityTest extends TestCase
 
         foreach ($aliases as $alias => $target) {
             switch ($target) {
-                case Filter\Priority::class:
+                case Priority::class:
                     // intentionally fall through
                 case Filter\Regex::class:
                     // intentionally fall through

@@ -10,9 +10,10 @@
 namespace rollun\logger\Writer;
 
 use ErrorException;
+use rollun\logger\Filter\FilterInterface;
+use rollun\logger\Filter\Priority;
 use Traversable;
 use Zend\Log\Exception;
-use Zend\Log\Filter;
 use rollun\logger\FilterPluginManager;
 use Zend\Log\Formatter;
 use rollun\logger\FormatterPluginManager;
@@ -39,7 +40,7 @@ abstract class AbstractWriter implements WriterInterface
     /**
      * Filter chain
      *
-     * @var Filter\FilterInterface[]
+     * @var FilterInterface[]
      */
     protected $filters = [];
 
@@ -91,11 +92,11 @@ abstract class AbstractWriter implements WriterInterface
 
             if (isset($options['filters'])) {
                 $filters = $options['filters'];
-                if (is_int($filters) || is_string($filters) || $filters instanceof Filter\FilterInterface) {
+                if (is_int($filters) || is_string($filters) || $filters instanceof FilterInterface) {
                     $this->addFilter($filters);
                 } elseif (is_array($filters)) {
                     foreach ($filters as $filter) {
-                        if (is_int($filter) || is_string($filter) || $filter instanceof Filter\FilterInterface) {
+                        if (is_int($filter) || is_string($filter) || $filter instanceof FilterInterface) {
                             $this->addFilter($filter);
                         } elseif (is_array($filter)) {
                             if (!isset($filter['name'])) {
@@ -128,7 +129,7 @@ abstract class AbstractWriter implements WriterInterface
     /**
      * Add a filter specific to this writer.
      *
-     * @param int|string|Filter\FilterInterface $filter
+     * @param int|string|FilterInterface $filter
      * @param array|null $options
      * @return AbstractWriter
      * @throws Exception\InvalidArgumentException
@@ -136,14 +137,14 @@ abstract class AbstractWriter implements WriterInterface
     public function addFilter($filter, array $options = null)
     {
         if (is_int($filter)) {
-            $filter = new Filter\Priority($filter);
+            $filter = new Priority($filter);
         }
 
         if (is_string($filter)) {
             $filter = $this->filterPlugin($filter, $options);
         }
 
-        if (!$filter instanceof Filter\FilterInterface) {
+        if (!$filter instanceof FilterInterface) {
             throw new Exception\InvalidArgumentException(sprintf(
                 'Filter must implement %s\Filter\FilterInterface; received "%s"',
                 __NAMESPACE__,
@@ -197,7 +198,7 @@ abstract class AbstractWriter implements WriterInterface
      *
      * @param string $name
      * @param array|null $options
-     * @return Filter\FilterInterface
+     * @return FilterInterface
      */
     public function filterPlugin(string $name, array $options = null)
     {
