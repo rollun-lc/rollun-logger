@@ -1,8 +1,7 @@
 # rollun-logger
 
-`rollun-logger` - библиотека которая расширяет [avz-cmf/zend-psr3-log](https://github.com/avz-cmf/zend-psr3-log),
-которая в свою очередь есть прототипом библиотеки [zendframework/zend-log](https://github.com/zendframework/zend-log)
-реализованой для [PSR-3: Logger Interface](https://www.php-fig.org/psr/psr-3/).
+`rollun-logger` - логгер, который во многом основан на [zendframework/zend-log](https://github.com/zendframework/zend-log)
+, но переписан для поддержки [PSR-3: Logger Interface](https://www.php-fig.org/psr/psr-3/).
 
 ### Установка
 
