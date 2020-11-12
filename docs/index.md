@@ -455,3 +455,32 @@ $logger->notice('METRICS_GAUGE', [PrometheusWriter::METRIC_ID => 'metric_2', Pro
 $logger->notice('METRICS_COUNTER', [PrometheusWriter::METRIC_ID => 'metric_3', PrometheusWriter::VALUE => 10, PrometheusWriter::GROUPS => ['group1' => 'val1'], PrometheusWriter::LABELS => ['red']]);
 $logger->notice('METRICS_COUNTER', [PrometheusWriter::METRIC_ID => 'metric_4', PrometheusWriter::VALUE => 1, PrometheusWriter::REFRESH => true]);
 ```
+
+## Middleware
+### RequestLoggedMiddleware
+Используется для логгирования всех входящих запросов в формате `[Datetime] Method - URL <- Ip address`. Например: 
+`[2020-11-12T10:15:02+00:00] GET - /api/webhook/cron?param=true <- 172.20.0.1`
+Если вы используете ZendFramework, то подключается, как и все middleware, в файле config/pipeline:
+```php
+<?php
+
+declare(strict_types=1);
+
+use Psr\Container\ContainerInterface;
+use Zend\Expressive\Application;
+use Zend\Expressive\MiddlewareFactory;
+
+/**
+ * Setup middleware pipeline:
+ *
+ * @param Application $app
+ * @param MiddlewareFactory $factory
+ * @param ContainerInterface $container
+ * @return void
+ */
+return function (Application $app, MiddlewareFactory $factory, ContainerInterface $container) : void {
+    // Recommend to include after '$app->pipe(Zend\Stratigility\Middleware\ErrorHandler::class);'
+    $app->pipe(\rollun\logger\Middleware\RequestLoggedMiddleware::class);
+    // ... (other middlewares)
+};
+```

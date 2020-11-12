@@ -6,10 +6,11 @@
 
 namespace rollun\logger\Middleware;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use DateTime;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
 class RequestLoggedMiddleware implements MiddlewareInterface
@@ -19,33 +20,28 @@ class RequestLoggedMiddleware implements MiddlewareInterface
      */
     private $logger;
 
-    /**
-     * RequestLoggedMiddleware constructor.
-     * @param LoggerInterface|null $logger
-     */
     public function __construct(LoggerInterface $logger)
     {
         $this->logger = $logger;
     }
 
     /**
-     * Process an incoming server request and return a response, optionally delegating
-     * to the next middleware component to create the response.
+     * Logging all incoming requests in format '[Datetime] Method - URL <- Ip address'
+     * example: '[2020-11-12T10:15:02+00:00] GET - /api/webhook/cron?param=true <- 172.20.0.1'
      *
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
+     * @param RequestHandlerInterface $handler
      * @return ResponseInterface
-     * @throws \Exception
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $message = "[" . (new \DateTime())->format("c") . "] ";
+        $message = "[" . (new DateTime())->format("c") . "] ";
         $message .= $request->getMethod() . " - " . $request->getUri()->getPath();
         $message .= (!empty($request->getUri()->getQuery()) ? ("?" . $request->getUri()->getQuery() . " ") : " ");
         $message .= "<- " . $this->resolveSenderIp($request);
 
         $this->logger->info($message);
-        $response = $delegate->process($request);
+        $response = $handler->handle($request);
 
         return $response;
     }

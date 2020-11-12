@@ -11,6 +11,8 @@ use rollun\logger\Formatter\ContextToString;
 use rollun\logger\Formatter\FluentdFormatter;
 use rollun\logger\Formatter\LogStashUdpFormatter;
 use rollun\logger\Formatter\SlackFormatter;
+use rollun\logger\Middleware\Factory\RequestLoggedMiddlewareFactory;
+use rollun\logger\Middleware\RequestLoggedMiddleware;
 use rollun\logger\Processor\ExceptionBacktrace;
 use rollun\logger\Processor\Factory\LifeCycleTokenReferenceInjectorFactory;
 use rollun\logger\Processor\IdMaker;
@@ -91,6 +93,9 @@ class ConfigProvider
                 'LogFormatterManager' => FormatterPluginManagerFactory::class,
                 'LogProcessorManager' => ProcessorPluginManagerFactory::class,
                 'LogWriterManager'    => WriterPluginManagerFactory::class,
+
+                // Middlewares
+                RequestLoggedMiddleware::class => RequestLoggedMiddlewareFactory::class
             ],
             'invokables'         => [
                 PushGateway::class => PushGateway::class,
