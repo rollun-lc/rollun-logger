@@ -3,7 +3,7 @@
 namespace rollun\logger\Processor;
 
 use InvalidArgumentException;
-use Zend\Log\Processor\ProcessorInterface;
+use Throwable;
 
 /**
  * Class ExceptionBacktrace
@@ -35,7 +35,7 @@ class ExceptionBacktrace implements ProcessorInterface
      * @param array $event
      * @return array
      */
-    public function process(array $event)
+    public function process(array $event): array
     {
         if (!isset($event['context']['exception'])) {
             return $event;
@@ -43,7 +43,7 @@ class ExceptionBacktrace implements ProcessorInterface
 
         $exception = $event['context']['exception'];
 
-        if (!($exception instanceof \Throwable)) {
+        if (!($exception instanceof Throwable)) {
             $type = is_object($exception) ? get_class($exception) : gettype($exception);
             throw new InvalidArgumentException(
                 'Exception argument must implement \Throwable interface, ' . $type . ' given'
@@ -62,10 +62,10 @@ class ExceptionBacktrace implements ProcessorInterface
     /**
      * Process exception and all previous exceptions to return one-level array with exceptions backtrace
      *
-     * @param \Throwable $e
+     * @param Throwable $e
      * @return array
      */
-    public function getExceptionBacktrace(\Throwable $e)
+    public function getExceptionBacktrace(Throwable $e)
     {
         $backtrace[] = [
             'line' => $e->getLine(),

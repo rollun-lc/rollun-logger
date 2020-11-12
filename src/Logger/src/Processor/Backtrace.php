@@ -9,7 +9,6 @@
 
 namespace rollun\logger\Processor;
 
-use Zend\Log\Processor\ProcessorInterface;
 
 class Backtrace implements ProcessorInterface
 {
@@ -44,7 +43,7 @@ class Backtrace implements ProcessorInterface
      * @param array $event event data
      * @return array event data
      */
-    public function process(array $event)
+    public function process(array $event): array
     {
         $trace = $this->getBacktrace();
 
@@ -100,7 +99,7 @@ class Backtrace implements ProcessorInterface
      * @param string $class
      * @return bool
      */
-    protected function shouldIgnoreFrame($class)
+    protected function shouldIgnoreFrame(string $class)
     {
         foreach ($this->ignoredNamespaces as $ignoredNamespace) {
             if (false !== strpos($class, $ignoredNamespace)) {

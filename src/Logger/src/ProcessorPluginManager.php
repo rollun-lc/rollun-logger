@@ -10,11 +10,11 @@
 namespace rollun\logger;
 
 use rollun\logger\Processor\Backtrace;
+use rollun\logger\Processor\ProcessorInterface;
 use rollun\logger\Processor\PsrPlaceholder;
 use Zend\ServiceManager\AbstractPluginManager;
 use Zend\ServiceManager\Exception\InvalidServiceException;
 use Zend\ServiceManager\Factory\InvokableFactory;
-use Zend\Log\Processor;
 
 /**
  * Plugin manager for log processors.
@@ -24,25 +24,19 @@ class ProcessorPluginManager extends AbstractPluginManager
     protected $aliases = [
         'backtrace'      => Backtrace::class,
         'psrplaceholder' => PsrPlaceholder::class,
-        'referenceid'    => Processor\ReferenceId::class,
-        'requestid'      => Processor\RequestId::class
     ];
 
     protected $factories = [
         Backtrace::class      => InvokableFactory::class,
         PsrPlaceholder::class => InvokableFactory::class,
-        Processor\ReferenceId::class    => InvokableFactory::class,
-        Processor\RequestId::class      => InvokableFactory::class,
         // Legacy (v2) due to alias resolution; canonical form of resolved
         // alias is used to look up the factory, while the non-normalized
         // resolved alias is used as the requested name passed to the factory.
         'zendlogprocessorbacktrace'      => InvokableFactory::class,
         'zendlogprocessorpsrplaceholder' => InvokableFactory::class,
-        'zendlogprocessorreferenceid'    => InvokableFactory::class,
-        'zendlogprocessorrequestid'      => InvokableFactory::class,
     ];
 
-    protected $instanceOf = Processor\ProcessorInterface::class;
+    protected $instanceOf = ProcessorInterface::class;
 
     /**
      * Allow many processors of the same type (v2)

@@ -345,14 +345,14 @@ class LoggerTest extends LoggerInterfaceTest
             ],
             'processors' => [
                 'first_processor' => [
-                    'name' => 'requestid',
+                    'name' => 'backtrace',
                 ],
             ]
         ];
         $logger = new Logger($options);
         $processors = $logger->getProcessors()->toArray();
         $this->assertCount(1, $processors);
-        $this->assertInstanceOf('Zend\Log\Processor\RequestId', $processors[0]);
+        $this->assertInstanceOf(Backtrace::class, $processors[0]);
     }
 
     public function testAddProcessor()

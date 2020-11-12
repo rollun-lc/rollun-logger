@@ -12,6 +12,7 @@ namespace rollun\test\logger;
 use PHPUnit\Framework\TestCase;
 use rollun\logger\Logger;
 use rollun\logger\LoggerAbstractServiceFactory;
+use rollun\logger\Processor\ProcessorInterface;
 use rollun\logger\ProcessorPluginManager;
 use rollun\logger\Writer\WriterInterface;
 use rollun\logger\WriterPluginManager;
@@ -189,7 +190,7 @@ class LoggerAbstractServiceFactoryTest extends TestCase
     public function testWillInjectProcessorPluginManagerIfAvailable()
     {
         $processors = new ProcessorPluginManager(new ServiceManager());
-        $mockProcessor = $this->createMock('Zend\Log\Processor\ProcessorInterface');
+        $mockProcessor = $this->createMock(ProcessorInterface::class);
         $processors->setService('CustomProcessor', $mockProcessor);
 
         $config = new Config([

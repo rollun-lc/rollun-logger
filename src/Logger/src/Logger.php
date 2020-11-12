@@ -11,9 +11,9 @@ namespace rollun\logger;
 
 use DateTime;
 use ErrorException;
+use rollun\logger\Processor\ProcessorInterface;
 use Throwable;
 use Traversable;
-use Zend\Log\Processor\ProcessorInterface;
 use rollun\logger\Processor\PsrPlaceholder;
 use rollun\logger\Writer\WriterInterface;
 use Zend\ServiceManager\AbstractPluginManager;
@@ -419,7 +419,7 @@ class Logger implements PsrLoggerInterface
             $processor = $this->processorPlugin($processor, $options);
         } elseif (!$processor instanceof ProcessorInterface) {
             throw new Exception\InvalidArgumentException(sprintf(
-                'Processor must implement Zend\Log\ProcessorInterface; received "%s"', is_object($processor) ? get_class($processor) : gettype($processor)
+                'Processor must implement' . ProcessorInterface::class . '; received "%s"', is_object($processor) ? get_class($processor) : gettype($processor)
             ));
         }
         $this->processors->insert($processor, $priority);

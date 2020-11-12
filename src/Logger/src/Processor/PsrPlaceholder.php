@@ -10,8 +10,6 @@
 
 namespace rollun\logger\Processor;
 
-use Zend\Log\Processor\ProcessorInterface;
-
 /**
  * Processes an event message according to PSR-3 rules.
  *
@@ -24,7 +22,7 @@ class PsrPlaceholder implements ProcessorInterface
      * @param array $event event data
      * @return array event data
      */
-    public function process(array $event)
+    public function process(array $event): array
     {
         if (false === strpos($event['message'], '{')) {
             return $event;
