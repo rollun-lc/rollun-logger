@@ -3,8 +3,11 @@ declare(strict_types=1);
 
 namespace rollun\logger\Writer;
 
+use Exception;
+use GuzzleHttp\Exception\GuzzleException;
 use Prometheus\Collector as PrometheusCollector;
 use Prometheus\CollectorRegistry;
+use Prometheus\Exception\MetricsRegistrationException;
 use Prometheus\Storage\Adapter;
 use rollun\logger\Prometheus\Collector;
 use rollun\logger\Prometheus\PushGateway;
@@ -76,9 +79,9 @@ class PrometheusWriter extends AbstractWriter
 
     /**
      * @inheritDoc
-     * @throws \Exception
+     * @throws Exception
      */
-    public function write(array $event)
+    public function write(array $event): void
     {
         // call formatter
         if ($this->hasFormatter()) {
@@ -97,7 +100,7 @@ class PrometheusWriter extends AbstractWriter
      * @param array $event
      *
      * @return array
-     * @throws \Exception
+     * @throws Exception
      */
     protected function prepareData(array $event): array
     {
@@ -161,8 +164,8 @@ class PrometheusWriter extends AbstractWriter
     /**
      * @param array $event
      *
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \Prometheus\Exception\MetricsRegistrationException
+     * @throws GuzzleException
+     * @throws MetricsRegistrationException
      */
     protected function writeGauge(array $event)
     {
@@ -175,8 +178,8 @@ class PrometheusWriter extends AbstractWriter
     /**
      * @param array $event
      *
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \Prometheus\Exception\MetricsRegistrationException
+     * @throws GuzzleException
+     * @throws MetricsRegistrationException
      */
     protected function writeCounter(array $event)
     {
@@ -212,7 +215,7 @@ class PrometheusWriter extends AbstractWriter
      * @param string              $method
      * @param array               $groups
      *
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      */
     protected function send(PrometheusCollector $collector, string $method, array $groups)
     {

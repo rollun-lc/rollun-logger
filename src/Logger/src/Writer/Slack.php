@@ -42,7 +42,7 @@ class Slack extends AbstractWriter
     /**
      * @inheritDoc
      */
-    public function write(array $event)
+    public function write(array $event): void
     {
         // call formatter
         if ($this->hasFormatter()) {
