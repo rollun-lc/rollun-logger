@@ -23,8 +23,7 @@
     "zendframework/zend-http": "^2.7",
     "elasticsearch/elasticsearch": "^6.7",
     "endclothing/prometheus_client_php": "^1.0",
-    "psr/http-server-middleware": "^1.0",
-    "zendframework/zend-diactoros": "^2.2"
+    "psr/http-server-middleware": "^1.0"
   },
   "suggest": {
   },
@@ -37,7 +36,8 @@
     "squizlabs/php_codesniffer": "^3.3",
     "zendframework/zend-validator": "^2.13",
     "zendframework/zend-filter": "^2.9",
-    "zendframework/zend-db": "^2.11"
+    "zendframework/zend-db": "^2.11",
+    "zendframework/zend-diactoros": "^2.2"
   },
   "autoload": {
     "psr-4": {
