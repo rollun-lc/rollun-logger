@@ -6,7 +6,6 @@
 
 namespace rollun\logger\Formatter;
 
-use Zend\Log\Formatter\Db;
 
 class ContextToString extends Db
 {

@@ -3,14 +3,12 @@ declare(strict_types=1);
 
 namespace rollun\logger\Formatter;
 
-use Zend\Log\Formatter\Db as Base;
-
 /**
  * Class SlackFormatter
  *
  * @author r.ratsun <r.ratsun.rollun@gmail.com>
  */
-class SlackFormatter extends Base
+class SlackFormatter extends Db
 {
     /**
      * @inheritDoc

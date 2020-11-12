@@ -10,7 +10,7 @@
 namespace rollun\logger\Writer;
 
 use Zend\Log\Filter\FilterInterface as Filter;
-use Zend\Log\Formatter\FormatterInterface as Formatter;
+use rollun\logger\Formatter\FormatterInterface as Formatter;
 
 interface WriterInterface
 {

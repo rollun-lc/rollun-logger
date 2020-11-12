@@ -5,7 +5,7 @@ namespace rollun\logger\Formatter;
 
 
 use DateTime;
-use Zend\Log\Formatter\FormatterInterface;
+use RuntimeException;
 
 class LogStashUdpFormatter implements FormatterInterface
 {
@@ -40,10 +40,10 @@ class LogStashUdpFormatter implements FormatterInterface
      * Map event into column using the $columnMap array
      *
      * @param  array $event
-     * @param  array $columnMap
+     * @param  array|null $columnMap
      * @return array
      */
-    protected function mapEventIntoColumn(array $event, array $columnMap = null)
+    protected function mapEventIntoColumn(array $event, ?array $columnMap = null)
     {
         if (empty($event)) {
             return [];
@@ -74,7 +74,7 @@ class LogStashUdpFormatter implements FormatterInterface
      *
      * @return string
      */
-    public function getDateTimeFormat()
+    public function getDateTimeFormat(): string
     {
         return DateTime::ISO8601;
     }
@@ -85,8 +85,8 @@ class LogStashUdpFormatter implements FormatterInterface
      * @param string $dateTimeFormat DateTime format
      * @return FormatterInterface
      */
-    public function setDateTimeFormat($dateTimeFormat)
+    public function setDateTimeFormat(string $dateTimeFormat): FormatterInterface
     {
-        throw new \RuntimeException('Operation set format unavailable.');
+        throw new RuntimeException('Operation set format unavailable.');
     }
 }

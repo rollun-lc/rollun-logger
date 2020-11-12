@@ -11,6 +11,7 @@ namespace rollun\test\logger\Writer;
 
 use PHPUnit\Framework\TestCase;
 use rollun\logger\Filter\Priority;
+use rollun\logger\Formatter\FormatterInterface;
 use rollun\logger\Writer\FingersCrossed as FingersCrossedWriter;
 use rollun\logger\Writer\Mock;
 use rollun\logger\Writer\Mock as MockWriter;
@@ -73,7 +74,7 @@ class FingersCrossedTest extends TestCase
         $options = ['writer' => 'mock', 'priority' => 3];
         $writer = new FingersCrossedWriter($options);
 
-        $writer->setFormatter($this->createMock('Zend\Log\Formatter\FormatterInterface'));
+        $writer->setFormatter($this->createMock(FormatterInterface::class));
         $this->assertAttributeEmpty('formatter', $writer);
     }
 }

@@ -10,7 +10,6 @@ namespace rollun\logger\Formatter;
 
 
 use RuntimeException;
-use Zend\Log\Formatter\FormatterInterface;
 
 class FluentdFormatter implements FormatterInterface
 {
@@ -22,7 +21,7 @@ class FluentdFormatter implements FormatterInterface
      * @return string|array Either a formatted line to write to the log, or the
      *     updated event information to provide to the writer.
      */
-    public function format($event)
+    public function format(array $event)
     {
         $event = $this->reachUpFirstNestedLevel($event);
         $event = $this->clearEmptyArrayInEvent($event);
@@ -33,7 +32,8 @@ class FluentdFormatter implements FormatterInterface
      * @param array $event
      * @return array
      */
-    private function clearEmptyArrayInEvent(array $event) {
+    private function clearEmptyArrayInEvent(array $event): array
+    {
         $repackEvent = [];
         foreach ($event as $key => $value) {
             if(is_array($value) && count($value) > 0) {
@@ -50,7 +50,7 @@ class FluentdFormatter implements FormatterInterface
      * @param array $event
      * @return array
      */
-    private function reachUpFirstNestedLevel(array $event)
+    private function reachUpFirstNestedLevel(array $event): array
     {
         $repackEvent = [];
         foreach ($event as $key => $value) {
@@ -70,7 +70,7 @@ class FluentdFormatter implements FormatterInterface
      *
      * @return string
      */
-    public function getDateTimeFormat()
+    public function getDateTimeFormat(): string
     {
         return 'c';
     }
@@ -82,7 +82,7 @@ class FluentdFormatter implements FormatterInterface
      * @param string $dateTimeFormat DateTime format
      * @return FormatterInterface
      */
-    public function setDateTimeFormat($dateTimeFormat)
+    public function setDateTimeFormat(string $dateTimeFormat): FormatterInterface
     {
         ///its crutch
         throw new RuntimeException("Setup dateTime format not supported...");

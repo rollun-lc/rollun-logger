@@ -12,7 +12,6 @@ namespace rollun\logger\Formatter;
 
 use DateTime;
 use Traversable;
-use Zend\Log\Formatter\FormatterInterface;
 
 class Base implements FormatterInterface
 {
@@ -52,7 +51,7 @@ class Base implements FormatterInterface
      * @param array $event event data
      * @return array
      */
-    public function format($event)
+    public function format(array $event)
     {
         foreach ($event as $key => $value) {
             // Keep context as an array
@@ -111,7 +110,7 @@ class Base implements FormatterInterface
     /**
      * {@inheritDoc}
      */
-    public function getDateTimeFormat()
+    public function getDateTimeFormat(): string
     {
         return $this->dateTimeFormat;
     }
@@ -119,9 +118,9 @@ class Base implements FormatterInterface
     /**
      * {@inheritDoc}
      */
-    public function setDateTimeFormat($dateTimeFormat)
+    public function setDateTimeFormat(string $dateTimeFormat): FormatterInterface
     {
-        $this->dateTimeFormat = (string) $dateTimeFormat;
+        $this->dateTimeFormat = $dateTimeFormat;
         return $this;
     }
 

@@ -59,7 +59,7 @@ class Simple extends Base
      * @param array $event event data
      * @return string formatted line to write to the log
      */
-    public function format($event)
+    public function format(array $event)
     {
         $output = $this->format;
 

@@ -9,10 +9,10 @@
 namespace rollun\logger\Writer;
 
 use rollun\logger\Exception\InvalidArgumentException;
+use rollun\logger\Formatter\FormatterInterface;
 use Traversable;
 use rollun\logger\Filter\FilterInterface;
 use rollun\logger\Filter\Priority as PriorityFilter;
-use Zend\Log\Formatter\FormatterInterface;
 use rollun\logger\WriterPluginManager;
 use Zend\ServiceManager\ServiceManager;
 use Zend\Stdlib\ArrayUtils;

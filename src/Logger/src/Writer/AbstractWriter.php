@@ -11,6 +11,7 @@ namespace rollun\logger\Writer;
 
 use ErrorException;
 use Exception;
+use rollun\logger\Formatter\FormatterInterface;
 use Traversable;
 use rollun\logger\Exception\InvalidArgumentException;
 use rollun\logger\Exception\RuntimeException;
@@ -18,7 +19,6 @@ use rollun\logger\Filter\FilterInterface;
 use rollun\logger\Filter\Priority;
 use rollun\logger\FilterPluginManager;
 use rollun\logger\FormatterPluginManager;
-use Zend\Log\Formatter;
 use Zend\ServiceManager\ServiceManager;
 use Zend\Stdlib\ErrorHandler;
 
@@ -48,7 +48,7 @@ abstract class AbstractWriter implements WriterInterface
     /**
      * Formats the log message before writing
      *
-     * @var Formatter\FormatterInterface
+     * @var FormatterInterface
      */
     protected $formatter;
 
@@ -114,7 +114,7 @@ abstract class AbstractWriter implements WriterInterface
 
             if (isset($options['formatter'])) {
                 $formatter = $options['formatter'];
-                if (is_string($formatter) || $formatter instanceof Formatter\FormatterInterface) {
+                if (is_string($formatter) || $formatter instanceof FormatterInterface) {
                     $this->setFormatter($formatter);
                 } elseif (is_array($formatter)) {
                     if (!isset($formatter['name'])) {
@@ -250,7 +250,7 @@ abstract class AbstractWriter implements WriterInterface
      *
      * @param string $name
      * @param array|null $options
-     * @return Formatter\FormatterInterface
+     * @return FormatterInterface
      */
     public function formatterPlugin(string $name, array $options = null)
     {
@@ -299,7 +299,7 @@ abstract class AbstractWriter implements WriterInterface
     /**
      * Set a new formatter for this writer
      *
-     * @param string|Formatter\FormatterInterface $formatter
+     * @param string|FormatterInterface $formatter
      * @param array|null $options
      * @return self
      * @throws InvalidArgumentException
@@ -310,7 +310,7 @@ abstract class AbstractWriter implements WriterInterface
             $formatter = $this->formatterPlugin($formatter, $options);
         }
 
-        if (!$formatter instanceof Formatter\FormatterInterface) {
+        if (!$formatter instanceof FormatterInterface) {
             throw new InvalidArgumentException(sprintf(
                 'Formatter must implement %s\Formatter\FormatterInterface; received "%s"',
                 __NAMESPACE__,
@@ -325,7 +325,7 @@ abstract class AbstractWriter implements WriterInterface
     /**
      * Get formatter
      *
-     * @return Formatter\FormatterInterface
+     * @return FormatterInterface
      */
     protected function getFormatter()
     {
@@ -339,7 +339,7 @@ abstract class AbstractWriter implements WriterInterface
      */
     protected function hasFormatter()
     {
-        return $this->formatter instanceof Formatter\FormatterInterface;
+        return $this->formatter instanceof FormatterInterface;
     }
 
     /**

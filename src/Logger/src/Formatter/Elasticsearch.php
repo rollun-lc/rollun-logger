@@ -5,7 +5,7 @@ namespace rollun\logger\Formatter;
 
 
 use DateTime;
-use Zend\Log\Formatter\FormatterInterface;
+use RuntimeException;
 
 class Elasticsearch implements FormatterInterface
 {
@@ -36,7 +36,7 @@ class Elasticsearch implements FormatterInterface
 	 * @return string|array Either a formatted line to write to the log, or the
 	 *     updated event information to provide to the writer.
 	 */
-	public function format($event)
+	public function format(array $event)
 	{
 		$event['_index'] = $this->index;
 		$event['_type'] = $this->type;
@@ -49,7 +49,7 @@ class Elasticsearch implements FormatterInterface
 	 *
 	 * @return string
 	 */
-	public function getDateTimeFormat()
+	public function getDateTimeFormat(): string
 	{
 		return DateTime::ATOM;
 	}
@@ -61,8 +61,8 @@ class Elasticsearch implements FormatterInterface
 	 * @param string $dateTimeFormat DateTime format
 	 * @return FormatterInterface
 	 */
-	public function setDateTimeFormat($dateTimeFormat)
+	public function setDateTimeFormat(string $dateTimeFormat): FormatterInterface
 	{
-		throw new \RuntimeException('Operation set format unavailable.');
+		throw new RuntimeException('Operation set format unavailable.');
 	}
 }

@@ -12,9 +12,9 @@ namespace rollun\logger\Writer;
 
 use rollun\logger\Exception\InvalidArgumentException;
 use rollun\logger\Exception\RuntimeException;
+use rollun\logger\Formatter\Db as DbFormatter;
 use Traversable;
 use Zend\Db\Adapter\Adapter;
-use Zend\Log\Formatter\Db as DbFormatter;
 
 class Db extends AbstractWriter
 {

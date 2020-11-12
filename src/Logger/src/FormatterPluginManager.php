@@ -10,9 +10,10 @@
 namespace rollun\logger;
 
 use rollun\logger\Formatter\Base;
+use rollun\logger\Formatter\Db;
+use rollun\logger\Formatter\FormatterInterface;
 use rollun\logger\Formatter\Simple;
 use rollun\logger\Exception\InvalidArgumentException;
-use Zend\Log\Formatter;
 use Zend\ServiceManager\AbstractPluginManager;
 use Zend\ServiceManager\Exception\InvalidServiceException;
 use Zend\ServiceManager\Factory\InvokableFactory;
@@ -22,31 +23,22 @@ class FormatterPluginManager extends AbstractPluginManager
     protected $aliases = [
         'base'             => Base::class,
         'simple'           => Simple::class,
-        'xml'              => Formatter\Xml::class,
-        'db'               => Formatter\Db::class,
-        'errorhandler'     => Formatter\ErrorHandler::class,
-        'exceptionhandler' => Formatter\ExceptionHandler::class,
+        'db'               => Db::class,
     ];
 
     protected $factories = [
         Base::class                       => InvokableFactory::class,
         Formatter\Simple::class           => InvokableFactory::class,
-        Formatter\Xml::class              => InvokableFactory::class,
         Formatter\Db::class               => InvokableFactory::class,
-        Formatter\ErrorHandler::class     => InvokableFactory::class,
-        Formatter\ExceptionHandler::class => InvokableFactory::class,
         // Legacy (v2) due to alias resolution; canonical form of resolved
         // alias is used to look up the factory, while the non-normalized
         // resolved alias is used as the requested name passed to the factory.
         'zendlogformatterbase'             => InvokableFactory::class,
         'zendlogformattersimple'           => InvokableFactory::class,
-        'zendlogformatterxml'              => InvokableFactory::class,
         'zendlogformatterdb'               => InvokableFactory::class,
-        'zendlogformattererrorhandler'     => InvokableFactory::class,
-        'zendlogformatterexceptionhandler' => InvokableFactory::class,
     ];
 
-    protected $instanceOf = Formatter\FormatterInterface::class;
+    protected $instanceOf = FormatterInterface::class;
 
     /**
      * Allow many formatters of the same type (v2)
