@@ -22,8 +22,7 @@
     "psr/http-message": "^1.0",
     "zendframework/zend-http": "^2.7",
     "elasticsearch/elasticsearch": "^6.7",
-    "endclothing/prometheus_client_php": "^1.0",
-    "zendframework/zend-log": "^2.12"
+    "endclothing/prometheus_client_php": "^1.0"
   },
   "suggest": {
   },
