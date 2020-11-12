@@ -484,3 +484,7 @@ return function (Application $app, MiddlewareFactory $factory, ContainerInterfac
     // ... (other middlewares)
 };
 ```
+
+По умолчанию логгер берется из контенйера по ключу "Psr\Log\LoggerInterface", согласно фабрике [RequestLoggedMiddlewareFactory](https://github.com/rollun-com/rollun-logger/blob/fa35ffa8dca2f137d38fa3b66eb8fdc3fde5283a/src/Logger/src/Middleware/Factory/RequestLoggedMiddlewareFactory.php#L18),
+которая подключается в `rollun\logger\ConfigProvider`. Если вам это не подходит вы всегда можете переопределить эту фабрику
+в своей конфигурации.
