@@ -4,14 +4,14 @@
 namespace rollun\logger\Writer;
 
 
+use DateTime;
 use Elasticsearch\Client;
 use Elasticsearch\ClientBuilder;
+use Exception;
 use InvalidArgumentException;
 use RuntimeException;
+use Throwable;
 use Traversable;
-use rollun\logger\Formatter\Elasticsearch as ElasticsearchFormatter;
-
-use Zend\Log\Formatter\FormatterInterface;
 use Zend\Log\Writer\AbstractWriter;
 
 /**
@@ -20,88 +20,164 @@ use Zend\Log\Writer\AbstractWriter;
  */
 class Elasticsearch extends AbstractWriter
 {
+    private const INDEX_MASK = '{index_name}_logs-{date}';
+    private const DEFAULT_TYPE = '_doc';
 
-	/**
-	 * @var array
-	 */
-	protected $options;
+    /**
+     * @var Client
+     */
+    protected $client;
 
-	/**
-	 * @var Client
-	 */
-	protected $client;
+    /**
+     * @var string Elasticsearch index name
+     */
+    protected $indexName;
 
-	/**
-	 * HttpWriter constructor.
-	 * @param $client
-	 * @param array $options
-	 */
-	public function __construct($client, array $options = [])
-	{
-		if ($client instanceof Traversable) {
-			$client = iterator_to_array($client);
-		}
+    /**
+     * @var string Elasticsearch record type
+     */
+    protected $type;
 
-		if (is_array($client)) {
-			$options = array_merge(
-				[
-					'index' => 'rollun_log', // Elastic index name
-					'type' => '_doc',    // Elastic document type
-					'ignore_error' => false,     // Suppress Elasticsearch exceptions
-				], $client['options'] ?? []
-			);
-			if (!isset($client['formatter'])) {
-				$client['formatter'] = new ElasticsearchFormatter($options['index'], $options['type']);
+    /**
+     * HttpWriter constructor.
+     * @param Client|array $client
+     * @param string|null $indexName elasticSearch index_name
+     * @param string|null $type elasticsearch type
+     */
+    public function __construct($client, string $indexName = null, string $type = null)
+    {
+        if ($client instanceof Traversable) {
+            $client = iterator_to_array($client);
+        }
 
-			}
+        if (is_array($client)) {
+            parent::__construct($client);
+            $this->validateConfiguration($client);
 
-			$client['options'] = $options;
-			parent::__construct($client);
-			$client = $client['client'] ?? null;
-			$client = is_array($client) ? ClientBuilder::create()->setHosts($client)->build() : $client;
-		}
+            $indexName = $client['indexName'] ?? null;
+            $type = $client['type'] ?? null;
+            $client = $this->createClient($client);
+        }
 
-		if (!$client instanceof Client) {
-			throw new InvalidArgumentException('You must pass a valid Elasticsearch\Client');
-		}
+        if (!$client instanceof Client) {
+            throw new InvalidArgumentException('You must pass a valid Elasticsearch\Client');
+        }
 
-		$this->client = $client;
-		$this->options = $options;
-	}
+        if ($indexName === null) {
+            throw new InvalidArgumentException("IndexName is required.");
+        }
 
-	/**
-	 * Write a message to the log
-	 *
-	 * @param array $event log data event
-	 * @return void
-	 */
-	protected function doWrite(array $event)
-	{
-		try {
-			$event = $this->formatter->format($event);
-			$params = [
-				'body' => []
-			];
+        $this->client = $client;
+        $this->indexName = $indexName;
+        $this->type = $type === null ? self::DEFAULT_TYPE : $type;
+    }
 
-			$params['body'][] = [
-				'index' => [
-					'_index' => $event['_index'],
-					'_type' => $event['_type'],
-				],
-			];
-			unset($event['_index'], $event['_type']);
+    /**
+     * Checks configuration for the presence and format of fields
+     *
+     * @param array $config
+     */
+    private function validateConfiguration(array $config)
+    {
+        $type = $config['type'] ?? null;
 
-			$params['body'][] = $event;
+        if (!isset($config['indexName']) || !is_string($config['indexName'])) {
+            throw new InvalidArgumentException("You must pass IndexName as a string.");
+        }
 
-			$responses = $this->client->bulk($params);
+        if (isset($config['type']) && !is_string($type)) {
+            throw new InvalidArgumentException("Type must be a string.");
+        }
 
-			if ($responses['errors'] === true) {
-				throw new RuntimeException('Elasticsearch returned error for one of the records');
-			}
-		} catch (\Throwable $exception) {
-			if (!$this->options['ignore_error']) {
-				throw new RuntimeException('Error sending messages to Elasticsearch', 0, $exception);
-			}
-		}
-	}
+        if (!isset($config['client'])) {
+            throw new InvalidArgumentException('Client must be specified in options for elasticsearch writer.');
+        }
+    }
+
+    /**
+     * Create a client from configuration
+     *
+     * @param $client
+     * @return Client
+     */
+    private function createClient($client): Client
+    {
+        if ($client['client'] instanceof Client) {
+            return $client['client'];
+        }
+
+        if(is_array($client['client'])) {
+            $clientConfig = $client['client'] ?? [];
+            if (!isset($clientConfig['hosts'])) {
+                throw new InvalidArgumentException('Hosts property must be set for elasticsearch client.');
+            }
+            return ClientBuilder::create()->setHosts($client['client']['hosts'])->build();
+        }
+
+        throw new InvalidArgumentException('You must pass a valid Elasticsearch\Client or array with configuration to elasticsearch writer options.');
+    }
+
+    /**
+     * Write a message to elasticsearch
+     *
+     * @param array $event log data event
+     * @return void
+     * @throws Exception
+     */
+    protected function doWrite(array $event)
+    {
+        // Change timestamp field name
+        if (isset($event['timestamp'])) {
+            $event['@timestamp'] = $event['timestamp'] instanceof DateTime ?
+                $event['timestamp']->format('c') :
+                $event['timestamp'];
+            unset($event['timestamp']);
+        }
+
+        $index = $this->createIndexByMask(self::INDEX_MASK, $event);
+
+        // Formatter can return an event as a string, so don't call it before
+        if ($this->hasFormatter()) {
+            $event = $this->getFormatter()->format($event);
+        }
+
+        try {
+            // Send event to elastic
+            $params = [
+                'index' => $index,
+                'type' => $this->type,
+                'body' => $event
+            ];
+            $this->client->index($params);
+        } catch (Throwable $exception) {
+            throw new RuntimeException('Error sending messages to Elasticsearch', 0, $exception);
+        }
+    }
+
+    /**
+     * Inserts index_name and date into index mask
+     *
+     * @param string $mask
+     * @param $event
+     * @return string
+     * @throws Exception
+     */
+    private function createIndexByMask(string $mask, $event): string
+    {
+        $timestamp = null;
+        if (!isset($event['timestamp'])) {
+            $timestamp = new DateTime();
+        } elseif ($event['timestamp'] instanceof DateTime) {
+            $timestamp = $event['timestamp'];
+        }
+
+        $index = strtr($mask, [
+                '{index_name}' => $this->indexName,
+                '{date}' => $timestamp ? $timestamp->format('Y-m-d')
+                    : (new DateTime($event['timestamp']))->format('Y-m-d')
+            ]
+        );
+
+        return $index;
+    }
 }

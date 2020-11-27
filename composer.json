@@ -14,7 +14,7 @@
     }
   ],
   "require": {
-    "php": "^7.0",
+    "php": "^7.2",
     "ext-json": "*",
     "code-tool/jaeger-client-php": "^2.16",
     "avz-cmf/zend-psr3-log": "^3.2",
