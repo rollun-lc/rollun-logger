@@ -9,7 +9,7 @@ namespace rollun\logger;
 use Psr\Log\LoggerInterface;
 use rollun\logger\Formatter\ContextToString;
 use rollun\logger\Formatter\FluentdFormatter;
-use rollun\logger\Formatter\LogStashUdpFormatter;
+use rollun\logger\Formatter\LogStashFormatter;
 use rollun\logger\Formatter\SlackFormatter;
 use rollun\logger\Processor\ExceptionBacktrace;
 use rollun\logger\Processor\Factory\LifeCycleTokenReferenceInjectorFactory;
@@ -132,7 +132,7 @@ class ConfigProvider
                                 'host' => getenv('LOGSTASH_HOST'),
                                 'port' => getenv('LOGSTASH_PORT'),
                             ],
-                            'formatter' => new LogStashUdpFormatter(
+                            'formatter' => new LogStashFormatter(
                                 getenv("LOGSTASH_INDEX"),
                                 [
                                     'timestamp'              => 'timestamp',
