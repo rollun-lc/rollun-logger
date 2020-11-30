@@ -9,7 +9,7 @@ namespace rollun\logger;
 use Psr\Log\LoggerInterface;
 use rollun\logger\Formatter\ContextToString;
 use rollun\logger\Formatter\FluentdFormatter;
-use rollun\logger\Formatter\LogStashUdpFormatter;
+use rollun\logger\Formatter\LogStashFormatter;
 use rollun\logger\Formatter\SlackFormatter;
 use rollun\logger\Processor\ExceptionBacktrace;
 use rollun\logger\Processor\Factory\LifeCycleTokenReferenceInjectorFactory;
@@ -20,9 +20,9 @@ use rollun\logger\Prometheus\PushGateway;
 use rollun\logger\Writer\Factory\PrometheusFactory;
 use rollun\logger\Writer\PrometheusWriter;
 use rollun\logger\Writer\Slack;
-use rollun\logger\Writer\Udp;
 use rollun\logger\Writer\HttpAsyncMetric;
 use rollun\logger\Formatter\Metric;
+use rollun\logger\Writer\Udp as UdpWriter;
 use Zend\Log\LoggerAbstractServiceFactory;
 use Zend\Log\LoggerServiceFactory;
 use Zend\Log\FilterPluginManagerFactory;
@@ -125,14 +125,14 @@ class ConfigProvider
                         ],
                     ],
                     'udp_logstash' => [
-                        'name' => Udp::class,
+                        'name' => UdpWriter::class,
 
                         'options' => [
                             'client'    => [
                                 'host' => getenv('LOGSTASH_HOST'),
                                 'port' => getenv('LOGSTASH_PORT'),
                             ],
-                            'formatter' => new LogStashUdpFormatter(
+                            'formatter' => new LogStashFormatter(
                                 getenv("LOGSTASH_INDEX"),
                                 [
                                     'timestamp'              => 'timestamp',

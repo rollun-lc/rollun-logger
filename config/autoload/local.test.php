@@ -68,17 +68,13 @@ return [
 		'loggerWithElasticsearch' => [
 			'writers' => [
 				[
-					'name' => Elasticsearch::class,
-					'options' => [
-						'client' => [[
-							'host' => '',
-							'port' => '',
-							'scheme' => '',
-							'path' => '/',
-							'user' => '',
-							'pass' => ''
-						]],
-					],
+                    'name' => Elasticsearch::class,
+                    'options' => [
+                        'client' => [
+                            'hosts' => ['http://localhost:9200']
+                        ],
+                        'indexName' => 'my_index'
+                    ],
 				],
 			],
 		],

@@ -14,7 +14,7 @@
     }
   ],
   "require": {
-    "php": "^7.0",
+    "php": "^7.2",
     "ext-json": "*",
     "code-tool/jaeger-client-php": "^2.16",
     "avz-cmf/zend-psr3-log": "^3.2",
@@ -23,7 +23,8 @@
     "psr/http-message": "^1.0",
     "zendframework/zend-http": "^2.7",
     "elasticsearch/elasticsearch": "^6.7",
-    "endclothing/prometheus_client_php": "^1.0"
+    "endclothing/prometheus_client_php": "^1.0",
+    "ext-sockets": "*"
   },
   "suggest": {
   },

@@ -427,3 +427,12 @@ $logger->notice('METRICS_GAUGE', [PrometheusWriter::METRIC_ID => 'metric_2', Pro
 $logger->notice('METRICS_COUNTER', [PrometheusWriter::METRIC_ID => 'metric_3', PrometheusWriter::VALUE => 10, PrometheusWriter::GROUPS => ['group1' => 'val1'], PrometheusWriter::LABELS => ['red']]);
 $logger->notice('METRICS_COUNTER', [PrometheusWriter::METRIC_ID => 'metric_4', PrometheusWriter::VALUE => 1, PrometheusWriter::REFRESH => true]);
 ```
+
+## Запись в LogStash по TCP
+Из-за ограничения датаграмы UDP в ~65 килобайт в версии 4.7 появился TCP writer для записи логов в logstash. 
+
+Что бы использовать его достаточно переопределить у себя в конфигурации UDP врайтер (который под ключем 'udp_logstash'),
+изменив 'name' на ```rollun\logger\Writer\TCP``` вместо ```rollun\logger\Writer\Udp``` (Подробнее про переопределения 
+написано выше). А так же изменив порт по которому записываются логи в LogStash. Это можно сделать несколькими способами: 
+создать новую переменную окружения и переопределить конфигурацию, либо просто написать новый порт в переменную окружения 
+LOGSTASH_PORT (которая используется по умолчанию).
