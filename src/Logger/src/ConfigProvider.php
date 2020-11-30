@@ -20,9 +20,9 @@ use rollun\logger\Prometheus\PushGateway;
 use rollun\logger\Writer\Factory\PrometheusFactory;
 use rollun\logger\Writer\PrometheusWriter;
 use rollun\logger\Writer\Slack;
-use rollun\logger\Writer\Tcp as TcpWriter;
 use rollun\logger\Writer\HttpAsyncMetric;
 use rollun\logger\Formatter\Metric;
+use rollun\logger\Writer\Udp as UdpWriter;
 use Zend\Log\LoggerAbstractServiceFactory;
 use Zend\Log\LoggerServiceFactory;
 use Zend\Log\FilterPluginManagerFactory;
@@ -125,7 +125,7 @@ class ConfigProvider
                         ],
                     ],
                     'logstash' => [
-                        'name' => TcpWriter::class,
+                        'name' => UdpWriter::class,
 
                         'options' => [
                             'client'    => [
@@ -146,13 +146,13 @@ class ConfigProvider
                                 ]
                             ),
                             'filters'   => [
-//                                'priority_<_4' => [
-//                                    'name'    => 'priority',
-//                                    'options' => [
-//                                        'operator' => '<',
-//                                        'priority' => 4,
-//                                    ],
-//                                ],
+                                'priority_<_4' => [
+                                    'name'    => 'priority',
+                                    'options' => [
+                                        'operator' => '<',
+                                        'priority' => 4,
+                                    ],
+                                ],
                                 'regex_not_metrics' => [
                                     'name'    => 'regex',
                                     'options' => [
