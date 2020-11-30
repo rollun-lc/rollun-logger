@@ -124,7 +124,7 @@ class ConfigProvider
                             'formatter' => FluentdFormatter::class
                         ],
                     ],
-                    'logstash' => [
+                    'udp_logstash' => [
                         'name' => UdpWriter::class,
 
                         'options' => [
