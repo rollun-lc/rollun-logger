@@ -4,8 +4,8 @@ namespace rollun\test\logger\Writer;
 
 use ErrorException;
 use Exception;
-use Jaeger\Transport\TUDPTransport;
 use PHPUnit\Framework\TestCase;
+use rollun\logger\Transport\JagerUDPTransport;
 use rollun\logger\Writer\Udp;
 use RuntimeException;
 use rollun\logger\Formatter\FormatterInterface;
@@ -13,7 +13,11 @@ use rollun\logger\Formatter\FormatterInterface;
 class UdpTest extends TestCase
 {
     /**
-     * @var TUDPTransport
+     * @var Udp
+     */
+    private $object;
+    /**
+     * @var JagerUDPTransport
      */
     private $clientMock;
 
@@ -24,10 +28,11 @@ class UdpTest extends TestCase
 
     public function setUp()
     {
-        $this->clientMock = $this->createMock(TUDPTransport::class);
+        $this->clientMock = $this->createMock(JagerUDPTransport::class);
         $this->clientMock->expects($this->any())
             ->method('flush')
             ->willThrowException(new Exception('Test exception'));
+        $this->clientMock->method('getName')->willReturn('Udp');
 
         $this->formatter = $this->createMock(FormatterInterface::class);
         $this->formatter->expects($this->any())
@@ -48,11 +53,11 @@ class UdpTest extends TestCase
             'message' => 'foo',
             'priority' => 42,
         ];
-        $object = new Udp($this->clientMock, $udpOptions);
-        $object->setFormatter($this->formatter);
+        $this->object = new Udp($this->clientMock, $udpOptions);
+        $this->object->setFormatter($this->formatter);
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Error sending messages to Udp');
-        $object->write($event);
+        $this->object->write($event);
     }
 }

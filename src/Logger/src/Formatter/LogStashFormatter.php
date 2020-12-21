@@ -7,7 +7,7 @@ namespace rollun\logger\Formatter;
 use DateTime;
 use RuntimeException;
 
-class LogStashUdpFormatter implements FormatterInterface
+class LogStashFormatter implements FormatterInterface
 {
     /**
      * @var string
@@ -40,10 +40,10 @@ class LogStashUdpFormatter implements FormatterInterface
      * Map event into column using the $columnMap array
      *
      * @param  array $event
-     * @param  array|null $columnMap
+     * @param  array $columnMap
      * @return array
      */
-    protected function mapEventIntoColumn(array $event, ?array $columnMap = null)
+    protected function mapEventIntoColumn(array $event, array $columnMap = null)
     {
         if (empty($event)) {
             return [];
@@ -78,6 +78,7 @@ class LogStashUdpFormatter implements FormatterInterface
     {
         return DateTime::ISO8601;
     }
+
     /**
      * Set the format specifier for DateTime objects
      *
