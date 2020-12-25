@@ -135,7 +135,7 @@ class ConfigProvider
                             'formatter' => new LogStashFormatter(
                                 getenv("LOGSTASH_INDEX"),
                                 [
-                                    'timestamp'              => 'timestamp',
+                                    'timestamp'              => '@timestamp',
                                     'message'                => 'message',
                                     'level'                  => 'level',
                                     'priority'               => 'priority',
