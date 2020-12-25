@@ -29,7 +29,7 @@ class LogStashFormatter implements FormatterInterface
      */
     public function format($event)
     {
-        $event['timestamp'] = $event['timestamp'] instanceof DateTime ? $event['timestamp']->format('c') : $event['timestamp'];
+        $event['timestamp'] = $event['timestamp'] instanceof DateTime ? $event['timestamp']->format('Y-m-d\TH:i:s.u\Z') : $event['timestamp'];
         $event['context'] = json_encode($event['context']);
         $event['_index_name'] = $this->index;
         $dataToInsert = $this->columnMap ? $this->mapEventIntoColumn($event, $this->columnMap) : $event;
