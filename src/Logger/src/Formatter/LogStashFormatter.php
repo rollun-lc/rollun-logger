@@ -6,7 +6,6 @@ namespace rollun\logger\Formatter;
 
 use DateTime;
 use RuntimeException;
-use Zend\Log\Formatter\FormatterInterface;
 
 class LogStashFormatter implements FormatterInterface
 {
@@ -75,7 +74,7 @@ class LogStashFormatter implements FormatterInterface
      *
      * @return string
      */
-    public function getDateTimeFormat()
+    public function getDateTimeFormat(): string
     {
         return DateTime::ISO8601;
     }
@@ -87,7 +86,7 @@ class LogStashFormatter implements FormatterInterface
      * @param string $dateTimeFormat DateTime format
      * @return FormatterInterface
      */
-    public function setDateTimeFormat($dateTimeFormat)
+    public function setDateTimeFormat(string $dateTimeFormat): FormatterInterface
     {
         throw new RuntimeException('Operation set format unavailable.');
     }

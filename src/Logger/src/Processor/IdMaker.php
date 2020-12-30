@@ -7,7 +7,6 @@
 namespace rollun\logger\Processor;
 
 use rollun\logger\LifeCycleToken;
-use Zend\Log\Processor\ProcessorInterface;
 
 class IdMaker implements ProcessorInterface
 {
@@ -16,7 +15,7 @@ class IdMaker implements ProcessorInterface
      * @return array
      * @throws \Exception
      */
-    public function process(array $event)
+    public function process(array $event): array
     {
         if (!isset($event['id'])) {
             $event['id'] = $this->makeId();

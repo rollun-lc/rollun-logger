@@ -11,6 +11,8 @@ use rollun\logger\Formatter\ContextToString;
 use rollun\logger\Formatter\FluentdFormatter;
 use rollun\logger\Formatter\LogStashFormatter;
 use rollun\logger\Formatter\SlackFormatter;
+use rollun\logger\Middleware\Factory\RequestLoggedMiddlewareFactory;
+use rollun\logger\Middleware\RequestLoggedMiddleware;
 use rollun\logger\Processor\ExceptionBacktrace;
 use rollun\logger\Processor\Factory\LifeCycleTokenReferenceInjectorFactory;
 use rollun\logger\Processor\IdMaker;
@@ -20,17 +22,10 @@ use rollun\logger\Prometheus\PushGateway;
 use rollun\logger\Writer\Factory\PrometheusFactory;
 use rollun\logger\Writer\PrometheusWriter;
 use rollun\logger\Writer\Slack;
+use rollun\logger\Writer\Stream;
+use rollun\logger\Writer\Udp;
 use rollun\logger\Writer\HttpAsyncMetric;
 use rollun\logger\Formatter\Metric;
-use rollun\logger\Writer\Udp as UdpWriter;
-use Zend\Log\LoggerAbstractServiceFactory;
-use Zend\Log\LoggerServiceFactory;
-use Zend\Log\FilterPluginManagerFactory;
-use Zend\Log\FormatterPluginManagerFactory;
-use Zend\Log\ProcessorPluginManagerFactory;
-use Zend\Log\Writer\Stream;
-use Zend\Log\WriterPluginManagerFactory;
-use Zend\Log\Logger;
 use Zend\ServiceManager\Factory\InvokableFactory;
 
 class ConfigProvider
@@ -98,6 +93,9 @@ class ConfigProvider
                 'LogFormatterManager' => FormatterPluginManagerFactory::class,
                 'LogProcessorManager' => ProcessorPluginManagerFactory::class,
                 'LogWriterManager'    => WriterPluginManagerFactory::class,
+
+                // Middlewares
+                RequestLoggedMiddleware::class => RequestLoggedMiddlewareFactory::class
             ],
             'invokables'         => [
                 PushGateway::class => PushGateway::class,
@@ -125,7 +123,7 @@ class ConfigProvider
                         ],
                     ],
                     'udp_logstash' => [
-                        'name' => UdpWriter::class,
+                        'name' => Udp::class,
 
                         'options' => [
                             'client'    => [

@@ -12,7 +12,6 @@ use InvalidArgumentException;
 use RuntimeException;
 use Throwable;
 use Traversable;
-use Zend\Log\Writer\AbstractWriter;
 
 /**
  * Class Elasticsearch

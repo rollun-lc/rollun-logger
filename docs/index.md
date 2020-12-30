@@ -1,8 +1,7 @@
 # rollun-logger
 
-`rollun-logger` - библиотека которая расширяет [avz-cmf/zend-psr3-log](https://github.com/avz-cmf/zend-psr3-log),
-которая в свою очередь есть прототипом библиотеки [zendframework/zend-log](https://github.com/zendframework/zend-log)
-реализованой для [PSR-3: Logger Interface](https://www.php-fig.org/psr/psr-3/).
+`rollun-logger` - логгер, который во многом основан на [zendframework/zend-log](https://github.com/zendframework/zend-log)
+, но переписан для поддержки [PSR-3: Logger Interface](https://www.php-fig.org/psr/psr-3/).
 
 ### Установка
 
@@ -144,12 +143,29 @@ call_user_func(function () {
 конфигурационный файл для [Service Manager](https://github.com/zendframework/zend-servicemanager).
 ```php
 <?php
+use rollun\logger\Formatter\ContextToString;
+use rollun\logger\FormatterPluginManager;
+use rollun\logger\Logger;
+use rollun\logger\LoggerAbstractServiceFactory;
+use rollun\logger\LoggerServiceFactory;
+use rollun\logger\Processor\Factory\LifeCycleTokenReferenceInjectorFactory;
+use rollun\logger\Processor\IdMaker;
+use rollun\logger\Processor\LifeCycleTokenInjector;
+use rollun\logger\ProcessorPluginManager;
+use rollun\logger\Writer\Db;
+use rollun\logger\Writer\Stream;
+use rollun\logger\WriterPluginManagerFactory;
+use Zend\Db\Adapter\AdapterAbstractServiceFactory;
+use Zend\Db\Adapter\AdapterInterface;
+use rollun\logger\FilterPluginManagerFactory;
+use Zend\ServiceManager\Factory\InvokableFactory;
+
 
 return
     [
         'log_formatters' => [
             'factories' => [
-                'rollun\logger\Formatter\ContextToString' => 'Zend\ServiceManager\Factory\InvokableFactory',
+                'rollun\logger\Formatter\ContextToString' => InvokableFactory::class,
             ],
         ],
         'log_filters' => [
@@ -158,8 +174,8 @@ return
         ],
         'log_processors' => [
             'factories' => [
-                'rollun\logger\Processor\IdMaker' => 'Zend\ServiceManager\Factory\InvokableFactory',
-                'rollun\logger\Processor\LifeCycleTokenInjector' => 'rollun\logger\Processor\Factory\LifeCycleTokenReferenceInjectorFactory',
+                IdMaker::class => InvokableFactory::class,
+                LifeCycleTokenInjector::class => LifeCycleTokenReferenceInjectorFactory::class,
             ],
         ],
         'log_writers' => [
@@ -168,33 +184,39 @@ return
         ],
         'dependencies' => [
             'abstract_factories' => [
-                'Zend\Log\LoggerAbstractServiceFactory',
-                'Zend\Db\Adapter\AdapterAbstractServiceFactory',
+                LoggerAbstractServiceFactory::class,
+                AdapterAbstractServiceFactory::class,
             ],
             'factories' => [
-                'Zend\Log\Logger' => 'Zend\Log\LoggerServiceFactory',
-                'LogFilterManager' => 'Zend\Log\FilterPluginManagerFactory',
-                'LogFormatterManager' => 'Zend\Log\FormatterPluginManagerFactory',
-                'LogProcessorManager' => 'Zend\Log\ProcessorPluginManagerFactory',
-                'LogWriterManager' => 'Zend\Log\WriterPluginManagerFactory',
+                Logger::class => LoggerServiceFactory::class,
+                'LogFilterManager' => FilterPluginManagerFactory::class,
+                'LogFormatterManager' => FormatterPluginManager::class,
+                'LogProcessorManager' => ProcessorPluginManager::class,
+                'LogWriterManager' => WriterPluginManagerFactory::class,
             ],
             'aliases' => [
-                'logDbAdapter' => 'Zend\Db\Adapter\AdapterInterface',
+                'logDbAdapter' => AdapterInterface::class,
             ],
         ],
         'log' => [
             'Psr\Log\LoggerInterface' => [
+                Logger::FALLBACK_WRITER_KEY => [
+                    'name' => Stream::class,
+                    'options' => [
+                        'stream' => 'data/fallback.log',
+                    ],
+                ],
                 'processors' => [
                     [
-                        'name' => 'rollun\logger\Processor\IdMaker',
+                        'name' => IdMaker::class,
                     ],
                     [
-                        'name' => 'rollun\logger\Processor\LifeCycleTokenInjector',
+                        'name' => LifeCycleTokenInjector::class,
                     ],
                 ],
                 'writers' => [
                     'db_logs_test_log' => [
-                        'name' => 'Zend\Log\Writer\Db',
+                        'name' => Db::class,
                         'options' => [
                             'db' => 'logDbAdapter',
                             'table' => 'logs_test_log',
@@ -207,7 +229,7 @@ return
                                 'context' => 'context',
                                 'lifecycle_token' => 'lifecycle_token',
                             ],
-                            'formatter' => 'rollun\logger\Formatter\ContextToString',
+                            'formatter' => ContextToString::class,
                         ],
                     ],
                 ],
@@ -220,6 +242,9 @@ return
 Чтобы была возможность мержить и переопределять конфигурацию врайтеров, то врайтеры и фильтры нужно добавлять под строчными ключами. 
 Т.е вместо:
 ```php
+use Psr\Log\LoggerInterface;
+use rollun\logger\Writer\Stream;
+
 return [
     'log' => [
         LoggerInterface::class => [
@@ -246,6 +271,9 @@ return [
 ```
 Нужно писать (добавлены ключи 'stream_stdout' и 'priority_<=_4'):
 ```php
+use Psr\Log\LoggerInterface;
+use rollun\logger\Writer\Stream;
+
 return [
     'log' => [
         LoggerInterface::class => [
@@ -274,7 +302,7 @@ return [
 ибо на самом деле происходит слияние конфигурации и могут переопределиться не все параметры).  
 
 Что бы убрать ненужный фильтр, его можно переопределить на null. Это сработает если врайтер наследуеться от 
-[Zend\Log\Writer\AbstractWriter](https://github.com/avz-cmf/zend-psr3-log/blob/master/src/Writer/AbstractWriter.php#L95)
+[rollun\logger\Writer\AbstractWriter](https://github.com/avz-cmf/zend-psr3-log/blob/master/src/Writer/AbstractWriter.php#L95)
 и не переопределяет логику родительского конструктора по добавлению врайтеров, которая находиться 
 [тут](https://github.com/avz-cmf/zend-psr3-log/blob/74dc8053bc4c4ef520f1c9b42e2d0951b14de981/src/Writer/AbstractWriter.php#L95)  
 
@@ -436,3 +464,36 @@ $logger->notice('METRICS_COUNTER', [PrometheusWriter::METRIC_ID => 'metric_4', P
 написано выше). А так же изменив порт по которому записываются логи в LogStash. Это можно сделать несколькими способами: 
 создать новую переменную окружения и переопределить конфигурацию, либо просто написать новый порт в переменную окружения 
 LOGSTASH_PORT (которая используется по умолчанию).
+
+## Middleware
+### RequestLoggedMiddleware
+Используется для логгирования всех входящих запросов в формате `[Datetime] Method - URL <- Ip address`. Например: 
+`[2020-11-12T10:15:02+00:00] GET - /api/webhook/cron?param=true <- 172.20.0.1`
+Если вы используете ZendFramework, то подключается, как и все middleware, в файле config/pipeline:
+```php
+<?php
+
+declare(strict_types=1);
+
+use Psr\Container\ContainerInterface;
+use Zend\Expressive\Application;
+use Zend\Expressive\MiddlewareFactory;
+
+/**
+ * Setup middleware pipeline:
+ *
+ * @param Application $app
+ * @param MiddlewareFactory $factory
+ * @param ContainerInterface $container
+ * @return void
+ */
+return function (Application $app, MiddlewareFactory $factory, ContainerInterface $container) : void {
+    // Recommend to include after '$app->pipe(Zend\Stratigility\Middleware\ErrorHandler::class);'
+    $app->pipe(\rollun\logger\Middleware\RequestLoggedMiddleware::class);
+    // ... (other middlewares)
+};
+```
+
+По умолчанию логгер берется из контенйера по ключу "Psr\Log\LoggerInterface", согласно фабрике [RequestLoggedMiddlewareFactory](https://github.com/rollun-com/rollun-logger/blob/fa35ffa8dca2f137d38fa3b66eb8fdc3fde5283a/src/Logger/src/Middleware/Factory/RequestLoggedMiddlewareFactory.php#L18),
+которая подключается в `rollun\logger\ConfigProvider`. Если вам это не подходит вы всегда можете переопределить эту фабрику
+в своей конфигурации.

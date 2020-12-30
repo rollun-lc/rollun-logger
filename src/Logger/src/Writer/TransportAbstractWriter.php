@@ -9,7 +9,6 @@ use rollun\logger\Transport\TransportInterface;
 use RuntimeException;
 use Throwable;
 use Traversable;
-use Zend\Log\Writer\AbstractWriter;
 
 abstract class TransportAbstractWriter extends AbstractWriter
 {

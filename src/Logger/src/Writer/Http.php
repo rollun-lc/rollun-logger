@@ -6,9 +6,10 @@
 
 namespace rollun\logger\Writer;
 
+use InvalidArgumentException;
+use RuntimeException;
 use Traversable;
 use Zend\Http\Client;
-use Zend\Log\Writer\AbstractWriter;
 use Zend\Uri\Http as HttpUri;
 
 /**
@@ -53,7 +54,7 @@ class Http extends AbstractWriter
         }
 
         if (!$client instanceof Client) {
-            throw new \InvalidArgumentException('You must pass a valid Zend\Http\Client');
+            throw new InvalidArgumentException('You must pass a valid Zend\Http\Client');
         }
 
         $this->client = $client;
@@ -90,7 +91,7 @@ class Http extends AbstractWriter
      * @param array $event
      * @throws \Exception
      */
-    public function write(array $event)
+    public function write(array $event): void
     {
         if (!isset($this->uri) || !$this->uri->isValid()) {
             return;
@@ -115,7 +116,7 @@ class Http extends AbstractWriter
         $response = $client->send();
 
         if ($response->isServerError()) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 sprintf(
                     'Error with status %s by send event to %s, with message: %s',
                     $response->getStatusCode(),

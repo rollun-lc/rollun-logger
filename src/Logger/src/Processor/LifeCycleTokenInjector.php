@@ -7,7 +7,6 @@
 namespace rollun\logger\Processor;
 
 use rollun\logger\LifeCycleToken;
-use Zend\Log\Processor\ProcessorInterface;
 
 class LifeCycleTokenInjector implements ProcessorInterface
 {
@@ -31,7 +30,7 @@ class LifeCycleTokenInjector implements ProcessorInterface
      * @param  array $event
      * @return array
      */
-    public function process(array $event)
+    public function process(array $event): array
     {
         if (!isset($event[LifeCycleToken::KEY_LIFECYCLE_TOKEN])) {
             $event[LifeCycleToken::KEY_LIFECYCLE_TOKEN] = $this->token->toString();

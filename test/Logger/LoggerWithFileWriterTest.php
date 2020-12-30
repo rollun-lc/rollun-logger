@@ -7,12 +7,12 @@
 namespace ZendTest\Log;
 
 use PHPUnit\Framework\TestCase;
+use rollun\logger\Logger;
 use rollun\logger\Processor\IdMaker;
-use Zend\Log\Logger;
 use Psr\Log\LogLevel;
 use Psr\Container\ContainerInterface;
-use Zend\Log\Formatter\Simple as FormatterSimple;
-use Zend\Log\Writer\Stream as WriterStream;
+use rollun\logger\Formatter\Simple as FormatterSimple;
+use rollun\logger\Writer\Stream as WriterStream;
 
 class LoggerWithFileWriterTest extends TestCase
 {

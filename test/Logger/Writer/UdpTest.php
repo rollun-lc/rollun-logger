@@ -2,11 +2,13 @@
 
 namespace rollun\test\logger\Writer;
 
+use ErrorException;
+use Exception;
 use PHPUnit\Framework\TestCase;
 use rollun\logger\Transport\JagerUDPTransport;
 use rollun\logger\Writer\Udp;
 use RuntimeException;
-use Zend\Log\Formatter\FormatterInterface;
+use rollun\logger\Formatter\FormatterInterface;
 
 class UdpTest extends TestCase
 {
@@ -18,6 +20,7 @@ class UdpTest extends TestCase
      * @var JagerUDPTransport
      */
     private $clientMock;
+
     /**
      * @var FormatterInterface
      */
@@ -28,7 +31,7 @@ class UdpTest extends TestCase
         $this->clientMock = $this->createMock(JagerUDPTransport::class);
         $this->clientMock->expects($this->any())
             ->method('flush')
-            ->willThrowException(new \Exception('Test exception'));
+            ->willThrowException(new Exception('Test exception'));
         $this->clientMock->method('getName')->willReturn('Udp');
 
         $this->formatter = $this->createMock(FormatterInterface::class);
@@ -37,6 +40,9 @@ class UdpTest extends TestCase
             ->willReturn('test message');
     }
 
+    /**
+     * @throws ErrorException
+     */
     public function testWriteWithException()
     {
         $udpOptions = [

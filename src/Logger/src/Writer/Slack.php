@@ -5,7 +5,6 @@ namespace rollun\logger\Writer;
 
 use Zend\Http\Client;
 use Zend\Http\Response;
-use Zend\Log\Writer\AbstractWriter;
 
 /**
  * Class Slack
@@ -43,7 +42,7 @@ class Slack extends AbstractWriter
     /**
      * @inheritDoc
      */
-    public function write(array $event)
+    public function write(array $event): void
     {
         // call formatter
         if ($this->hasFormatter()) {

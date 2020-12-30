@@ -8,7 +8,7 @@ namespace rollun\logger;
 
 use Psr\Log\LoggerInterface;
 use Psr\Log\LoggerTrait;
-use Zend\Log\Processor\PsrPlaceholder;
+use rollun\logger\Processor\PsrPlaceholder;
 
 /**
  * Last hope, if every else not work.

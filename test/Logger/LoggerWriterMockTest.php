@@ -4,15 +4,14 @@
  * @license LICENSE.md New BSD License
  */
 
-namespace ZendTest\Log;
+namespace rollun\logger;
 
 use PHPUnit\Framework\TestCase;
 use rollun\logger\Processor\IdMaker;
-use Zend\Log\Logger;
 use Psr\Log\LogLevel;
-use Zend\Log\Writer\WriterInterface;
+use rollun\logger\Writer\WriterInterface;
 use Psr\Container\ContainerInterface;
-use Zend\Log\Writer\Mock as WriterMock;
+use rollun\logger\Writer\Mock as WriterMock;
 
 class LoggerWriterMockTest extends TestCase
 {
