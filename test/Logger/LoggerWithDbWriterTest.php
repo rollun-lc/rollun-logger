@@ -32,8 +32,9 @@ class LoggerWithDbWriterTest extends TestCase
      * {@inheritDoc}
      */
     public function setUp()
+
     {
-//        $this->markTestIncomplete('ServiceNotFoundException : Unable to resolve service "logWithDbWriter" to a factory;');
+        $this->markTestIncomplete("TODO: Automatic apply log table migration.");
         $this->logger = $this->getContainer()->get('logWithDbWriter');
         $this->logger->addProcessor(new LifeCycleTokenInjector(new LifeCycleToken(self::LIFECYCLE_TOKEN)));
         $this->getLogs();
