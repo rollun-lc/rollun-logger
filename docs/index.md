@@ -99,7 +99,30 @@ print_r($event['context']['backtrace']);
 ### LifeCycleToken
 
 `LifeCycleToken` - это объект который генерирует токены для определения приложения в котором была залогирована
-информация. Для того чтобы использовать `LifeCycleToken` приложении нужно добавить следуйщий код в `index.php` в Вашем
+информация. 
+
+**Для версий выше 4.7.3 (включительно)**
+
+LifeCycleToken подключается автоматически через конфигурацию. Если вы загружаете конфигурацию с ```rollun\logger\ConfigProvider```
+(проверить можно в файле config/config.php),то вам ничего не нужно делать, токен уже настроен. Иначе добавьте в контейнер
+фабрику ```rollun\logger\Factory\LifeCycleTokenFactory``` под ключом ```rollun\logger\LifeCycleToken::class```, например:
+
+```php
+use rollun\logger\LifeCycleToken;
+use rollun\logger\Factory\LifeCycleTokenFactory;
+
+return [
+    'dependencies' => [
+        'factories' => [
+            LifeCycleToken::class => LifeCycleTokenFactory::class
+        ]
+    ],
+];
+```
+
+**Для версии ниже 4.7.3**
+
+Для того чтобы использовать `LifeCycleToken` приложении нужно добавить следуйщий код в `index.php` в Вашем
 приложении.
 
 ```php
