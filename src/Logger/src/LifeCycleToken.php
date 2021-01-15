@@ -193,7 +193,8 @@ class LifeCycleToken implements Serializable
     {
         $allowedKeys = [
             'HTTP_LIFECYCLETOKEN',
-            'HTTP_LIFE_CYCLE_TOKEN'
+            'HTTP_LIFE_CYCLE_TOKEN',
+            'HTTP_LIFECYCLE_TOKEN'
         ];
 
         foreach ($allowedKeys as $allowedKey) {
