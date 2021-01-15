@@ -7,6 +7,7 @@
 namespace rollun\logger;
 
 use Psr\Log\LoggerInterface;
+use rollun\logger\Factory\LifeCycleTokenFactory;
 use rollun\logger\Formatter\ContextToString;
 use rollun\logger\Formatter\FluentdFormatter;
 use rollun\logger\Formatter\LogStashFormatter;
@@ -93,6 +94,9 @@ class ConfigProvider
                 'LogFormatterManager' => FormatterPluginManagerFactory::class,
                 'LogProcessorManager' => ProcessorPluginManagerFactory::class,
                 'LogWriterManager'    => WriterPluginManagerFactory::class,
+
+                //LifeCycleToken
+                LifeCycleToken::class => LifeCycleTokenFactory::class,
 
                 // Middlewares
                 RequestLoggedMiddleware::class => RequestLoggedMiddlewareFactory::class
