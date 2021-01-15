@@ -6,7 +6,9 @@
 
 namespace rollun\logger;
 
-class LifeCycleToken implements \Serializable
+use Serializable;
+
+class LifeCycleToken implements Serializable
 {
     // For system token
     const KEY_LIFECYCLE_TOKEN = "lifecycle_token";
@@ -30,7 +32,7 @@ class LifeCycleToken implements \Serializable
     /**
      * Token constructor.
      * @param string $token
-     * @param LifeCycleToken $parentToken
+     * @param LifeCycleToken|null $parentToken
      */
     public function __construct(string $token, LifeCycleToken $parentToken = null)
     {
@@ -94,6 +96,7 @@ class LifeCycleToken implements \Serializable
 
     /**
      * @see get_all_getders
+     * @deprecated will be removed in version 6. Use createFromHeaders
      */
     public static function getAllHeaders()
     {
@@ -164,5 +167,41 @@ class LifeCycleToken implements \Serializable
             self::generateToken()->toString(),
             new self($serialized)
         );
+    }
+
+    /**
+     * Creates a token by getting parent token from headers
+     *
+     * @return static
+     */
+    public static function createFromHeaders(): self
+    {
+        $parentToken = self::findTokenInHeaders();
+        if ($parentToken !== null) {
+            return new self(self::generateToken()->toString(), new self($parentToken));
+        }
+
+        return self::generateToken();
+    }
+
+    /**
+     * Finds parent token in headers and returns it or null if nothing was found
+     *
+     * @return string|null
+     */
+    protected static function findTokenInHeaders(): ?string
+    {
+        $allowedKeys = [
+            'HTTP_LIFECYCLETOKEN',
+            'HTTP_LIFE_CYCLE_TOKEN'
+        ];
+
+        foreach ($allowedKeys as $allowedKey) {
+            if (!empty($_SERVER[$allowedKey])) {
+                return $_SERVER[$allowedKey];
+            }
+        }
+
+        return null;
     }
 }
