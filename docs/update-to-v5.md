@@ -1,8 +1,29 @@
 # Изменения в версии 5
-Убрана зависимость на пакеты "avz-cmf/zend-psr3-log" и "zendframework/zend-log". В главном это означает, что все классы,
+1. Убрана зависимость на пакеты "avz-cmf/zend-psr3-log" и "zendframework/zend-log". В главном это означает, что все классы,
 которые раньше находились под неймспейсами `Zend\Log` переместились в неймспейс `rollun\logger`, или были удаленны.
 Если вы не можете найти класс, который использовали, под новым неймспейсом, то зачастую его можно легко добавить, просто
 поменяв его неймспейс и интерфейс на аналогичный из "rollun-logger". 
+   
+2. С версии 5.2.1 добавлена фабрика для LifeCycleToken, которая так же сразу добавлена в `rollun\logger\ConfigProvider`.
+Так что больше нету необходимости писать в index.php следующие строки (И лучше их убрать)
+```php
+// Init lifecycle token
+$lifeCycleToken = LifeCycleToken::generateToken();
+if (LifeCycleToken::getAllHeaders() && array_key_exists("LifeCycleToken", LifeCycleToken::getAllHeaders())) {
+$lifeCycleToken->unserialize(LifeCycleToken::getAllHeaders()["LifeCycleToken"]);
+}
+/** @var \Zend\ServiceManager\ServiceManager $container */
+$container->setService(LifeCycleToken::class, $lifeCycleToken);
+```
+
+Все что делал этот код - создавал LifeCycleToken и добавлял в контейнер. Теперь код создания находиться в фабрике, а 
+в контейнер добавляется через конфигурацию. Так что по идее это одно и то же.
+
+Так же изменился сам механизм создания токена. Ибо согласно [RFC2616](https://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.2)
+заголовки регистронезависимы, а так же в переменной [$_SERVER](https://www.php.net/manual/ru/reserved.variables.server.php)
+(из которой берутся заголовки) все ключи находятся в верхнем регистре. Так что код ```array_key_exists("LifeCycleToken", LifeCycleToken::getAllHeaders())```
+вообще не должен работать, так как тут регистрозависимое сравнение. Пометил этот метод на deprecated, вместо этого рекомендуется
+создавать LifeCycleToken через метод createFromHeaders() (Добавлен в 5.2).
 
 # Что делать для обновления
 
@@ -57,3 +78,30 @@ composer remove "avz-cmf/zend-psr3-log"
 
 Но если по каким либо причинам вы используете классы из неймспейса `Zend\Log` где -ибо еще, то там их тоже нужно заменить.
 Воспользуйтесь поиском phpStorm (ctrl + shift + f), чтобы проверить что строка `Zend\Log` нигде не встречается в вашем проекте.
+
+**3. Удалите строки создания LifeCycleToken из index.php**
+Из public/index.php удалите следующее
+```php
+// Init lifecycle token
+$lifeCycleToken = LifeCycleToken::generateToken();
+if (LifeCycleToken::getAllHeaders() && array_key_exists("LifeCycleToken", LifeCycleToken::getAllHeaders())) {
+$lifeCycleToken->unserialize(LifeCycleToken::getAllHeaders()["LifeCycleToken"]);
+}
+/** @var \Zend\ServiceManager\ServiceManager $container */
+$container->setService(LifeCycleToken::class, $lifeCycleToken);
+```
+Если у вас подключен `rollun\logger\ConfigProvider`, то больше ничего делать не нужно. Если нет, то добавьте в контейнер
+фабрику ```rollun\logger\Factory\LifeCycleTokenFactory``` под ключом ```rollun\logger\LifeCycleToken::class```, например:
+
+```php
+use rollun\logger\LifeCycleToken;
+use rollun\logger\Factory\LifeCycleTokenFactory;
+
+return [
+    'dependencies' => [
+        'factories' => [
+            LifeCycleToken::class => LifeCycleTokenFactory::class
+        ]
+    ],
+];
+```
