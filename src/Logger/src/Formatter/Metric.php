@@ -20,11 +20,15 @@ class Metric extends Db
      */
     public function format($event)
     {
-        $event = [
+        $newEvent = [
             'value' => isset($event['context']['value']) ? $event['context']['value'] : null,
             'timestamp' => (new DateTime('now', new DateTimeZone('UTC')))->getTimestamp()
         ];
 
-        return $event;
+        if(isset($event['context']['info'])) {
+            $newEvent['info'] = $event['context']['info'];
+        }
+
+        return $newEvent;
     }
 }
