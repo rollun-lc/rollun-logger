@@ -13,9 +13,12 @@ class JagerUDPTransport implements TransportInterface
      */
     private $transport;
 
-    public function __construct(TUDPTransport $transport)
+    protected $options = [];
+
+    public function __construct(TUDPTransport $transport, $options = [])
     {
         $this->transport = $transport;
+        $this->options = $options;
     }
 
     public function write(string $message): void

@@ -45,8 +45,12 @@ abstract class TransportAbstractWriter extends AbstractWriter
 
             $transport['options'] = $options;
             parent::__construct($transport);
+
             $transport = $transport['client'] ?? null;
-            $transport = is_array($transport) ? $this->createTransport($transport['host'], $transport['port']) : $transport;
+
+            $transportOptions = $transport['options'] ?? [];
+
+            $transport = $this->createTransport($transport['host'], $transport['port'], $transportOptions);
         }
 
         if (!$transport instanceof TransportInterface) {
@@ -64,7 +68,7 @@ abstract class TransportAbstractWriter extends AbstractWriter
      * @param int $port
      * @return TransportInterface
      */
-    abstract function createTransport(string $host, int $port): TransportInterface;
+    abstract function createTransport(string $host, int $port, $options = []): TransportInterface;
 
     public function __destruct()
     {
