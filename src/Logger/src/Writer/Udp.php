@@ -19,8 +19,8 @@ class Udp extends TransportAbstractWriter
         }
     }
 
-    function createTransport(string $host, int $port): TransportInterface
+    function createTransport(string $host, int $port, $options = []): TransportInterface
     {
-        return new JagerUDPTransport(new TUDPTransport($host, $port));
+        return new JagerUDPTransport(new TUDPTransport($host, $port), $options);
     }
 }

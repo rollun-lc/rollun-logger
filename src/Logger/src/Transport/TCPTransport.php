@@ -24,10 +24,13 @@ class TCPTransport implements TransportInterface
 
     private $buffer = '';
 
-    public function __construct(string $host, int $port)
+    protected $options = [];
+
+    public function __construct(string $host, int $port, $options = [])
     {
         $this->host = $host;
         $this->port = $port;
+        $this->options = $options;
     }
 
     public function isOpen(): bool
@@ -81,6 +84,9 @@ class TCPTransport implements TransportInterface
     {
         if (null === $this->socket) {
             if (false !== $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP)) {
+                foreach ($this->options as $name => $value) {
+                    socket_set_option($socket, SOL_SOCKET, $name, $value);
+                }
                 @socket_connect($socket, $this->host, $this->port);
             }
 
