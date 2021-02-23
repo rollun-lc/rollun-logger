@@ -4,9 +4,8 @@
 namespace rollun\logger\Writer;
 
 use InvalidArgumentException;
-use Jaeger\Transport\TUDPTransport;
-use rollun\logger\Transport\JagerUDPTransport;
 use rollun\logger\Transport\TransportInterface;
+use rollun\logger\Transport\UDPTransport;
 
 class Udp extends TransportAbstractWriter
 {
@@ -14,13 +13,13 @@ class Udp extends TransportAbstractWriter
     {
         parent::__construct($transport, $options);
 
-        if (!$this->transport instanceof JagerUDPTransport) {
-            throw new InvalidArgumentException('You must pass a valid rollun\logger\JagerUDPTransport');
+        if (!$this->transport instanceof TransportInterface) {
+            throw new InvalidArgumentException('You must pass a valid ' . TransportInterface::class);
         }
     }
 
     function createTransport(string $host, int $port, $options = []): TransportInterface
     {
-        return new JagerUDPTransport(new TUDPTransport($host, $port), $options);
+        return new UDPTransport($host, $port, $options);
     }
 }
