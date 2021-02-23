@@ -6,6 +6,11 @@ namespace rollun\logger\Transport;
 
 use Jaeger\Transport\TUDPTransport;
 
+/**
+ * Class JagerUDPTransport
+ * @package rollun\logger\Transport
+ * @deprecated use rollun\logger\Transport\UDPTransport
+ */
 class JagerUDPTransport implements TransportInterface
 {
     /**

@@ -135,6 +135,17 @@ class ConfigProvider
                             'client'    => [
                                 'host' => getenv('LOGSTASH_HOST'),
                                 'port' => getenv('LOGSTASH_PORT'),
+                                'options' => [
+                                    // https://www.php.net/manual/ru/function.socket-get-option.php
+                                    SO_RCVTIMEO => [
+                                        'sec' => 60,
+                                        'usec' => 0
+                                    ],
+                                    SO_SNDTIMEO => [
+                                        'sec' => 60,
+                                        'usec' => 0
+                                    ]
+                                ]
                             ],
                             'formatter' => new LogStashFormatter(
                                 getenv("LOGSTASH_INDEX"),
