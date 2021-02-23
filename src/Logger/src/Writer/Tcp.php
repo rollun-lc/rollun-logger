@@ -25,8 +25,8 @@ class Tcp extends TransportAbstractWriter
         $this->transport->close();
     }
 
-    function createTransport(string $host, int $port): TransportInterface
+    function createTransport(string $host, int $port, $options = []): TransportInterface
     {
-        return new TCPTransport($host, $port);
+        return new TCPTransport($host, $port, $options);
     }
 }

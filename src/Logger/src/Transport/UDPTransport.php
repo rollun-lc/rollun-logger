@@ -4,15 +4,15 @@ namespace rollun\logger\Transport;
 
 use function socket_create;
 
-class TCPTransport extends SocketAbstractTransport
+class UDPTransport extends SocketAbstractTransport
 {
     public function getName(): string
     {
-        return 'TCP';
+        return 'UDP';
     }
 
     protected function createSocket()
     {
-        return socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+        return socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
     }
 }
