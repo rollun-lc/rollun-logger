@@ -87,17 +87,19 @@ abstract class TransportAbstractWriter extends AbstractWriter
 
     private function flushMessage()
     {
+        $exception = null;
         for ($attempts = 0; $attempts <= self::MAX_ATTEMPTS; $attempts++) {
             try {
                 if ($this->options['auto_flash']) {
                     $this->transport->flush();
                     return;
                 }
-            } catch (Throwable $exception) {
+            } catch (Throwable $e) {
+                $exception = $e;
             }
         }
         if (!$this->options['ignore_error']) {
-            throw new RuntimeException('Error sending messages to ' . $this->transport->getName(), 0);
+            throw new RuntimeException('Error sending messages to ' . $this->transport->getName(), 0, $exception);
         }
     }
 }
