@@ -4,29 +4,21 @@
 namespace rollun\logger\Writer;
 
 
-use InvalidArgumentException;
-use rollun\logger\Transport\TCPTransport;
+use rollun\logger\Transport\Protocol;
+use rollun\logger\Transport\StreamSocketTransport;
 use rollun\logger\Transport\TransportInterface;
 
 class Tcp extends TransportAbstractWriter
 {
-    public function __construct($transport, array $options = [])
-    {
-        parent::__construct($transport, $options);
-
-        if (!$this->transport instanceof TCPTransport) {
-            throw new InvalidArgumentException('You must pass a valid rollun\logger\TCPTransport');
-        }
-    }
-
     protected function doWrite(array $event)
     {
         parent::doWrite($event);
+        // for some reasons tcp socket really write message only when closing
         $this->transport->close();
     }
 
     function createTransport(string $host, int $port, $options = []): TransportInterface
     {
-        return new TCPTransport($host, $port, $options);
+        return new StreamSocketTransport($host, $port, Protocol::TCP(), $options);
     }
 }
