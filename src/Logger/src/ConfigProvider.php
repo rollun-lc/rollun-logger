@@ -20,6 +20,7 @@ use rollun\logger\Processor\IdMaker;
 use rollun\logger\Processor\LifeCycleTokenInjector;
 use rollun\logger\Prometheus\Collector;
 use rollun\logger\Prometheus\PushGateway;
+use rollun\logger\Services\JsonTruncator;
 use rollun\logger\Writer\Factory\PrometheusFactory;
 use rollun\logger\Writer\PrometheusWriter;
 use rollun\logger\Writer\Slack;
@@ -150,7 +151,8 @@ class ConfigProvider
                                     'lifecycle_token'        => 'lifecycle_token',
                                     'parent_lifecycle_token' => 'parent_lifecycle_token',
                                     '_index_name'            => '_index_name'
-                                ]
+                                ],
+                                new JsonTruncator(LogStashFormatter::DEFAULT_MAX_SIZE)
                             ),
                             'filters'   => [
                                 'priority_<_4' => [
