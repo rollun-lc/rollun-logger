@@ -5,24 +5,36 @@ namespace rollun\logger\Formatter;
 
 
 use DateTime;
+use InvalidArgumentException;
+use rollun\logger\Services\JsonTruncator;
 use RuntimeException;
 use Zend\Log\Formatter\FormatterInterface;
 
 class LogStashFormatter implements FormatterInterface
 {
+    // 350 is bytes reserved for service info like timestamp, index_name, e.t.c
+    public const DEFAULT_MAX_SIZE = 32765 - 350;
+
     /**
      * @var string
      */
     private $index;
+
     /**
      * @var array
      */
     private $columnMap;
 
-    public function __construct(string $index, array $columnMap = null)
+    /**
+     * @var JsonTruncator
+     */
+    private $jsonTruncator;
+
+    public function __construct(string $index, array $columnMap = null, ?JsonTruncator $jsonTruncator = null)
     {
         $this->index = $index;
         $this->columnMap = $columnMap;
+        $this->jsonTruncator = is_null($jsonTruncator) ? new JsonTruncator(self::DEFAULT_MAX_SIZE) : $jsonTruncator;
     }
 
     /**
@@ -31,7 +43,15 @@ class LogStashFormatter implements FormatterInterface
     public function format($event)
     {
         $event['timestamp'] = $event['timestamp'] instanceof DateTime ? $event['timestamp']->format('Y-m-d\TH:i:s.u\Z') : $event['timestamp'];
-        $event['context'] = json_encode($event['context']);
+        try {
+            $event['context'] = $this->jsonTruncator
+                ->withMaxSize($this->jsonTruncator->getMaxSize() - strlen($event['message'] ?? ''))
+                ->truncate(json_encode($event['context']));
+        } catch (InvalidArgumentException $e) {
+            // We get here when too small value gets into withMaxSize(), which means the message is too large.
+            $event['message'] = $this->jsonTruncator->truncate($event['message']);
+            $event['context'] = '{}';
+        }
         $event['_index_name'] = $this->index;
         $dataToInsert = $this->columnMap ? $this->mapEventIntoColumn($event, $this->columnMap) : $event;
         return json_encode($dataToInsert);
