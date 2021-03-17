@@ -163,6 +163,112 @@ call_user_func(function () {
 
 ### Конфигурация
 
+#### Добавление своих фильтров
+Фильтры добавляются к конкретному врайтеру, и конфигурация может отличаться у различных врайтеров. Если возникают ошибки,
+то смотрите конструктор врайтера и ищите там как должен добавляться фильтр. 
+
+Все врайтеры из библиотеки rollun-logger наследуются от [rollun\logger\Writer\AbstractWriter](./../src/Logger/src/Writer/AbstractWriter.php)
+и потому имеют однообразный способ добавления фильтров (что рекомендуется делать и для сторонних врайтеров). Рассмотрим его.
+
+Конфигурация врайтера с фильтром выглядит следующим образом
+
+```php
+return [
+    'log' => [
+        \Psr\Log\LoggerInterface::class => [
+            'writers'    => [
+                'stream_stdout' => [
+                    // writer className
+                    'name'    => \rollun\logger\Writer\Stream::class,
+                    
+                    // options that passed to writer constructor
+                    'options' => [
+                        'stream'    => 'php://stdout',
+                        
+                        // optional: your plugin manager for filters
+                        'filter_manager' => \rollun\logger\FilterPluginManager::class,
+                        
+                        'filters' => [
+                            'priority_<=_7' => [
+                                // filter className or alias (from plugin manager)
+                                'name'    => 'priority',
+                                
+                                // options that passed to filter constructor
+                                'options' => [
+                                    'operator' => '<=',
+                                    'priority' => 7,
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
+    ],
+];
+```
+
+По умолчанию все фильтры создаются через плагин менеджер, так что в идеальной ситуации чтобы добавить свой кастомный класс
+фильтра нужно переопределить плагин менеджер (через опцию 'filter_manager'), например можно унаследоваться от базового
+плагин менеджера. Например:
+
+
+```php
+<?php
+
+namespace rollun\logger;
+
+use rollun\logger\Filter\TestFilter;
+use Zend\ServiceManager\Factory\InvokableFactory;
+
+class TestFilterPluginManager extends \rollun\logger\FilterPluginManager
+{
+    public function __construct($configInstanceOrParentLocator = null, array $config = [])
+    {
+        parent::__construct($configInstanceOrParentLocator, $config);
+        $this->aliases['test'] = TestFilter::class;
+        $this->factories[TestFilter::class] = InvokableFactory::class;
+    }
+}
+```
+
+Таким образом в конфигурации можно под ключом 'name' (в фильтрах) указывать 'test' и этот фильтр найдется,
+через плагин менеджер.
+
+Но чтобы не нужно было всегда переопределять плагин менеджер можно просто в 'name' указать полное имя класса, и если
+такого класса нету в плагин менеджере, то он по умолчанию попытается создаться через ```Zend\ServiceManager\Factory\InvokableFactory```.
+Например конфигурация для класса ```\rollun\logger\Filter\TestFilter``` которого нету в плагин менеджере:
+
+```php
+return [
+    'log' => [
+        \Psr\Log\LoggerInterface::class => [
+            'writers'    => [
+                'stream_stdout' => [
+                    'name'    => \rollun\logger\Writer\Stream::class,
+                    'options' => [
+                        'stream'    => 'php://stdout',
+                        'filters' => [
+                            'test' => [
+                                // will be created by Zend\ServiceManager\Factory\InvokableFactory
+                                'name'    => \rollun\logger\Filter\TestFilter::class,
+                                
+                                // options that passed to filter constructor
+                                'options' => [
+                                    'option1' => 'something'
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
+    ],
+];
+```
+
+#### Пример конифгурации
+
 Для того чтобы начать быстро использовать логер в Вашем приложении, нужно внести следующие конфигурации в 
 конфигурационный файл для [Service Manager](https://github.com/zendframework/zend-servicemanager).
 ```php
