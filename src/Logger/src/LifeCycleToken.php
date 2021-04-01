@@ -170,6 +170,20 @@ class LifeCycleToken implements Serializable
     }
 
     /**
+     * Creates a token by getting parent token from cli arguments
+     *
+     * @return static
+     */
+    public static function createFromArgv(): self
+    {
+        if($parentToken = self::findTokenInArgv()) {
+            return new self(self::generateToken()->toString(), new self($parentToken));
+        }
+
+        return self::generateToken();
+    }
+
+    /**
      * Creates a token by getting parent token from headers
      *
      * @return static
@@ -200,6 +214,24 @@ class LifeCycleToken implements Serializable
         foreach ($allowedKeys as $allowedKey) {
             if (!empty($_SERVER[$allowedKey])) {
                 return $_SERVER[$allowedKey];
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Find parent token in cli arguments
+     *
+     * @return string|null
+     */
+    protected static function findTokenInArgv(): ?string
+    {
+        if ($GLOBALS['argv']) {
+            foreach ($GLOBALS['argv'] as $value) {
+                if (strpos($value, 'lifecycleToken') === 0) {
+                    return explode(':', $value, 2)[1] ?? null;
+                }
             }
         }
 
