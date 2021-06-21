@@ -52,12 +52,17 @@ class PushGateway
      * @return ResponseInterface
      * @throws GuzzleException
      */
-    public function doRequest(CollectorRegistry $collectorRegistry, Collector $collector, string $job, array $groupingKey, string $method): ResponseInterface
-    {
+    public function doRequest(
+        CollectorRegistry $collectorRegistry,
+        Collector $collector,
+        string $job,
+        array $groupingKey,
+        string $method
+    ): ResponseInterface {
         $url = "http://{$this->host}:{$this->port}/metrics/job/" . $job;
         if (!empty($groupingKey)) {
             foreach ($groupingKey as $label => $value) {
-                $url .= "/" . $label . "/" . $value;
+                $url .= "/" . urlencode($label) . "/" . urlencode($value);
             }
         }
         $client = new Client();

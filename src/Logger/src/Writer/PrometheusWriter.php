@@ -22,26 +22,30 @@ use rollun\logger\Prometheus\PushGateway;
  */
 class PrometheusWriter extends AbstractWriter
 {
-    const METHOD_POST = 'post';
-    const METHOD_PUT = 'put';
-    const METHOD_DELETE = 'delete';
-    const METHODS = [self::METHOD_POST, self::METHOD_PUT, self::METHOD_DELETE];
+    public const METHOD_POST = 'post';
+    public const METHOD_PUT = 'put';
+    public const METHOD_DELETE = 'delete';
+    public const METHODS = [self::METHOD_POST, self::METHOD_PUT, self::METHOD_DELETE];
 
-    const METRIC_ID = 'metricId';
-    const VALUE = 'value';
-    const GROUPS = 'groups';
-    const LABELS = 'labels';
-    const METHOD = 'method';
-    const REFRESH = 'refresh';
-    const WITH_SERVICE_NAME = 'service';
-    const KEYS = [
-         self::METRIC_ID,
-         self::VALUE,
-         self::GROUPS,
-         self::LABELS,
-         self::METHOD,
-         self::REFRESH,
-         self::WITH_SERVICE_NAME,
+    public const METRIC_ID = 'metricId';
+    public const VALUE = 'value';
+    public const GROUPS = 'groups';
+    public const LABELS = 'labels';
+    public const METHOD = 'method';
+    public const REFRESH = 'refresh';
+    public const SERVICE = 'service';
+    public const ACTION = 'action';
+    public const WITH_SERVICE_NAME = self::SERVICE;
+
+    public const KEYS = [
+        self::METRIC_ID,
+        self::VALUE,
+        self::GROUPS,
+        self::LABELS,
+        self::METHOD,
+        self::REFRESH,
+        self::SERVICE,
+        self::ACTION,
     ];
 
     /**
@@ -67,8 +71,13 @@ class PrometheusWriter extends AbstractWriter
     /**
      * @inheritDoc
      */
-    public function __construct(Collector $collector, PushGateway $pushGateway, string $jobName, string $type, array $options = null)
-    {
+    public function __construct(
+        Collector $collector,
+        PushGateway $pushGateway,
+        string $jobName,
+        string $type,
+        array $options = null
+    ) {
         $this->collector = $collector;
         $this->pushGateway = $pushGateway;
         $this->jobName = $jobName;
@@ -110,10 +119,15 @@ class PrometheusWriter extends AbstractWriter
 
         // prepare groups
         $event['prometheusGroups'] = isset($event['context'][self::GROUPS]) ? (array)$event['context'][self::GROUPS] : [];
-        $serviceName = getenv('SERVICE_NAME');
-        $withName = isset($event['context'][self::WITH_SERVICE_NAME]) ? (bool)$event['context'][self::WITH_SERVICE_NAME] : true;
+        $serviceName = $event['context'][self::SERVICE] ?? getenv('SERVICE_NAME');
+        $withName = $serviceName ? true : false;
         if ($withName && $serviceName) {
             $event['prometheusGroups']['service'] = $serviceName;
+        }
+
+        // action
+        if (isset($event['context'][self::ACTION])) {
+            $event['prometheusGroups']['action'] = $event['context'][self::ACTION];
         }
 
         // other
@@ -169,7 +183,12 @@ class PrometheusWriter extends AbstractWriter
      */
     protected function writeGauge(array $event)
     {
-        $gauge = $this->getCollectorRegistry()->getOrRegisterGauge('', $event['prometheusMetricId'], '', $event['prometheusLabels']);
+        $gauge = $this->getCollectorRegistry()->getOrRegisterGauge(
+            '',
+            $event['prometheusMetricId'],
+            '',
+            $event['prometheusLabels']
+        );
         $gauge->set($event['prometheusValue'], $event['prometheusLabels']);
 
         $this->send($gauge, $event['prometheusMethod'], $event['prometheusGroups']);
@@ -183,7 +202,12 @@ class PrometheusWriter extends AbstractWriter
      */
     protected function writeCounter(array $event)
     {
-        $counter = $this->getCollectorRegistry()->getOrRegisterCounter('', $event['prometheusMetricId'], '', $event['prometheusLabels']);
+        $counter = $this->getCollectorRegistry()->getOrRegisterCounter(
+            '',
+            $event['prometheusMetricId'],
+            '',
+            $event['prometheusLabels']
+        );
 
         if ($event['prometheusRefresh']) {
             $counter->set($event['prometheusValue'], $event['prometheusLabels']);
