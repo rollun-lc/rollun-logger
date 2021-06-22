@@ -62,7 +62,7 @@ class PushGateway
         $url = "http://{$this->host}:{$this->port}/metrics/job/" . $job;
         if (!empty($groupingKey)) {
             foreach ($groupingKey as $label => $value) {
-                if (!ctype_alnum($value)) {
+                if (!ctype_alnum(str_replace(['-', '_'], '', $value))) {
                     $label = $label . '@base64';
                     $value = base64_encode($value);
                 }
