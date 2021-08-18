@@ -14,6 +14,9 @@ class LogStashFormatter implements FormatterInterface
     // 350 is bytes reserved for service info like timestamp, index_name, e.t.c
     public const DEFAULT_MAX_SIZE = 32765 - 350;
 
+    // key in 'context' field of log which can be used to pass index_name
+    public const INDEX_NAME_KEY = 'es_index_name';
+
     /**
      * @var string
      */
@@ -42,6 +45,7 @@ class LogStashFormatter implements FormatterInterface
     public function format($event)
     {
         $event['timestamp'] = $event['timestamp'] instanceof DateTime ? $event['timestamp']->format('Y-m-d\TH:i:s.u\Z') : $event['timestamp'];
+        $event['_index_name'] = $event['context'][static::INDEX_NAME_KEY] ?? $this->index;
         try {
             $event['context'] = $this->jsonTruncator
                 ->withMaxSize($this->jsonTruncator->getMaxSize() - strlen($event['message'] ?? ''))
@@ -51,7 +55,6 @@ class LogStashFormatter implements FormatterInterface
             $event['message'] = $this->jsonTruncator->truncate($event['message']);
             $event['context'] = '{}';
         }
-        $event['_index_name'] = $this->index;
         $dataToInsert = $this->columnMap ? $this->mapEventIntoColumn($event, $this->columnMap) : $event;
         return json_encode($dataToInsert);
     }
