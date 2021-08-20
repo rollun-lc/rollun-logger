@@ -30,6 +30,11 @@ class LifeCycleToken implements Serializable
     private $parentToken;
 
     /**
+     * @var string
+     */
+    private $filePath;
+
+    /**
      * Token constructor.
      * @param string $token
      * @param LifeCycleToken|null $parentToken
@@ -120,6 +125,40 @@ class LifeCycleToken implements Serializable
         }
 
         return ($arh);
+    }
+
+    public function createFile(string $dirPath)
+    {
+        $dirPath .= (new \DateTime())->format('Y-m-d') . '/';
+
+        if (!file_exists($dirPath)) {
+            $isDirCreated = mkdir($dirPath, 0777, true);
+            if (!$isDirCreated) {
+                return;
+            }
+        }
+
+        $this->filePath = $dirPath . $this->token;
+
+        file_put_contents($this->filePath, '');
+
+        $this->writeAdditionalInfo();
+    }
+
+    public function writeToFile(string $data)
+    {
+        if (!is_string($this->filePath)) {
+            return;
+        }
+        file_put_contents($this->filePath, $data . PHP_EOL, FILE_APPEND);
+    }
+
+    public function removeFile()
+    {
+        if (!is_string($this->filePath)) {
+            return;
+        }
+        unlink($this->filePath);
     }
 
     /**
@@ -236,5 +275,20 @@ class LifeCycleToken implements Serializable
         }
 
         return null;
+    }
+
+    protected function writeAdditionalInfo()
+    {
+        if (!empty($this->parentToken->token)) {
+            $this->writeToFile('parent_lifecycle_token: ' . $this->parentToken->token);
+        }
+
+        if (!empty($_SERVER['REMOTE_ADDR'])) {
+            $this->writeToFile('REMOTE_ADDR: ' . $_SERVER['REMOTE_ADDR']);
+        }
+
+        if (!empty($_SERVER['REQUEST_URI'])) {
+            $this->writeToFile('REQUEST_URI: ' . $_SERVER['REQUEST_URI']);
+        }
     }
 }
