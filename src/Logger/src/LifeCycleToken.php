@@ -127,6 +127,9 @@ class LifeCycleToken implements Serializable
         return ($arh);
     }
 
+    /**
+     * @param string $dirPath Dir for files with process info
+     */
     public function createFile(string $dirPath)
     {
         $dirPath .= (new \DateTime())->format('Y-m-d') . '/';
@@ -140,17 +143,21 @@ class LifeCycleToken implements Serializable
 
         $this->filePath = $dirPath . $this->token;
 
-        file_put_contents($this->filePath, '');
+        $requestInfo = '';
 
-        $this->writeAdditionalInfo();
-    }
-
-    public function writeToFile(string $data)
-    {
-        if (!is_string($this->filePath)) {
-            return;
+        if (!empty($this->parentToken->token)) {
+            $requestInfo .= 'parent_lifecycle_token: ' . $this->parentToken->token . PHP_EOL;
         }
-        file_put_contents($this->filePath, $data . PHP_EOL, FILE_APPEND);
+
+        if (!empty($_SERVER['REMOTE_ADDR'])) {
+            $requestInfo .= 'REMOTE_ADDR: ' . $_SERVER['REMOTE_ADDR'] . PHP_EOL;
+        }
+
+        if (!empty($_SERVER['REQUEST_URI'])) {
+            $requestInfo .= 'REQUEST_URI: ' . $_SERVER['REQUEST_URI'] . PHP_EOL;
+        }
+
+        file_put_contents($this->filePath, $requestInfo);
     }
 
     public function removeFile()
@@ -275,20 +282,5 @@ class LifeCycleToken implements Serializable
         }
 
         return null;
-    }
-
-    protected function writeAdditionalInfo()
-    {
-        if (!empty($this->parentToken->token)) {
-            $this->writeToFile('parent_lifecycle_token: ' . $this->parentToken->token);
-        }
-
-        if (!empty($_SERVER['REMOTE_ADDR'])) {
-            $this->writeToFile('REMOTE_ADDR: ' . $_SERVER['REMOTE_ADDR']);
-        }
-
-        if (!empty($_SERVER['REQUEST_URI'])) {
-            $this->writeToFile('REQUEST_URI: ' . $_SERVER['REQUEST_URI']);
-        }
     }
 }
