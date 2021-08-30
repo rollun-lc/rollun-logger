@@ -45,7 +45,13 @@ class LogStashFormatter implements FormatterInterface
     public function format($event)
     {
         $event['timestamp'] = $event['timestamp'] instanceof DateTime ? $event['timestamp']->format('Y-m-d\TH:i:s.u\Z') : $event['timestamp'];
-        $event['_index_name'] = $event['context'][static::INDEX_NAME_KEY] ?? $this->index;
+        // If index_name is set in context - use it
+        if (!empty($event['context'][static::INDEX_NAME_KEY])) {
+            $event['_index_name'] = $event['context'][static::INDEX_NAME_KEY];
+            unset($event['context'][static::INDEX_NAME_KEY]);
+        } else {
+            $event['_index_name'] = $this->index;
+        }
         try {
             $event['context'] = $this->jsonTruncator
                 ->withMaxSize($this->jsonTruncator->getMaxSize() - strlen($event['message'] ?? ''))
