@@ -30,6 +30,11 @@ class LifeCycleToken implements Serializable
     private $parentToken;
 
     /**
+     * @var string
+     */
+    private $filePath;
+
+    /**
      * Token constructor.
      * @param string $token
      * @param LifeCycleToken|null $parentToken
@@ -120,6 +125,47 @@ class LifeCycleToken implements Serializable
         }
 
         return ($arh);
+    }
+
+    /**
+     * @param string $dirPath Dir for files with process info
+     */
+    public function createFile(string $dirPath)
+    {
+        $dirPath .= (new \DateTime())->format('Y-m-d') . '/';
+
+        if (!file_exists($dirPath)) {
+            $isDirCreated = mkdir($dirPath, 0777, true);
+            if (!$isDirCreated) {
+                return;
+            }
+        }
+
+        $this->filePath = $dirPath . $this->token;
+
+        $requestInfo = '';
+
+        if (!empty($this->parentToken->token)) {
+            $requestInfo .= 'parent_lifecycle_token: ' . $this->parentToken->token . PHP_EOL;
+        }
+
+        if (!empty($_SERVER['REMOTE_ADDR'])) {
+            $requestInfo .= 'REMOTE_ADDR: ' . $_SERVER['REMOTE_ADDR'] . PHP_EOL;
+        }
+
+        if (!empty($_SERVER['REQUEST_URI'])) {
+            $requestInfo .= 'REQUEST_URI: ' . $_SERVER['REQUEST_URI'] . PHP_EOL;
+        }
+
+        file_put_contents($this->filePath, $requestInfo);
+    }
+
+    public function removeFile()
+    {
+        if (!is_string($this->filePath)) {
+            return;
+        }
+        unlink($this->filePath);
     }
 
     /**
