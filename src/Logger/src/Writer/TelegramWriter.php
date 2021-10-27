@@ -9,11 +9,6 @@ use rollun\utils\TelegramClient;
 use Traversable;
 
 /**
- * Райтер был отключен, потому что на данный момент он не используется в наших сервисах,
- * но требует подключение библиотеки rollun-utils, которую мы решили убрать из зависимостей логгера.
- * Чтобы снова включить этот райтер нужно или
- * 1. вернуть зависимость rollun-utils (нежелательно),
- * 2. или перенести этот класс в другую библиотеку.
  * Class TelegramWriter
  * @package rollun\logger\Writer
  */
@@ -33,8 +28,6 @@ class TelegramWriter extends AbstractWriter
      */
     public function __construct($options, TelegramClient $client = null, $chatIds = null)
     {
-        throw new \Exception("Writer is disabled because it has no usages and depends on rollun-utils library, which will be removed from logger dependencies");
-
         if ($options instanceof Traversable) {
             $options = iterator_to_array($options);
         }

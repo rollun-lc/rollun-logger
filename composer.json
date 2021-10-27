@@ -26,7 +26,8 @@
     "endclothing/prometheus_client_php": "^1.0",
     "psr/http-server-middleware": "^1.0",
     "zendframework/zend-mail": "^2.10",
-    "zendframework/zend-cache": "^2.9"
+    "zendframework/zend-cache": "^2.9",
+    "rollun-com/rollun-utils": "^5.0"
   },
   "suggest": {
   },
