@@ -368,6 +368,31 @@ return
     ];
 ```
 
+### DB Writer
+
+Для записи логов в mysql нужно запустить команду
+
+```sql
+create table if not exists <service_db>.logs
+(
+id                     varchar(255) not null
+primary key,
+timestamp              varchar(32)  not null,
+level                  varchar(32)  not null,
+priority               int          not null,
+lifecycle_token        varchar(32)  not null,
+parent_lifecycle_token varchar(32)  null,
+message                mediumtext   not null,
+context                mediumtext   not null
+);
+create index lifecycle_token
+on <service_db>.logs (lifecycle_token);
+create index parent_lifecycle_token
+on <service_db>.logs (parent_lifecycle_token);
+```
+
+
+
 ### Переопределение врайтеров в конфигурации
 Чтобы была возможность мержить и переопределять конфигурацию врайтеров, то врайтеры и фильтры нужно добавлять под строчными ключами. 
 Т.е вместо:
