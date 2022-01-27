@@ -16,9 +16,9 @@ use rollun\logger\Filter\Regex;
 use rollun\logger\Filter\SuppressFilter;
 use rollun\logger\Filter\Validator;
 use rollun\logger\Exception\InvalidArgumentException;
-use Zend\ServiceManager\AbstractPluginManager;
-use Zend\ServiceManager\Exception\InvalidServiceException;
-use Zend\ServiceManager\Factory\InvokableFactory;
+use Laminas\ServiceManager\AbstractPluginManager;
+use Laminas\ServiceManager\Exception\InvalidServiceException;
+use Laminas\ServiceManager\Factory\InvokableFactory;
 
 class FilterPluginManager extends AbstractPluginManager
 {

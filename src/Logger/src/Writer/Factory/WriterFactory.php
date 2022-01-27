@@ -8,9 +8,9 @@
 namespace rollun\logger\Writer\Factory;
 
 use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\Exception\InvalidServiceException;
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Laminas\ServiceManager\Exception\InvalidServiceException;
+use Laminas\ServiceManager\FactoryInterface;
+use Laminas\ServiceManager\ServiceLocatorInterface;
 
 /**
  * Factory for instantiating classes with no dependencies or which accept a single array.

@@ -14,9 +14,9 @@ use rollun\logger\Formatter\Db;
 use rollun\logger\Formatter\FormatterInterface;
 use rollun\logger\Formatter\Simple;
 use rollun\logger\Exception\InvalidArgumentException;
-use Zend\ServiceManager\AbstractPluginManager;
-use Zend\ServiceManager\Exception\InvalidServiceException;
-use Zend\ServiceManager\Factory\InvokableFactory;
+use Laminas\ServiceManager\AbstractPluginManager;
+use Laminas\ServiceManager\Exception\InvalidServiceException;
+use Laminas\ServiceManager\Factory\InvokableFactory;
 
 class FormatterPluginManager extends AbstractPluginManager
 {

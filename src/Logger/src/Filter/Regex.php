@@ -11,7 +11,7 @@ namespace rollun\logger\Filter;
 
 use Traversable;
 use rollun\logger\Exception\InvalidArgumentException;
-use Zend\Stdlib\ErrorHandler;
+use Laminas\Stdlib\ErrorHandler;
 
 class Regex implements FilterInterface
 {

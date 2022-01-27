@@ -12,13 +12,14 @@ use Jaeger\Client\ThriftClient;
 use Jaeger\Id\RandomIntGenerator;
 use Jaeger\Sampler\ConstSampler;
 use Jaeger\Span\Factory\SpanFactory;
+use Jaeger\Span\StackSpanManager;
 use Jaeger\Thrift\Agent\AgentClient;
 use Jaeger\Tracer\Tracer;
 use Jaeger\Transport\TUDPTransport;
 use SplStack;
 use Thrift\Protocol\TBinaryProtocol;
 use Thrift\Transport\TBufferedTransport;
-use Zend\ServiceManager\Factory\FactoryInterface;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class TracerFactory implements FactoryInterface
 {
@@ -57,7 +58,8 @@ class TracerFactory implements FactoryInterface
         $bufferTransport->open();
 
         $tracer = new Tracer(
-            new SplStack(),
+            //new SplStack(),
+            new StackSpanManager(),
             new SpanFactory(
                 new RandomIntGenerator(),
                 new ConstSampler($isDebugEnable)

@@ -12,9 +12,9 @@ namespace rollun\logger;
 use rollun\logger\Processor\Backtrace;
 use rollun\logger\Processor\ProcessorInterface;
 use rollun\logger\Processor\PsrPlaceholder;
-use Zend\ServiceManager\AbstractPluginManager;
-use Zend\ServiceManager\Exception\InvalidServiceException;
-use Zend\ServiceManager\Factory\InvokableFactory;
+use Laminas\ServiceManager\AbstractPluginManager;
+use Laminas\ServiceManager\Exception\InvalidServiceException;
+use Laminas\ServiceManager\Factory\InvokableFactory;
 
 /**
  * Plugin manager for log processors.

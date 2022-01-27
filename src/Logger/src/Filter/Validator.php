@@ -11,7 +11,7 @@ namespace rollun\logger\Filter;
 
 use Traversable;
 use rollun\logger\Exception\InvalidArgumentException;
-use Zend\Validator\ValidatorInterface as ZendValidator;
+use Laminas\Validator\ValidatorInterface as ZendValidator;
 
 class Validator implements FilterInterface
 {
@@ -38,7 +38,7 @@ class Validator implements FilterInterface
         }
         if (! $validator instanceof ZendValidator) {
             throw new InvalidArgumentException(sprintf(
-                'Parameter of type %s is invalid; must implement Zend\Validator\ValidatorInterface',
+                'Parameter of type %s is invalid; must implement Laminas\Validator\ValidatorInterface',
                 (is_object($validator) ? get_class($validator) : gettype($validator))
             ));
         }

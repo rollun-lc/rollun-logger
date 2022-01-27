@@ -28,7 +28,7 @@ use rollun\logger\Writer\Stream;
 use rollun\logger\Writer\Udp;
 use rollun\logger\Writer\HttpAsyncMetric;
 use rollun\logger\Formatter\Metric;
-use Zend\ServiceManager\Factory\InvokableFactory;
+use Laminas\ServiceManager\Factory\InvokableFactory;
 
 class ConfigProvider
 {

@@ -14,8 +14,8 @@ use Traversable;
 use rollun\logger\Filter\FilterInterface;
 use rollun\logger\Filter\Priority as PriorityFilter;
 use rollun\logger\WriterPluginManager;
-use Zend\ServiceManager\ServiceManager;
-use Zend\Stdlib\ArrayUtils;
+use Laminas\ServiceManager\ServiceManager;
+use Laminas\Stdlib\ArrayUtils;
 
 /**
  * Buffers all events until the strategy determines to flush them.

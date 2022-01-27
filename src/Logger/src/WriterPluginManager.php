@@ -19,8 +19,8 @@ use rollun\logger\Writer\Psr;
 use rollun\logger\Writer\Stream;
 use rollun\logger\Exception\InvalidArgumentException;
 use rollun\logger\Writer\WriterInterface;
-use Zend\ServiceManager\AbstractPluginManager;
-use Zend\ServiceManager\Exception\InvalidServiceException;
+use Laminas\ServiceManager\AbstractPluginManager;
+use Laminas\ServiceManager\Exception\InvalidServiceException;
 
 /**
  * Plugin manager for log writers.

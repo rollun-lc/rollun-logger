@@ -19,8 +19,8 @@ use rollun\logger\Filter\FilterInterface;
 use rollun\logger\Filter\Priority;
 use rollun\logger\FilterPluginManager;
 use rollun\logger\FormatterPluginManager;
-use Zend\ServiceManager\ServiceManager;
-use Zend\Stdlib\ErrorHandler;
+use Laminas\ServiceManager\ServiceManager;
+use Laminas\Stdlib\ErrorHandler;
 
 abstract class AbstractWriter implements WriterInterface
 {

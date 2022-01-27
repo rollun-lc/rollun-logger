@@ -1,7 +1,7 @@
 {
   "name": "rollun-com/rollun-logger",
   "description": "Zend style Logger",
-  "minimum-stability": "stable",
+  "minimum-stability": "dev",
   "license": "proprietary",
   "authors": [
     {
@@ -14,33 +14,25 @@
     }
   ],
   "require": {
-    "php": "^7.2",
+    "php": "^8.0",
     "ext-json": "*",
     "ext-sockets": "*",
-    "code-tool/jaeger-client-php": "^2.16",
-    "zendframework/zend-stdlib": "^3.1",
-    "zendframework/zend-servicemanager": "^3.3",
+    "code-tool/jaeger-client-php": "^3.3",
+    "laminas/laminas-stdlib": "^3.7.0",
+    "laminas/laminas-servicemanager": "^3.10",
     "psr/http-message": "^1.0",
-    "zendframework/zend-http": "^2.7",
-    "elasticsearch/elasticsearch": "^6.7",
-    "endclothing/prometheus_client_php": "^1.0",
+    "laminas/laminas-http": "^2.15",
+    "elasticsearch/elasticsearch": "^7.16",
+    "endclothing/prometheus_client_php": "^0.9.1",
     "psr/http-server-middleware": "^1.0",
-    "zendframework/zend-mail": "^2.10",
-    "zendframework/zend-cache": "^2.9"
-  },
-  "suggest": {
+    "laminas/laminas-mail": "2.16.x-dev",
+    "laminas/laminas-cache": "3.1.2",
+    "laminas/laminas-cache-storage-adapter-filesystem": "^2.0"
   },
   "require-dev": {
-    "zendframework/zend-component-installer": "^1.0",
-    "zendframework/zend-config-aggregator": "^1.0",
-    "zfcampus/zf-development-mode": "^3.1",
-    "symfony/dotenv": "^4.1",
-    "phpunit/phpunit": "^7",
-    "squizlabs/php_codesniffer": "^3.3",
-    "zendframework/zend-validator": "^2.13",
-    "zendframework/zend-filter": "^2.9",
-    "zendframework/zend-db": "^2.11",
-    "zendframework/zend-diactoros": "^2.2"
+
+  },
+  "suggest": {
   },
   "autoload": {
     "psr-4": {
@@ -61,5 +53,18 @@
     "code-sniffer": "phpcs ./src",
     "code-beautiful": "phpcbf ./src",
     "server": "php -S 0.0.0.0:8000 -t public public/index.php"
-  }
+  },
+  "replace": {
+
+  },
+  "repositories": [
+    {
+      "type": "path",
+      "url": "/home/yurii/www/rollun/rollun-datastore"
+    },
+    {
+      "type": "path",
+      "url": "/home/yurii/www/rollun/rollun-utils"
+    }
+  ]
 }

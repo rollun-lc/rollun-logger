@@ -5,7 +5,7 @@ namespace rollun\logger\Writer\Factory;
 use Interop\Container\ContainerInterface;
 use InvalidArgumentException;
 use rollun\logger\Writer\Db;
-use Zend\ServiceManager\Factory\FactoryInterface;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 
 /**
  * Db writer factory
