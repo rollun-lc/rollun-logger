@@ -59,12 +59,12 @@
   },
   "repositories": [
     {
-      "type": "path",
-      "url": "/home/yurii/www/rollun/rollun-datastore"
+      "type": "github",
+      "url": "git@github.com:rollun-com/rollun-datastore.git"
     },
     {
-      "type": "path",
-      "url": "/home/yurii/www/rollun/rollun-utils"
+      "type": "github",
+      "url": "git@github.com:rollun-com/rollun-utils.git"
     }
   ]
 }
