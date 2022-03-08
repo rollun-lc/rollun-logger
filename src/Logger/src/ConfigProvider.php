@@ -193,7 +193,7 @@ class ConfigProvider
                                 'regex_only_metrics' => [
                                     'name'    => 'regex',
                                     'options' => [
-                                        'regex' => '/^METRICS|METRICS_PING$/'
+                                        'regex' => '/^METRICS$/'
                                     ],
                                 ],
                             ],
@@ -210,7 +210,7 @@ class ConfigProvider
                                 'regex_only_metrics_gauge' => [
                                     'name'    => 'regex',
                                     'options' => [
-                                        'regex' => '/^METRICS_GAUGE|METRICS_PING$/'
+                                        'regex' => '/^METRICS_GAUGE$/'
                                     ],
                                 ],
                                 'priority_>=_4' => [
