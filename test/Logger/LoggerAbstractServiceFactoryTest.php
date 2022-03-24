@@ -19,10 +19,10 @@ use rollun\logger\WriterPluginManager;
 use rollun\logger\Writer\Noop;
 use rollun\logger\Writer\Db as DbWriter;
 use rollun\logger\WriterPluginManagerFactory;
-use Zend\ServiceManager\Config;
-use Zend\ServiceManager\Exception\ServiceNotFoundException;
-use Zend\ServiceManager\ServiceLocatorInterface;
-use Zend\ServiceManager\ServiceManager;
+use Laminas\ServiceManager\Config;
+use Laminas\ServiceManager\Exception\ServiceNotFoundException;
+use Laminas\ServiceManager\ServiceLocatorInterface;
+use Laminas\ServiceManager\ServiceManager;
 
 class LoggerAbstractServiceFactoryTest extends TestCase
 {
@@ -36,7 +36,7 @@ class LoggerAbstractServiceFactoryTest extends TestCase
      *
      * @see PHPUnit_Framework_TestCase::setUp()
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->serviceManager = new ServiceManager();
         $config = new Config([
@@ -102,7 +102,7 @@ class LoggerAbstractServiceFactoryTest extends TestCase
      */
     public function testRetrievesDatabaseServiceFromServiceManagerWhenEncounteringDbWriter()
     {
-        $db = $this->getMockBuilder('Zend\Db\Adapter\Adapter')
+        $db = $this->getMockBuilder('Laminas\Db\Adapter\Adapter')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -149,7 +149,11 @@ class LoggerAbstractServiceFactoryTest extends TestCase
         }
 
         $this->assertTrue($found, 'Did not find expected DB writer');
-        $this->assertAttributeSame($db, 'db', $writer);
+        //$this->assertAttributeSame($db, 'db', $writer);
+        $reflectionProperty = new \ReflectionProperty($writer, 'db');
+        $reflectionProperty->setAccessible(true);
+        $value = $reflectionProperty->getValue($writer);
+        $this->assertEquals($db, $value);
     }
 
     /**

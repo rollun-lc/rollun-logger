@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 use rollun\logger\Formatter\FormatterInterface;
 use rollun\logger\FormatterPluginManager;
 use rollun\logger\FormatterPluginManagerFactory;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Laminas\ServiceManager\ServiceLocatorInterface;
 
 class FormatterPluginManagerFactoryTest extends TestCase
 {
@@ -26,7 +26,11 @@ class FormatterPluginManagerFactoryTest extends TestCase
 
         if (method_exists($formatters, 'configure')) {
             // zend-servicemanager v3
-            $this->assertAttributeSame($container, 'creationContext', $formatters);
+            //$this->assertAttributeSame($container, 'creationContext', $formatters);
+            $reflectionProperty = new \ReflectionProperty($formatters, 'creationContext');
+            $reflectionProperty->setAccessible(true);
+            $value = $reflectionProperty->getValue($formatters);
+            $this->assertEquals($value, $container);
         } else {
             // zend-servicemanager v2
             $this->assertSame($container, $formatters->getServiceLocator());

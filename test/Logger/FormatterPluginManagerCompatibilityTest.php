@@ -13,8 +13,8 @@ use PHPUnit\Framework\TestCase;
 use rollun\logger\Exception\InvalidArgumentException;
 use rollun\logger\Formatter\FormatterInterface;
 use rollun\logger\FormatterPluginManager;
-use Zend\ServiceManager\ServiceManager;
-use Zend\ServiceManager\Test\CommonPluginManagerTrait;
+use Laminas\ServiceManager\ServiceManager;
+use Laminas\ServiceManager\Test\CommonPluginManagerTrait;
 
 class FormatterPluginManagerCompatibilityTest extends TestCase
 {

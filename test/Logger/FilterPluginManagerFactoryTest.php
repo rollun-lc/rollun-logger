@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 use rollun\logger\FilterPluginManager;
 use rollun\logger\FilterPluginManagerFactory;
 use rollun\logger\Filter\FilterInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Laminas\ServiceManager\ServiceLocatorInterface;
 
 class FilterPluginManagerFactoryTest extends TestCase
 {
@@ -30,7 +30,11 @@ class FilterPluginManagerFactoryTest extends TestCase
 
         if (method_exists($filters, 'configure')) {
             // zend-servicemanager v3
-            $this->assertAttributeSame($container, 'creationContext', $filters);
+            $reflectionProperty = new \ReflectionProperty($filters, 'creationContext');
+            $reflectionProperty->setAccessible(true);
+            $value = $reflectionProperty->getValue($filters);
+            $this->assertEquals($value, $container);
+            //$this->assertAttributeSame($container, 'creationContext', $filters);
         } else {
             // zend-servicemanager v2
             $this->assertSame($container, $filters->getServiceLocator());

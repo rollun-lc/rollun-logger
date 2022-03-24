@@ -236,7 +236,7 @@ class TestFilterPluginManager extends \rollun\logger\FilterPluginManager
 через плагин менеджер.
 
 Но чтобы не нужно было всегда переопределять плагин менеджер можно просто в 'name' указать полное имя класса, и если
-такого класса нету в плагин менеджере, то он по умолчанию попытается создаться через ```Zend\ServiceManager\Factory\InvokableFactory```.
+такого класса нету в плагин менеджере, то он по умолчанию попытается создаться через ```Laminas\ServiceManager\Factory\InvokableFactory```.
 Например конфигурация для класса ```\rollun\logger\Filter\TestFilter``` которого нету в плагин менеджере:
 
 ```php

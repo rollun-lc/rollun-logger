@@ -36,7 +36,11 @@ class SimpleTest extends TestCase
         $formatter = new Simple($options);
 
         $this->assertEquals($dateTimeFormat, $formatter->getDateTimeFormat());
-        $this->assertAttributeEquals('%timestamp%', 'format', $formatter);
+        $reflectionProperty = new \ReflectionProperty($formatter, 'format');
+        $reflectionProperty->setAccessible(true);
+        $value = $reflectionProperty->getValue($formatter);
+        $this->assertEquals('%timestamp%', $value);
+        //$this->assertAttributeEquals('%timestamp%', 'format', $formatter);
     }
 
     public function testDefaultFormat()
@@ -108,7 +112,8 @@ class SimpleTest extends TestCase
         $formatter = new Simple();
         $output = $formatter->format($event);
 
-        $this->assertContains($message, $output);
+        //$this->assertContains($message, $output);
+        $this->assertStringContainsString($message, $output);
     }
 
     public function testAllowsSpecifyingFormatAsConstructorArgument()

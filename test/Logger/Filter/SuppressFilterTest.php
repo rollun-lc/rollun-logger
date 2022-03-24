@@ -15,7 +15,7 @@ use rollun\logger\Filter\SuppressFilter;
 
 class SuppressFilterTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         $this->filter = new SuppressFilter();
     }

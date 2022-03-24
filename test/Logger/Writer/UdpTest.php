@@ -26,7 +26,7 @@ class UdpTest extends TestCase
      */
     private $formatter;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->clientMock = $this->createMock(JagerUDPTransport::class);
         $this->clientMock->expects($this->any())

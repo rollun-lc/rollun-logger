@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 use rollun\logger\Writer\WriterInterface;
 use rollun\logger\WriterPluginManager;
 use rollun\logger\WriterPluginManagerFactory;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Laminas\ServiceManager\ServiceLocatorInterface;
 
 class WriterPluginManagerFactoryTest extends TestCase
 {
@@ -30,7 +30,11 @@ class WriterPluginManagerFactoryTest extends TestCase
 
         if (method_exists($writers, 'configure')) {
             // zend-servicemanager v3
-            $this->assertAttributeSame($container, 'creationContext', $writers);
+            //$this->assertAttributeSame($container, 'creationContext', $writers);
+            $property = new \ReflectionProperty($writers, 'creationContext');
+            $property->setAccessible(true);
+            $creationContext = $property->getValue($writers);
+            $this->assertSame($container, $creationContext);
         } else {
             // zend-servicemanager v2
             $this->assertSame($container, $writers->getServiceLocator());

@@ -25,8 +25,8 @@ use rollun\logger\Processor\Backtrace;
 use rollun\logger\Writer\Mock as MockWriter;
 use rollun\logger\Writer\Stream as StreamWriter;
 use rollun\logger\Filter\Mock as MockFilter;
-use Zend\Stdlib\SplPriorityQueue;
-use Zend\Validator\Digits as DigitsFilter;
+use Laminas\Stdlib\SplPriorityQueue;
+use Laminas\Validator\Digits as DigitsFilter;
 use Psr\Log\LogLevel;
 use Psr\Log\Test\LoggerInterfaceTest;
 
@@ -75,7 +75,7 @@ class LoggerTest extends LoggerInterfaceTest
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         $this->logger = new Logger;
     }
@@ -95,7 +95,7 @@ class LoggerTest extends LoggerInterfaceTest
     {
         $this->logger->addWriter('mock');
         $writers = $this->logger->getWriters();
-        $this->assertInstanceOf('Zend\Stdlib\SplPriorityQueue', $writers);
+        $this->assertInstanceOf('Laminas\Stdlib\SplPriorityQueue', $writers);
     }
 
     public function testEmptyWriter()
@@ -116,7 +116,7 @@ class LoggerTest extends LoggerInterfaceTest
         $this->logger->setWriters($writers);
 
         $writers = $this->logger->getWriters();
-        $this->assertInstanceOf('Zend\Stdlib\SplPriorityQueue', $writers);
+        $this->assertInstanceOf('Laminas\Stdlib\SplPriorityQueue', $writers);
         $writer = $writers->extract();
         $this->assertInstanceOf(Noop::class, $writer);
         $writer = $writers->extract();
@@ -131,7 +131,7 @@ class LoggerTest extends LoggerInterfaceTest
         $this->logger->addWriter($writer2, 2);
         $writers = $this->logger->getWriters();
 
-        $this->assertInstanceOf('Zend\Stdlib\SplPriorityQueue', $writers);
+        $this->assertInstanceOf('Laminas\Stdlib\SplPriorityQueue', $writers);
         $writer = $writers->extract();
         $this->assertInstanceOf(Noop::class, $writer);
         $writer = $writers->extract();
@@ -146,7 +146,7 @@ class LoggerTest extends LoggerInterfaceTest
         $this->logger->addWriter($writer2, 1);
         $writers = $this->logger->getWriters();
 
-        $this->assertInstanceOf('Zend\Stdlib\SplPriorityQueue', $writers);
+        $this->assertInstanceOf('Laminas\Stdlib\SplPriorityQueue', $writers);
         $writer = $writers->extract();
         $this->assertInstanceOf(Mock::class, $writer);
         $writer = $writers->extract();
@@ -160,7 +160,7 @@ class LoggerTest extends LoggerInterfaceTest
         $this->logger->log(LogLevel::INFO, 'tottakai');
 
         $this->assertCount(1, $writer->events);
-        $this->assertContains('tottakai', $writer->events[0]['message']);
+        $this->assertStringContainsString('tottakai', $writer->events[0]['message']);
     }
 
     public function testLoggingArray()
@@ -170,7 +170,7 @@ class LoggerTest extends LoggerInterfaceTest
         $this->logger->log(LogLevel::INFO, 'test');
 
         $this->assertCount(1, $writer->events);
-        $this->assertContains('test', $writer->events[0]['message']);
+        $this->assertStringContainsString('test', $writer->events[0]['message']);
     }
 
     public function testAddFilter()
@@ -182,7 +182,7 @@ class LoggerTest extends LoggerInterfaceTest
         $this->logger->log(LogLevel::INFO, 'test');
 
         $this->assertCount(1, $filter->events);
-        $this->assertContains('test', $filter->events[0]['message']);
+        $this->assertStringContainsString('test', $filter->events[0]['message']);
     }
 
     public function testAddFilterByName()
@@ -193,7 +193,7 @@ class LoggerTest extends LoggerInterfaceTest
         $this->logger->log(LogLevel::INFO, 'test');
 
         $this->assertCount(1, $writer->events);
-        $this->assertContains('test', $writer->events[0]['message']);
+        $this->assertStringContainsString('test', $writer->events[0]['message']);
     }
 
     /**
@@ -229,7 +229,7 @@ class LoggerTest extends LoggerInterfaceTest
 
         $this->logger->log(6, '123');
         $this->assertCount(1, $writer->events);
-        $this->assertContains('123', $writer->events[0]['message']);
+        $this->assertStringContainsString('123', $writer->events[0]['message']);
     }
 
     public static function provideAttributes()
@@ -252,7 +252,8 @@ class LoggerTest extends LoggerInterfaceTest
         $this->logger->log(LogLevel::ERROR, 'tottakai', $context);
 
         $this->assertCount(1, $writer->events);
-        $this->assertInternalType('array', $writer->events[0]['context']);
+        //$this->assertInternalType('array', $writer->events[0]['context']);
+        $this->assertIsArray($writer->events[0]['context']);
         $this->assertSameSize($writer->events[0]['context'], $context);
     }
 
@@ -299,7 +300,7 @@ class LoggerTest extends LoggerInterfaceTest
         error_reporting($level);
         Logger::unregisterErrorHandler();
 
-        $this->assertEquals('Undefined variable: test', $writer->events[0]['message']);
+        $this->assertEquals('Undefined variable $test', $writer->events[0]['message']);
     }
 
     public function testOptionsWithMock()
@@ -443,7 +444,7 @@ class LoggerTest extends LoggerInterfaceTest
 
         $logger->info('Hi', ['context' => '']);
         $contents = stream_get_contents($stream, -1, 0);
-        $this->assertContains('Hi', $contents);
+        $this->assertStringContainsString('Hi', $contents);
         fclose($stream);
     }
 
@@ -471,8 +472,8 @@ class LoggerTest extends LoggerInterfaceTest
 
         rewind($stream);
         $contents = stream_get_contents($stream);
-        $this->assertContains('test', $contents);
-        $this->assertContains('second', $contents);
+        $this->assertStringContainsString('test', $contents);
+        $this->assertStringContainsString('second', $contents);
     }
 
     /**

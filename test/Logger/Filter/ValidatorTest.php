@@ -11,9 +11,9 @@ namespace rollun\test\logger\Filter;
 
 use PHPUnit\Framework\TestCase;
 use rollun\logger\Filter\Validator;
-use Zend\Validator\ValidatorChain;
-use Zend\Validator\Digits as DigitsFilter;
-use Zend\Validator\NotEmpty as NotEmptyFilter;
+use Laminas\Validator\ValidatorChain;
+use Laminas\Validator\Digits as DigitsFilter;
+use Laminas\Validator\NotEmpty as NotEmptyFilter;
 
 class ValidatorTest extends TestCase
 {
