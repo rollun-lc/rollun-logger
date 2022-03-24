@@ -25,7 +25,7 @@
     "elasticsearch/elasticsearch": "^7.16",
     "endclothing/prometheus_client_php": "^0.9.1",
     "psr/http-server-middleware": "^1.0",
-    "laminas/laminas-mail": "2.16.x-dev",
+    "laminas/laminas-mail": "^2.15.1",
     "laminas/laminas-cache": "3.1.2",
     "laminas/laminas-cache-storage-adapter-filesystem": "^2.0",
     "laminas/laminas-filter": "^2.14.0"
