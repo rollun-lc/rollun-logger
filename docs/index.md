@@ -10,6 +10,26 @@
 composer require rollun-com/rollun-logger
 ```
 
+В `config/config.php` в `ConfigAggregator` додати `\rollun\logger\ConfigProvider::class`
+
+### Швидкий початок
+
+```php
+<?php
+use Psr\Log\LoggerInterface;
+
+// Use container method to set service
+/** @var \Zend\ServiceManager\ServiceManager $container */
+//Або
+/** @var \Laminas\ServiceManager\ServiceManager $container */
+$container = require "config/container.php";
+
+$logger = $container->get(LoggerInterface::class);
+$logger->notice("Привіт світ!");
+```
+
+### Шпаргалка конфігурації
+
 Переменные окружения:
 
     * Для логера:    
