@@ -11,8 +11,7 @@ use RuntimeException;
 
 class LogStashFormatter implements FormatterInterface
 {
-    // 350 is bytes reserved for service info like timestamp, index_name, e.t.c
-    public const DEFAULT_MAX_SIZE = 32765 - 350;
+    public const DEFAULT_MAX_SIZE = 1500;
 
     // key in 'context' field of log which can be used to pass index_name
     public const INDEX_NAME_KEY = 'es_index_name';
