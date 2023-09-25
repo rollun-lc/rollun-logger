@@ -1,13 +1,14 @@
 <?php
 
 
-namespace rollun\logger\Formatter\Decorator;
+namespace rollun\logger\Processor\Factory;
 
 
 use Interop\Container\ContainerInterface;
+use rollun\logger\Processor\ConditionalProcessor;
 use Zend\ServiceManager\Factory\AbstractFactoryInterface;
 
-class ConditionalProcessingConfigAbstractFactory implements AbstractFactoryInterface
+class ConditionalProcessorAbstractFactory implements AbstractFactoryInterface
 {
     public const KEY = self::class;
 
@@ -36,17 +37,25 @@ class ConditionalProcessingConfigAbstractFactory implements AbstractFactoryInter
 
         $filters = [];
 
-        foreach ($config[self::KEY_FILTERS] as $filter) {
-            $filters[] = $filterPluginsManager->get($filter);
+        foreach ($config[self::KEY_FILTERS] as $filterConfig) {
+            if (!isset($filterConfig['name'])) {
+                throw new \RuntimeException("Invalid config for '$requestedName'");
+            }
+            $filters[] = $filterPluginsManager->get($filterConfig['name'], $filterConfig['options'] ?? []);
         }
 
         $processors = [];
 
-        foreach ($config[self::KEY_PROCESSORS] as $processor) {
-            $processors[] = $processorPluginsManager->get($processor);
+        foreach ($config[self::KEY_PROCESSORS] as $processorConfig) {
+            if (!isset($processorConfig['name'])) {
+                throw new \RuntimeException("Invalid config for '$requestedName'");
+            }
+            $options = $processorConfig['options'] ?? [];
+            $options['parent_name'] = $requestedName;
+            $processors[] = $processorPluginsManager->get($processorConfig['name'], $options);
         }
 
-        return new ConditionalProcessingConfig($requestedName, $filters, $processors);
+        return new ConditionalProcessor($filters, $processors);
     }
 
     protected function getConfig(ContainerInterface $container)

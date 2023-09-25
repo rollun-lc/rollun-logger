@@ -5,21 +5,28 @@
  */
 
 use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
+use rollun\logger\Factory\RedisStorageFactory;
 use rollun\logger\FilterPluginManagerFactory;
 use rollun\logger\Formatter\ContextToString;
-use rollun\logger\Formatter\Decorator\ConditionalProcessingAbstractFactory;
-use rollun\logger\Formatter\Decorator\ConditionalProcessingConfigAbstractFactory;
+use rollun\logger\Formatter\Factory\LogStashFormatterFactory;
+use rollun\logger\Formatter\LogStashFormatter;
 use rollun\logger\FormatterPluginManagerFactory;
 use rollun\logger\Logger;
 use rollun\logger\LoggerAbstractServiceFactory;
 use rollun\logger\LoggerServiceFactory;
+use rollun\logger\Processor\ChangeLevel;
 use rollun\logger\Processor\CountPerTime;
+use rollun\logger\Processor\Factory\ConditionalProcessorAbstractFactory;
+use rollun\logger\Processor\Factory\CountPerTimeFactory;
 use rollun\logger\Processor\Factory\ProcessorAbstractFactory;
 use rollun\logger\Processor\IdMaker;
 use rollun\logger\ProcessorPluginManagerFactory;
 use rollun\logger\Writer\Db as WriterDb;
 use rollun\logger\Writer\Elasticsearch;
+use rollun\logger\Writer\Factory\WriterFactory;
 use rollun\logger\Writer\Mock as WriterMock;
+use rollun\logger\Writer\Udp;
 use rollun\logger\WriterPluginManagerFactory;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\ServiceManager\Factory\InvokableFactory;
@@ -33,20 +40,30 @@ return [
         'hostname' => getenv('DB_HOST'),
         'port' => getenv('DB_PORT') ?: 3306,
 	],
+    'log_writers' => [
+        'factories' => [
+            Udp::class => WriterFactory::class, // todo
+        ],
+    ],
 	'log_formatters' => [
 		'factories' => [
 			ContextToString::class => InvokableFactory::class,
+            LogStashFormatter::class => LogStashFormatterFactory::class, // todo
 		],
 	],
 	'log_processors' => [
+        'abstract_factories' => [
+            ProcessorAbstractFactory::class,
+            ConditionalProcessorAbstractFactory::class,
+        ],
 		'factories' => [
+            CountPerTime::class => CountPerTimeFactory::class,
 			IdMaker::class => InvokableFactory::class,
 		],
 	],
 	'dependencies' => [
 		'abstract_factories' => [
 			LoggerAbstractServiceFactory::class,
-            ConditionalProcessingAbstractFactory::class,
 		],
 		'factories' => [
 			Logger::class => LoggerServiceFactory::class,
@@ -54,30 +71,35 @@ return [
 			'LogFormatterManager' => FormatterPluginManagerFactory::class,
 			'LogProcessorManager' => ProcessorPluginManagerFactory::class,
 			'LogWriterManager' => WriterPluginManagerFactory::class,
+            'StorageForLogsCount' => RedisStorageFactory::class,
 		],
 		'aliases' => [
 			'logDbAdapter' => AdapterInterface::class,
 		],
 	],
-    ConditionalProcessingConfigAbstractFactory::KEY => [
+    ConditionalProcessorAbstractFactory::KEY => [
         'DuplicateAmazonProductsCrossMatch' => [
-            ConditionalProcessingConfigAbstractFactory::KEY_FILTERS => [
+            ConditionalProcessorAbstractFactory::KEY_FILTERS => [
                 [
                     'name'    => 'regex',
                     'options' => [
-                        'regex' => '/^METRICS_GAUGE$/'
+                        'regex' => '/^TEST$/'
                     ],
                 ],
+            ],
+            ConditionalProcessorAbstractFactory::KEY_PROCESSORS => [
                 [
                     'name' => CountPerTime::class,
                     'options' => [
                         'time' => 60,
-                        'limit' => 10,
+                        'count' => 2,
+                        'onTrue' => [
+                            [
+                                'name' => 'ChangeErrorToWarning',
+                            ],
+                        ],
                     ],
                 ],
-            ],
-            ConditionalProcessingConfigAbstractFactory::KEY_PROCESSORS => [
-                'ChangeErrorToWarning',
             ],
         ],
     ],
@@ -85,8 +107,8 @@ return [
         'ChangeErrorToWarning' => [
             'name' => ChangeLevel::class,
             'options' => [
-                'from' => 3,
-                'to' => 4,
+                'from' => LogLevel::ERROR,
+                'to' => LogLevel::WARNING,
             ],
         ],
     ],
@@ -96,11 +118,21 @@ return [
 				[
 					'name' => IdMaker::class,
 				],
+                [
+                    'name' => 'DuplicateAmazonProductsCrossMatch',
+                ]
 			],
 			'writers' => [
 				[
 					'name' => WriterMock::class,
 				],
+                'udp_logstash' => [
+                    'name' => Udp::class,
+
+                    'options' => [
+                        'formatter' => LogStashFormatter::class // todo
+                    ],
+                ],
 			],
 		],
 		'loggerWithElasticsearch' => [

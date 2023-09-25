@@ -27,9 +27,13 @@ class ProcessorAbstractFactory implements AbstractFactoryInterface
         $config = $this->getConfig($container);
         $config = $config[$requestedName];
 
+        if (!isset($config['name'])) {
+            throw new \RuntimeException("Invalid config for '$requestedName'");
+        }
+
         $processorPluginsManager = $container->get('LogProcessorManager');
 
-        return $processorPluginsManager->get($config);
+        return $processorPluginsManager->get($config['name'], $config['options'] ?? []);
     }
 
     protected function getConfig(ContainerInterface $container)
