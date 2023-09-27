@@ -20,7 +20,7 @@ class CountPerTimeFactory implements FactoryInterface
 
         $onTrue = [];
 
-        foreach ($options['onTrue'] as $item) {
+        foreach ($options['onTrue'] ?? [] as $item) {
             $onTrue[] = $processorPluginsManager->get($item['name'], $item['options'] ?? []);
         }
 
@@ -28,7 +28,7 @@ class CountPerTimeFactory implements FactoryInterface
 
         $onFalse = [];
 
-        foreach ($options['onFalse'] as $item) {
+        foreach ($options['onFalse'] ?? [] as $item) {
             $onFalse[] = $processorPluginsManager->get($item['name'], $item['options'] ?? []);
         }
 

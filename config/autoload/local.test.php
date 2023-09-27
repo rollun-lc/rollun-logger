@@ -6,10 +6,8 @@
 
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
-use rollun\logger\Factory\RedisStorageFactory;
 use rollun\logger\FilterPluginManagerFactory;
 use rollun\logger\Formatter\ContextToString;
-use rollun\logger\Formatter\Factory\LogStashFormatterFactory;
 use rollun\logger\Formatter\LogStashFormatter;
 use rollun\logger\FormatterPluginManagerFactory;
 use rollun\logger\Logger;
@@ -24,7 +22,6 @@ use rollun\logger\Processor\IdMaker;
 use rollun\logger\ProcessorPluginManagerFactory;
 use rollun\logger\Writer\Db as WriterDb;
 use rollun\logger\Writer\Elasticsearch;
-use rollun\logger\Writer\Factory\WriterFactory;
 use rollun\logger\Writer\Mock as WriterMock;
 use rollun\logger\Writer\Udp;
 use rollun\logger\WriterPluginManagerFactory;
@@ -40,15 +37,9 @@ return [
         'hostname' => getenv('DB_HOST'),
         'port' => getenv('DB_PORT') ?: 3306,
 	],
-    'log_writers' => [
-        'factories' => [
-            Udp::class => WriterFactory::class, // todo
-        ],
-    ],
 	'log_formatters' => [
 		'factories' => [
 			ContextToString::class => InvokableFactory::class,
-            LogStashFormatter::class => LogStashFormatterFactory::class, // todo
 		],
 	],
 	'log_processors' => [
@@ -71,7 +62,6 @@ return [
 			'LogFormatterManager' => FormatterPluginManagerFactory::class,
 			'LogProcessorManager' => ProcessorPluginManagerFactory::class,
 			'LogWriterManager' => WriterPluginManagerFactory::class,
-            'StorageForLogsCount' => RedisStorageFactory::class,
 		],
 		'aliases' => [
 			'logDbAdapter' => AdapterInterface::class,
@@ -130,7 +120,7 @@ return [
                     'name' => Udp::class,
 
                     'options' => [
-                        'formatter' => LogStashFormatter::class // todo
+                        'formatter' => LogStashFormatter::class
                     ],
                 ],
 			],
