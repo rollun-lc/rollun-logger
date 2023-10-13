@@ -14,6 +14,10 @@ class ConditionalProcessor implements ProcessorInterface
     /** @var ProcessorInterface[] */
     private $processors;
 
+    /**
+     * @param FilterInterface[] $filters
+     * @param ProcessorInterface[] $processors
+     */
     public function __construct(array $filters, array $processors)
     {
         $this->filters = $filters;

@@ -4,6 +4,7 @@
 namespace rollun\logger\Processor;
 
 
+use rollun\logger\DTO\LogsCountInfo;
 use Zend\Cache\Storage\StorageInterface;
 
 class CountPerTime implements ProcessorInterface
@@ -89,32 +90,42 @@ class CountPerTime implements ProcessorInterface
         $count++;
         $this->storage->setItem($countKey, $count);
 
-        $isTrue = version_compare($count, $this->countLimit, $this->operator);
+        $isTrue = $this->compareByOperator($count);
 
-        if ($isTrue) {
-            foreach ($this->onTrue as $processor) {
-                $event = $processor->process($event);
-            }
-        } else {
-            $event['context']['count_checker'] = [
-                'count' => $count,
-                'count_limit' => $this->countLimit,
-                'time_limit' => $this->timeLimit,
-            ];
-            foreach ($this->onFalse as $processor) {
-                $event = $processor->process($event);
-            }
+        $processorsToRun = $isTrue ? $this->onTrue : $this->onFalse;
+
+        $event['context'][ProcessorWithCount::KEY] = $this->buildCountInfo($count);
+
+        foreach ($processorsToRun as $processor) {
+            $event = $processor->process($event);
         }
+
+        unset($event['context'][ProcessorWithCount::KEY]);
 
         return $event;
     }
 
-    private function getTimeKey(): string
+    protected function buildCountInfo(int $count): LogsCountInfo
+    {
+        return new LogsCountInfo(
+            $this->timeLimit,
+            $this->countLimit,
+            $this->operator,
+            $count
+        );
+    }
+
+    protected function compareByOperator(int $count): bool
+    {
+        return version_compare($count, $this->countLimit, $this->operator);
+    }
+
+    protected function getTimeKey(): string
     {
         return "$this->key:CountPerTime:timestamp";
     }
 
-    private function getCountKey(): string
+    protected function getCountKey(): string
     {
         return "$this->key:CountPerTime:count";
     }

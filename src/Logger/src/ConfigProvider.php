@@ -22,6 +22,7 @@ use rollun\logger\Processor\Factory\CountPerTimeFactory;
 use rollun\logger\Processor\Factory\LifeCycleTokenReferenceInjectorFactory;
 use rollun\logger\Processor\IdMaker;
 use rollun\logger\Processor\LifeCycleTokenInjector;
+use rollun\logger\Processor\ProcessorWithCount;
 use rollun\logger\Prometheus\Collector;
 use rollun\logger\Prometheus\PushGateway;
 use rollun\logger\Writer\Factory\PrometheusFactory;
@@ -54,9 +55,12 @@ class ConfigProvider
     protected function getLogProcessors()
     {
         return [
+            'invokables' => [
+                IdMaker::class => IdMaker::class,
+                ProcessorWithCount::class => ProcessorWithCount::class,
+            ],
             'factories' => [
                 LifeCycleTokenInjector::class => LifeCycleTokenReferenceInjectorFactory::class,
-                IdMaker::class => InvokableFactory::class,
                 CountPerTime::class => CountPerTimeFactory::class,
             ],
         ];

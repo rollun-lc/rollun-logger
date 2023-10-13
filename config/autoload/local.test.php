@@ -19,6 +19,7 @@ use rollun\logger\Processor\Factory\ConditionalProcessorAbstractFactory;
 use rollun\logger\Processor\Factory\CountPerTimeFactory;
 use rollun\logger\Processor\Factory\ProcessorAbstractFactory;
 use rollun\logger\Processor\IdMaker;
+use rollun\logger\Processor\ProcessorWithCount;
 use rollun\logger\ProcessorPluginManagerFactory;
 use rollun\logger\Writer\Db as WriterDb;
 use rollun\logger\Writer\Elasticsearch;
@@ -86,6 +87,11 @@ return [
                         'onTrue' => [
                             [
                                 'name' => 'ChangeErrorToWarning',
+                            ],
+                        ],
+                        'onFalse' => [
+                            [
+                                'name' => ProcessorWithCount::class,
                             ],
                         ],
                     ],
