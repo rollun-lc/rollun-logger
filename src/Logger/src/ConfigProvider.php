@@ -8,23 +8,29 @@ namespace rollun\logger;
 
 use Psr\Log\LoggerInterface;
 use rollun\logger\Factory\LifeCycleTokenFactory;
+use rollun\logger\Factory\RedisStorageFactory;
 use rollun\logger\Formatter\ContextToString;
+use rollun\logger\Formatter\Factory\LogStashFormatterFactory;
 use rollun\logger\Formatter\FluentdFormatter;
 use rollun\logger\Formatter\LogStashFormatter;
 use rollun\logger\Formatter\SlackFormatter;
 use rollun\logger\Middleware\Factory\RequestLoggedMiddlewareFactory;
 use rollun\logger\Middleware\RequestLoggedMiddleware;
+use rollun\logger\Processor\CountPerTime;
 use rollun\logger\Processor\ExceptionBacktrace;
+use rollun\logger\Processor\Factory\CountPerTimeFactory;
 use rollun\logger\Processor\Factory\LifeCycleTokenReferenceInjectorFactory;
 use rollun\logger\Processor\IdMaker;
 use rollun\logger\Processor\LifeCycleTokenInjector;
+use rollun\logger\Processor\ProcessorWithCount;
 use rollun\logger\Prometheus\Collector;
 use rollun\logger\Prometheus\PushGateway;
-use rollun\logger\Services\JsonTruncator;
 use rollun\logger\Writer\Factory\PrometheusFactory;
+use rollun\logger\Writer\Factory\WriterFactory;
 use rollun\logger\Writer\PrometheusWriter;
 use rollun\logger\Writer\Slack;
 use rollun\logger\Writer\Stream;
+use rollun\logger\Writer\Tcp;
 use rollun\logger\Writer\Udp;
 use rollun\logger\Writer\HttpAsyncMetric;
 use rollun\logger\Formatter\Metric;
@@ -49,9 +55,13 @@ class ConfigProvider
     protected function getLogProcessors()
     {
         return [
+            'invokables' => [
+                IdMaker::class => IdMaker::class,
+                ProcessorWithCount::class => ProcessorWithCount::class,
+            ],
             'factories' => [
                 LifeCycleTokenInjector::class => LifeCycleTokenReferenceInjectorFactory::class,
-                IdMaker::class                => InvokableFactory::class
+                CountPerTime::class => CountPerTimeFactory::class,
             ],
         ];
     }
@@ -62,6 +72,7 @@ class ConfigProvider
             'factories' => [
                 ContextToString::class  => InvokableFactory::class,
                 FluentdFormatter::class => InvokableFactory::class,
+                LogStashFormatter::class => LogStashFormatterFactory::class,
             ],
         ];
     }
@@ -74,6 +85,8 @@ class ConfigProvider
         return [
             'factories' => [
                 PrometheusWriter::class => PrometheusFactory::class,
+                Udp::class => WriterFactory::class,
+                Tcp::class => WriterFactory::class,
             ],
         ];
     }
@@ -95,6 +108,7 @@ class ConfigProvider
                 'LogFormatterManager' => FormatterPluginManagerFactory::class,
                 'LogProcessorManager' => ProcessorPluginManagerFactory::class,
                 'LogWriterManager'    => WriterPluginManagerFactory::class,
+                'StorageForLogsCount' => RedisStorageFactory::class,
 
                 //LifeCycleToken
                 LifeCycleToken::class => LifeCycleTokenFactory::class,
@@ -140,20 +154,7 @@ class ConfigProvider
                                     'connectionTimeout' => 10,
                                 ]
                             ],
-                            'formatter' => new LogStashFormatter(
-                                getenv("LOGSTASH_INDEX"),
-                                [
-                                    'timestamp'              => '@timestamp',
-                                    'message'                => 'message',
-                                    'level'                  => 'level',
-                                    'priority'               => 'priority',
-                                    'context'                => 'context',
-                                    'lifecycle_token'        => 'lifecycle_token',
-                                    'parent_lifecycle_token' => 'parent_lifecycle_token',
-                                    '_index_name'            => '_index_name'
-                                ],
-                                new JsonTruncator(LogStashFormatter::DEFAULT_MAX_SIZE)
-                            ),
+                            'formatter' => LogStashFormatter::class,
                             'filters'   => [
                                 'priority_<_4' => [
                                     'name'    => 'priority',

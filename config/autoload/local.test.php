@@ -5,20 +5,29 @@
  */
 
 use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 use rollun\logger\FilterPluginManagerFactory;
-use rollun\logger\Processor\IdMaker;
-use rollun\logger\Writer\Elasticsearch;
-use Zend\Db\Adapter\AdapterInterface;
-use Zend\ServiceManager\Factory\InvokableFactory;
-use rollun\logger\Writer\Mock as WriterMock;
+use rollun\logger\Formatter\ContextToString;
+use rollun\logger\Formatter\LogStashFormatter;
+use rollun\logger\FormatterPluginManagerFactory;
+use rollun\logger\Logger;
 use rollun\logger\LoggerAbstractServiceFactory;
 use rollun\logger\LoggerServiceFactory;
-use rollun\logger\FormatterPluginManagerFactory;
+use rollun\logger\Processor\ChangeLevel;
+use rollun\logger\Processor\CountPerTime;
+use rollun\logger\Processor\Factory\ConditionalProcessorAbstractFactory;
+use rollun\logger\Processor\Factory\CountPerTimeFactory;
+use rollun\logger\Processor\Factory\ProcessorAbstractFactory;
+use rollun\logger\Processor\IdMaker;
+use rollun\logger\Processor\ProcessorWithCount;
 use rollun\logger\ProcessorPluginManagerFactory;
-use rollun\logger\WriterPluginManagerFactory;
-use rollun\logger\Logger;
 use rollun\logger\Writer\Db as WriterDb;
-use rollun\logger\Formatter\ContextToString;
+use rollun\logger\Writer\Elasticsearch;
+use rollun\logger\Writer\Mock as WriterMock;
+use rollun\logger\Writer\Udp;
+use rollun\logger\WriterPluginManagerFactory;
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\ServiceManager\Factory\InvokableFactory;
 
 return [
 	'db' => [
@@ -35,7 +44,12 @@ return [
 		],
 	],
 	'log_processors' => [
+        'abstract_factories' => [
+            ProcessorAbstractFactory::class,
+            ConditionalProcessorAbstractFactory::class,
+        ],
 		'factories' => [
+            CountPerTime::class => CountPerTimeFactory::class,
 			IdMaker::class => InvokableFactory::class,
 		],
 	],
@@ -54,17 +68,67 @@ return [
 			'logDbAdapter' => AdapterInterface::class,
 		],
 	],
+    ConditionalProcessorAbstractFactory::KEY => [
+        'DuplicateAmazonProductsCrossMatch' => [
+            ConditionalProcessorAbstractFactory::KEY_FILTERS => [
+                [
+                    'name'    => 'regex',
+                    'options' => [
+                        'regex' => '/^TEST$/'
+                    ],
+                ],
+            ],
+            ConditionalProcessorAbstractFactory::KEY_PROCESSORS => [
+                [
+                    'name' => CountPerTime::class,
+                    'options' => [
+                        'time' => 60,
+                        'count' => 2,
+                        'onTrue' => [
+                            [
+                                'name' => 'ChangeErrorToWarning',
+                            ],
+                        ],
+                        'onFalse' => [
+                            [
+                                'name' => ProcessorWithCount::class,
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
+    ],
+    ProcessorAbstractFactory::KEY => [
+        'ChangeErrorToWarning' => [
+            'name' => ChangeLevel::class,
+            'options' => [
+                'from' => LogLevel::ERROR,
+                'to' => LogLevel::WARNING,
+            ],
+        ],
+    ],
 	'log' => [
 		LoggerInterface::class => [
 			'processors' => [
 				[
 					'name' => IdMaker::class,
 				],
+                [
+                    'name' => 'DuplicateAmazonProductsCrossMatch',
+                ]
 			],
 			'writers' => [
 				[
 					'name' => WriterMock::class,
 				],
+                'udp_logstash' => [
+                    'name' => Udp::class,
+
+                    'options' => [
+                        'formatter' => LogStashFormatter::class
+                    ],
+                ],
 			],
 		],
 		'loggerWithElasticsearch' => [
