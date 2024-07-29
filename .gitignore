@@ -16,6 +16,7 @@ temp/
 
 # User-specific stuff:
 phpunit.xml.dist
+.phpunit.result.cache
 composer.lock
 .idea/workspace.xml
 .idea/*
