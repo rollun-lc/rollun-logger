@@ -102,21 +102,21 @@ class LifeCycleToken implements Serializable
 
     private static function replaceStartWithPid(string $lifecycleToken, int $pid): string
     {
-        $pidWithHash = $pid . '#';
+        $pidWithDelimiter = $pid . '_';
 
         $originalLength = strlen($lifecycleToken);
-        $pidWithHashLength = strlen($pidWithHash);
+        $pidWithDelimiterLength = strlen($pidWithDelimiter);
 
         // Если pid длиннее чем lifecycleToken, то ничего не делаем. В норме таких ситуаций не должно возникнуть.
-        // Так как длина токена 30, а максимальная у pid - 5 (со знаком хеша - 6)
-        if ($pidWithHashLength >= $originalLength) {
+        // Так как длина токена 30, а максимальная у pid - 5 (с разделителем - 6)
+        if ($pidWithDelimiterLength >= $originalLength) {
             return $lifecycleToken;
         }
 
-        $remainingLength = $originalLength - $pidWithHashLength;
-        $remainingStr = substr($lifecycleToken, $pidWithHashLength, $remainingLength);
+        $remainingLength = $originalLength - $pidWithDelimiterLength;
+        $remainingStr = substr($lifecycleToken, $pidWithDelimiterLength, $remainingLength);
 
-        return $pidWithHash . $remainingStr;
+        return $pidWithDelimiter . $remainingStr;
     }
 
     /**
