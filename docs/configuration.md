@@ -30,7 +30,8 @@ return [
                 'stream_stdout' => [
                     'options' => [
                         'formatter' => new FluentdFormatter(
-                            new JsonTruncator(FluentdFormatter::DEFAULT_MAX_SIZE)
+                            // You can change maxSize to any you want, value in bytes
+                            new JsonTruncator(maxSize: 1000)
                         )
                     ],
                 ],    
