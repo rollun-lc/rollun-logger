@@ -124,7 +124,7 @@ class ConfigProvider
                         'name'    => Stream::class,
                         'options' => [
                             'stream'    => 'php://stdout',
-                            'formatter' => FluentdFormatter::class
+                            'formatter' => new FluentdFormatter()
                         ],
                     ],
                     'udp_logstash' => [
