@@ -9,10 +9,20 @@
 namespace rollun\logger\Formatter;
 
 
+use rollun\logger\Services\JsonTruncator;
 use RuntimeException;
 
 class FluentdFormatter implements FormatterInterface
 {
+    /**
+     * @var JsonTruncator|null
+     */
+    private $jsonTruncator;
+
+    public function __construct(?JsonTruncator $jsonTruncator = null)
+    {
+        $this->jsonTruncator = $jsonTruncator;
+    }
 
     /**
      * Formats data into a single line to be written by the writer.
@@ -25,7 +35,11 @@ class FluentdFormatter implements FormatterInterface
     {
         $event = $this->reachUpFirstNestedLevel($event);
         $event = $this->clearEmptyArrayInEvent($event);
-        return json_encode($event);
+        $eventJson = json_encode($event);
+        if ($this->jsonTruncator !== null) {
+            $eventJson = $this->jsonTruncator->truncate($eventJson);
+        }
+        return $eventJson;
     }
     /**
      * Clear empty array in event
