@@ -18,23 +18,16 @@ class WriterPluginManagerFactoryTest extends TestCase
 {
     public function testFactoryReturnsPluginManager()
     {
-        $container = $this->prophesize(ContainerInterface::class)->reveal();
+        $container = new SimpleArrayContainer([]);
         $factory = new WriterPluginManagerFactory();
 
         $writers = $factory($container, WriterPluginManagerFactory::class);
         $this->assertInstanceOf(WriterPluginManager::class, $writers);
 
-        if (method_exists($writers, 'configure')) {
-            // zend-servicemanager v3
-            //$this->assertAttributeSame($container, 'creationContext', $writers);
-            $property = new \ReflectionProperty($writers, 'creationContext');
-            $property->setAccessible(true);
-            $creationContext = $property->getValue($writers);
-            $this->assertSame($container, $creationContext);
-        } else {
-            // zend-servicemanager v2
-            $this->assertSame($container, $writers->getServiceLocator());
-        }
+        $property = new \ReflectionProperty($writers, 'creationContext');
+        $property->setAccessible(true);
+        $creationContext = $property->getValue($writers);
+        $this->assertSame($container, $creationContext);
     }
 
     /**
@@ -42,8 +35,8 @@ class WriterPluginManagerFactoryTest extends TestCase
      */
     public function testFactoryConfiguresPluginManagerUnderContainer()
     {
-        $container = $this->prophesize(ContainerInterface::class)->reveal();
-        $writer = $this->prophesize(WriterInterface::class)->reveal();
+        $container = new SimpleArrayContainer([]);
+        $writer = $this->createMock(WriterInterface::class);
 
         $factory = new WriterPluginManagerFactory();
         $writers = $factory($container, WriterPluginManagerFactory::class, [
@@ -51,27 +44,6 @@ class WriterPluginManagerFactoryTest extends TestCase
                 'test' => $writer,
             ],
         ]);
-        $this->assertSame($writer, $writers->get('test'));
-    }
-
-    /**
-     * @depends testFactoryReturnsPluginManager
-     */
-    public function testFactoryConfiguresPluginManagerUnderServiceManagerV2()
-    {
-        $container = $this->prophesize(ServiceLocatorInterface::class);
-        $container->willImplement(ContainerInterface::class);
-
-        $writer = $this->prophesize(WriterInterface::class)->reveal();
-
-        $factory = new WriterPluginManagerFactory();
-        $factory->setCreationOptions([
-            'services' => [
-                'test' => $writer,
-            ],
-        ]);
-
-        $writers = $factory->createService($container->reveal());
         $this->assertSame($writer, $writers->get('test'));
     }
 

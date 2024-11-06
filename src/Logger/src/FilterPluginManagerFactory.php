@@ -9,26 +9,18 @@
 
 namespace rollun\logger;
 
+use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 use Laminas\ServiceManager\Config;
-use Laminas\ServiceManager\FactoryInterface;
-use Laminas\ServiceManager\ServiceLocatorInterface;
 
 class FilterPluginManagerFactory implements FactoryInterface
 {
-    /**
-     * zend-servicemanager v2 support for invocation options.
-     *
-     * @param array
-     */
-    protected $creationOptions;
-
     /**
      * {@inheritDoc}
      *
      * @return FilterPluginManager
      */
-    public function __invoke(ContainerInterface $container, $name, array $options = null)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $pluginManager = new FilterPluginManager($container, $options ?: []);
 
@@ -54,26 +46,5 @@ class FilterPluginManagerFactory implements FactoryInterface
         (new Config($config['log_filters']))->configureServiceManager($pluginManager);
 
         return $pluginManager;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return FilterPluginManager
-     */
-    public function createService(ServiceLocatorInterface $container, $name = null, $requestedName = null)
-    {
-        return $this($container, $requestedName ?: FilterPluginManager::class, $this->creationOptions);
-    }
-
-    /**
-     * zend-servicemanager v2 support for invocation options.
-     *
-     * @param array $options
-     * @return void
-     */
-    public function setCreationOptions(array $options)
-    {
-        $this->creationOptions = $options;
     }
 }

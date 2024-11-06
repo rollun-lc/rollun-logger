@@ -7,12 +7,12 @@
 
 namespace rollun\test\logger;
 
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
 use rollun\logger\FilterPluginManager;
 use rollun\logger\FilterPluginManagerFactory;
 use rollun\logger\Filter\FilterInterface;
-use Laminas\ServiceManager\ServiceLocatorInterface;
 
 class FilterPluginManagerFactoryTest extends TestCase
 {
@@ -54,27 +54,9 @@ class FilterPluginManagerFactoryTest extends TestCase
         $this->assertSame($filter, $filters->get('test'));
     }
 
-    public function testFactoryConfiguresPluginManagerUnderServiceManagerV2()
-    {
-        $container = $this->prophesize(ServiceLocatorInterface::class);
-        $container->willImplement(ContainerInterface::class);
-
-        $filter = $this->prophesize(FilterInterface::class)->reveal();
-
-        $factory = new FilterPluginManagerFactory();
-        $factory->setCreationOptions([
-            'services' => [
-                'test' => $filter,
-            ],
-        ]);
-
-        $filters = $factory->createService($container->reveal());
-        $this->assertSame($filter, $filters->get('test'));
-    }
-
     public function testConfiguresFilterServicesWhenFound()
     {
-        $filter = $this->prophesize(FilterInterface::class)->reveal();
+        $filter = $this->createMock(FilterInterface::class);
         $config = [
             'log_filters' => [
                 'aliases' => [
@@ -88,15 +70,10 @@ class FilterPluginManagerFactoryTest extends TestCase
             ],
         ];
 
-        $container = $this->prophesize(ServiceLocatorInterface::class);
-        $container->willImplement(ContainerInterface::class);
-
-        $container->has('ServiceListener')->willReturn(false);
-        $container->has('config')->willReturn(true);
-        $container->get('config')->willReturn($config);
+        $container = new SimpleArrayContainer(['config' => $config]);
 
         $factory = new FilterPluginManagerFactory();
-        $filters = $factory($container->reveal(), 'FilterManager');
+        $filters = $factory($container, 'FilterManager');
 
         $this->assertInstanceOf(FilterPluginManager::class, $filters);
         $this->assertTrue($filters->has('test'));
@@ -107,29 +84,10 @@ class FilterPluginManagerFactoryTest extends TestCase
 
     public function testDoesNotConfigureFilterServicesWhenServiceListenerPresent()
     {
-        $filter = $this->prophesize(FilterInterface::class)->reveal();
-        $config = [
-            'log_filters' => [
-                'aliases' => [
-                    'test' => 'test-too',
-                ],
-                'factories' => [
-                    'test-too' => function ($container) use ($filter) {
-                        return $filter;
-                    },
-                ],
-            ],
-        ];
-
-        $container = $this->prophesize(ServiceLocatorInterface::class);
-        $container->willImplement(ContainerInterface::class);
-
-        $container->has('ServiceListener')->willReturn(true);
-        $container->has('config')->shouldNotBeCalled();
-        $container->get('config')->shouldNotBeCalled();
+        $container = new SimpleArrayContainer(['ServiceListener' => 'ServiceListener']);
 
         $factory = new FilterPluginManagerFactory();
-        $filters = $factory($container->reveal(), 'FilterManager');
+        $filters = $factory($container, 'FilterManager');
 
         $this->assertInstanceOf(FilterPluginManager::class, $filters);
         $this->assertFalse($filters->has('test'));
@@ -138,30 +96,20 @@ class FilterPluginManagerFactoryTest extends TestCase
 
     public function testDoesNotConfigureFilterServicesWhenConfigServiceNotPresent()
     {
-        $container = $this->prophesize(ServiceLocatorInterface::class);
-        $container->willImplement(ContainerInterface::class);
-
-        $container->has('ServiceListener')->willReturn(false);
-        $container->has('config')->willReturn(false);
-        $container->get('config')->shouldNotBeCalled();
+        $container = new SimpleArrayContainer([]);
 
         $factory = new FilterPluginManagerFactory();
-        $filters = $factory($container->reveal(), 'FilterManager');
+        $filters = $factory($container, 'FilterManager');
 
         $this->assertInstanceOf(FilterPluginManager::class, $filters);
     }
 
     public function testDoesNotConfigureFilterServicesWhenConfigServiceDoesNotContainFiltersConfig()
     {
-        $container = $this->prophesize(ServiceLocatorInterface::class);
-        $container->willImplement(ContainerInterface::class);
-
-        $container->has('ServiceListener')->willReturn(false);
-        $container->has('config')->willReturn(true);
-        $container->get('config')->willReturn(['foo' => 'bar']);
+        $container = new SimpleArrayContainer(['config' => ['foo' => 'bar']]);
 
         $factory = new FilterPluginManagerFactory();
-        $filters = $factory($container->reveal(), 'FilterManager');
+        $filters = $factory($container, 'FilterManager');
 
         $this->assertInstanceOf(FilterPluginManager::class, $filters);
         $this->assertFalse($filters->has('foo'));

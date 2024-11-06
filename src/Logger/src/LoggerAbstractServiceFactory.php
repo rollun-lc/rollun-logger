@@ -9,10 +9,9 @@
 
 namespace rollun\logger;
 
+use Laminas\ServiceManager\Factory\AbstractFactoryInterface;
 use Psr\Container\ContainerInterface;
-use Laminas\ServiceManager\AbstractFactoryInterface;
 use Laminas\ServiceManager\AbstractPluginManager;
-use Laminas\ServiceManager\ServiceLocatorInterface;
 
 /**
  * Logger abstract service factory.
@@ -49,14 +48,6 @@ class LoggerAbstractServiceFactory implements AbstractFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function canCreateServiceWithName(ServiceLocatorInterface $container, $name, $requestedName)
-    {
-        return $this->canCreate($container, $requestedName);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $config = $this->getConfig($container);
@@ -65,14 +56,6 @@ class LoggerAbstractServiceFactory implements AbstractFactoryInterface
         $this->processConfig($config, $container);
 
         return new Logger($config);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function createServiceWithName(ServiceLocatorInterface $container, $name, $requestedName)
-    {
-        return $this($container, $requestedName);
     }
 
     /**
