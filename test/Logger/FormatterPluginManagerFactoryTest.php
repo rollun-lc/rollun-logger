@@ -7,7 +7,7 @@
 
 namespace rollun\test\logger;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
 use rollun\logger\Formatter\FormatterInterface;
 use rollun\logger\FormatterPluginManager;
@@ -40,7 +40,7 @@ class FormatterPluginManagerFactoryTest extends TestCase
     /**
      * @depends testFactoryReturnsPluginManager
      */
-    public function testFactoryConfiguresPluginManagerUnderContainerInterop()
+    public function testFactoryConfiguresPluginManagerUnderContainer()
     {
         $container = $this->prophesize(ContainerInterface::class)->reveal();
         $formatter = $this->prophesize(FormatterInterface::class)->reveal();

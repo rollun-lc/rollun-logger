@@ -7,8 +7,7 @@
 
 namespace rollun\test\logger;
 
-use Interop\Container\ContainerInterface;
-use Interop\Container\Exception\ContainerException;
+use Psr\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
 use rollun\logger\Writer\WriterInterface;
 use rollun\logger\WriterPluginManager;
@@ -17,9 +16,6 @@ use Laminas\ServiceManager\ServiceLocatorInterface;
 
 class WriterPluginManagerFactoryTest extends TestCase
 {
-    /**
-     * @throws ContainerException
-     */
     public function testFactoryReturnsPluginManager()
     {
         $container = $this->prophesize(ContainerInterface::class)->reveal();
@@ -43,9 +39,8 @@ class WriterPluginManagerFactoryTest extends TestCase
 
     /**
      * @depends testFactoryReturnsPluginManager
-     * @throws ContainerException
      */
-    public function testFactoryConfiguresPluginManagerUnderContainerInterop()
+    public function testFactoryConfiguresPluginManagerUnderContainer()
     {
         $container = $this->prophesize(ContainerInterface::class)->reveal();
         $writer = $this->prophesize(WriterInterface::class)->reveal();

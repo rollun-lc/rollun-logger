@@ -9,8 +9,7 @@
 
 namespace rollun\logger;
 
-use Interop\Container\ContainerInterface;
-use Interop\Container\Exception\ContainerException;
+use Psr\Container\ContainerInterface;
 use Laminas\ServiceManager\Config;
 use Laminas\ServiceManager\FactoryInterface;
 use Laminas\ServiceManager\ServiceLocatorInterface;
@@ -61,7 +60,6 @@ class ProcessorPluginManagerFactory implements FactoryInterface
      * {@inheritDoc}
      *
      * @return ProcessorPluginManager
-     * @throws ContainerException
      */
     public function createService(ServiceLocatorInterface $container, $name = null, $requestedName = null)
     {

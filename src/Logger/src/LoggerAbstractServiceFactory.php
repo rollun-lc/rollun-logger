@@ -9,8 +9,7 @@
 
 namespace rollun\logger;
 
-use Interop\Container\ContainerInterface;
-use Interop\Container\Exception\ContainerException;
+use Psr\Container\ContainerInterface;
 use Laminas\ServiceManager\AbstractFactoryInterface;
 use Laminas\ServiceManager\AbstractPluginManager;
 use Laminas\ServiceManager\ServiceLocatorInterface;
@@ -70,7 +69,6 @@ class LoggerAbstractServiceFactory implements AbstractFactoryInterface
 
     /**
      * {@inheritDoc}
-     * @throws ContainerException
      */
     public function createServiceWithName(ServiceLocatorInterface $container, $name, $requestedName)
     {

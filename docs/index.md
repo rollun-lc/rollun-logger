@@ -127,7 +127,6 @@ return [
 
 ```php
 <?php
-use Interop\Container\Exception\ContainerException;
 use Psr\Log\LoggerInterface;
 use rollun\logger\LifeCycleToken;
 use rollun\logger\SimpleLogger;
@@ -142,13 +141,13 @@ call_user_func(function () {
     }
 
     // Use container method to set service
-    /** @var \Zend\ServiceManager\ServiceManager $container */
+    /** @var \Laminas\ServiceManager\ServiceManager $container */
     $container = require "config/container.php";
     $container->setService(LifeCycleToken::class, $lifeCycleToken);
 
     try {
         $logger = $container->get(LoggerInterface::class);
-    } catch (ContainerException $containerException) {
+    } catch (\Psr\Container\ContainerExceptionInterface $containerException) {
         $logger = new SimpleLogger();
         $logger->error($containerException);
         $container->setService(LoggerInterface::class, $logger);

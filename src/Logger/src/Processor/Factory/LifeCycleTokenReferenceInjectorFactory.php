@@ -6,7 +6,7 @@
 
 namespace rollun\logger\Processor\Factory;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use rollun\logger\Processor\LifeCycleTokenInjector;
 use rollun\logger\LifeCycleToken;
 use Laminas\ServiceManager\Factory\FactoryInterface;

@@ -4,7 +4,7 @@
 namespace rollun\logger\Factory;
 
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use rollun\logger\LifeCycleToken;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 

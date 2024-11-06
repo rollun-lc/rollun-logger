@@ -7,8 +7,7 @@
 
 namespace rollun\test\logger;
 
-use Interop\Container\ContainerInterface;
-use Interop\Container\Exception\ContainerException;
+use Psr\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
 use rollun\logger\FilterPluginManager;
 use rollun\logger\FilterPluginManagerFactory;
@@ -17,9 +16,6 @@ use Laminas\ServiceManager\ServiceLocatorInterface;
 
 class FilterPluginManagerFactoryTest extends TestCase
 {
-    /**
-     * @throws ContainerException
-     */
     public function testFactoryReturnsPluginManager()
     {
         $container = $this->prophesize(ContainerInterface::class)->reveal();
@@ -43,9 +39,8 @@ class FilterPluginManagerFactoryTest extends TestCase
 
     /**
      * @depends testFactoryReturnsPluginManager
-     * @throws ContainerException
      */
-    public function testFactoryConfiguresPluginManagerUnderContainerInterop()
+    public function testFactoryConfiguresPluginManagerUnderContainer()
     {
         $container = $this->prophesize(ContainerInterface::class)->reveal();
         $filter = $this->prophesize(FilterInterface::class)->reveal();
@@ -59,9 +54,6 @@ class FilterPluginManagerFactoryTest extends TestCase
         $this->assertSame($filter, $filters->get('test'));
     }
 
-    /**
-     * @depends testFactoryReturnsPluginManager
-     */
     public function testFactoryConfiguresPluginManagerUnderServiceManagerV2()
     {
         $container = $this->prophesize(ServiceLocatorInterface::class);
@@ -80,9 +72,6 @@ class FilterPluginManagerFactoryTest extends TestCase
         $this->assertSame($filter, $filters->get('test'));
     }
 
-    /**
-     * @throws ContainerException
-     */
     public function testConfiguresFilterServicesWhenFound()
     {
         $filter = $this->prophesize(FilterInterface::class)->reveal();
@@ -116,9 +105,6 @@ class FilterPluginManagerFactoryTest extends TestCase
         $this->assertSame($filter, $filters->get('test-too'));
     }
 
-    /**
-     * @throws ContainerException
-     */
     public function testDoesNotConfigureFilterServicesWhenServiceListenerPresent()
     {
         $filter = $this->prophesize(FilterInterface::class)->reveal();
@@ -150,9 +136,6 @@ class FilterPluginManagerFactoryTest extends TestCase
         $this->assertFalse($filters->has('test-too'));
     }
 
-    /**
-     * @throws ContainerException
-     */
     public function testDoesNotConfigureFilterServicesWhenConfigServiceNotPresent()
     {
         $container = $this->prophesize(ServiceLocatorInterface::class);
@@ -168,9 +151,6 @@ class FilterPluginManagerFactoryTest extends TestCase
         $this->assertInstanceOf(FilterPluginManager::class, $filters);
     }
 
-    /**
-     * @throws ContainerException
-     */
     public function testDoesNotConfigureFilterServicesWhenConfigServiceDoesNotContainFiltersConfig()
     {
         $container = $this->prophesize(ServiceLocatorInterface::class);

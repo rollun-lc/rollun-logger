@@ -6,7 +6,7 @@
 
 namespace rollun\logger\Factory;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use rollun\logger\LoggingErrorListener;
 

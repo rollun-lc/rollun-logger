@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace rollun\logger\Writer\Factory;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use rollun\logger\Prometheus\Collector;
 use rollun\logger\Prometheus\PushGateway;
 use rollun\logger\Writer\PrometheusWriter;

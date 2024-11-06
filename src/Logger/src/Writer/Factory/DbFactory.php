@@ -2,7 +2,7 @@
 
 namespace rollun\logger\Writer\Factory;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use InvalidArgumentException;
 use rollun\logger\Writer\Db;
 use Laminas\ServiceManager\Factory\FactoryInterface;
