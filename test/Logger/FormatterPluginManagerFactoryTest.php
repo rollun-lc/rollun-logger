@@ -18,23 +18,16 @@ class FormatterPluginManagerFactoryTest extends TestCase
 {
     public function testFactoryReturnsPluginManager()
     {
-        $container = $this->prophesize(ContainerInterface::class)->reveal();
+        $container = new SimpleArrayContainer([]);
         $factory = new FormatterPluginManagerFactory();
 
         $formatters = $factory($container, FormatterPluginManagerFactory::class);
         $this->assertInstanceOf(FormatterPluginManager::class, $formatters);
 
-        if (method_exists($formatters, 'configure')) {
-            // zend-servicemanager v3
-            //$this->assertAttributeSame($container, 'creationContext', $formatters);
-            $reflectionProperty = new \ReflectionProperty($formatters, 'creationContext');
-            $reflectionProperty->setAccessible(true);
-            $value = $reflectionProperty->getValue($formatters);
-            $this->assertEquals($value, $container);
-        } else {
-            // zend-servicemanager v2
-            $this->assertSame($container, $formatters->getServiceLocator());
-        }
+        $reflectionProperty = new \ReflectionProperty($formatters, 'creationContext');
+        $reflectionProperty->setAccessible(true);
+        $value = $reflectionProperty->getValue($formatters);
+        $this->assertEquals($value, $container);
     }
 
     /**
@@ -42,8 +35,8 @@ class FormatterPluginManagerFactoryTest extends TestCase
      */
     public function testFactoryConfiguresPluginManagerUnderContainer()
     {
-        $container = $this->prophesize(ContainerInterface::class)->reveal();
-        $formatter = $this->prophesize(FormatterInterface::class)->reveal();
+        $container = new SimpleArrayContainer([]);
+        $formatter = $this->createMock(FormatterInterface::class);
 
         $factory = new FormatterPluginManagerFactory();
         $formatters = $factory($container, FormatterPluginManagerFactory::class, [

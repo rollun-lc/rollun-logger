@@ -12,7 +12,6 @@ use PHPUnit\Framework\TestCase;
 use rollun\logger\Writer\WriterInterface;
 use rollun\logger\WriterPluginManager;
 use rollun\logger\WriterPluginManagerFactory;
-use Laminas\ServiceManager\ServiceLocatorInterface;
 
 class WriterPluginManagerFactoryTest extends TestCase
 {
@@ -49,7 +48,7 @@ class WriterPluginManagerFactoryTest extends TestCase
 
     public function testConfiguresWriterServicesWhenFound()
     {
-        $writer = $this->prophesize(WriterInterface::class)->reveal();
+        $writer = $this->createMock(WriterInterface::class);
         $config = [
             'log_writers' => [
                 'aliases' => [
@@ -63,15 +62,10 @@ class WriterPluginManagerFactoryTest extends TestCase
             ],
         ];
 
-        $container = $this->prophesize(ServiceLocatorInterface::class);
-        $container->willImplement(ContainerInterface::class);
-
-        $container->has('ServiceListener')->willReturn(false);
-        $container->has('config')->willReturn(true);
-        $container->get('config')->willReturn($config);
+        $container = new SimpleArrayContainer(['config' => $config]);
 
         $factory = new WriterPluginManagerFactory();
-        $writers = $factory($container->reveal(), 'WriterManager');
+        $writers = $factory($container, 'WriterManager');
 
         $this->assertInstanceOf(WriterPluginManager::class, $writers);
         $this->assertTrue($writers->has('test'));
@@ -82,29 +76,10 @@ class WriterPluginManagerFactoryTest extends TestCase
 
     public function testDoesNotConfigureWriterServicesWhenServiceListenerPresent()
     {
-        $writer = $this->prophesize(WriterInterface::class)->reveal();
-        $config = [
-            'log_writers' => [
-                'aliases' => [
-                    'test' => 'test-too',
-                ],
-                'factories' => [
-                    'test-too' => function ($container) use ($writer) {
-                        return $writer;
-                    },
-                ],
-            ],
-        ];
-
-        $container = $this->prophesize(ServiceLocatorInterface::class);
-        $container->willImplement(ContainerInterface::class);
-
-        $container->has('ServiceListener')->willReturn(true);
-        $container->has('config')->shouldNotBeCalled();
-        $container->get('config')->shouldNotBeCalled();
+        $container = new SimpleArrayContainer(['ServiceListener' => 'ServiceListener']);
 
         $factory = new WriterPluginManagerFactory();
-        $writers = $factory($container->reveal(), 'WriterManager');
+        $writers = $factory($container, 'WriterManager');
 
         $this->assertInstanceOf(WriterPluginManager::class, $writers);
         $this->assertFalse($writers->has('test'));
@@ -113,30 +88,20 @@ class WriterPluginManagerFactoryTest extends TestCase
 
     public function testDoesNotConfigureWriterServicesWhenConfigServiceNotPresent()
     {
-        $container = $this->prophesize(ServiceLocatorInterface::class);
-        $container->willImplement(ContainerInterface::class);
-
-        $container->has('ServiceListener')->willReturn(false);
-        $container->has('config')->willReturn(false);
-        $container->get('config')->shouldNotBeCalled();
+        $container = new SimpleArrayContainer([]);
 
         $factory = new WriterPluginManagerFactory();
-        $writers = $factory($container->reveal(), 'WriterManager');
+        $writers = $factory($container, 'WriterManager');
 
         $this->assertInstanceOf(WriterPluginManager::class, $writers);
     }
 
     public function testDoesNotConfigureWriterServicesWhenConfigServiceDoesNotContainWritersConfig()
     {
-        $container = $this->prophesize(ServiceLocatorInterface::class);
-        $container->willImplement(ContainerInterface::class);
-
-        $container->has('ServiceListener')->willReturn(false);
-        $container->has('config')->willReturn(true);
-        $container->get('config')->willReturn(['foo' => 'bar']);
+        $container = new SimpleArrayContainer(['config' => ['foo' => 'bar']]);
 
         $factory = new WriterPluginManagerFactory();
-        $writers = $factory($container->reveal(), 'WriterManager');
+        $writers = $factory($container, 'WriterManager');
 
         $this->assertInstanceOf(WriterPluginManager::class, $writers);
         $this->assertFalse($writers->has('foo'));

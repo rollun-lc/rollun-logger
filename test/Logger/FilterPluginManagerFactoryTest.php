@@ -18,23 +18,16 @@ class FilterPluginManagerFactoryTest extends TestCase
 {
     public function testFactoryReturnsPluginManager()
     {
-        $container = $this->prophesize(ContainerInterface::class)->reveal();
+        $container = new SimpleArrayContainer([]);
         $factory = new FilterPluginManagerFactory();
 
         $filters = $factory($container, FilterPluginManagerFactory::class);
         $this->assertInstanceOf(FilterPluginManager::class, $filters);
 
-        if (method_exists($filters, 'configure')) {
-            // zend-servicemanager v3
-            $reflectionProperty = new \ReflectionProperty($filters, 'creationContext');
-            $reflectionProperty->setAccessible(true);
-            $value = $reflectionProperty->getValue($filters);
-            $this->assertEquals($value, $container);
-            //$this->assertAttributeSame($container, 'creationContext', $filters);
-        } else {
-            // zend-servicemanager v2
-            $this->assertSame($container, $filters->getServiceLocator());
-        }
+        $reflectionProperty = new \ReflectionProperty($filters, 'creationContext');
+        $reflectionProperty->setAccessible(true);
+        $value = $reflectionProperty->getValue($filters);
+        $this->assertEquals($value, $container);
     }
 
     /**
@@ -42,8 +35,8 @@ class FilterPluginManagerFactoryTest extends TestCase
      */
     public function testFactoryConfiguresPluginManagerUnderContainer()
     {
-        $container = $this->prophesize(ContainerInterface::class)->reveal();
-        $filter = $this->prophesize(FilterInterface::class)->reveal();
+        $container = new SimpleArrayContainer([]);
+        $filter = $this->createMock(FilterInterface::class);
 
         $factory = new FilterPluginManagerFactory();
         $filters = $factory($container, FilterPluginManagerFactory::class, [
