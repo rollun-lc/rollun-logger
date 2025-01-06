@@ -5,8 +5,8 @@ namespace rollun\logger\Processor\Factory;
 
 
 use Interop\Container\ContainerInterface;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 use rollun\logger\Processor\CountPerTime;
-use Zend\ServiceManager\Factory\FactoryInterface;
 
 class CountPerTimeFactory implements FactoryInterface
 {

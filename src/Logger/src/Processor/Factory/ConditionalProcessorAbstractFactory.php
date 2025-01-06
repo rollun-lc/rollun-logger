@@ -5,8 +5,8 @@ namespace rollun\logger\Processor\Factory;
 
 
 use Interop\Container\ContainerInterface;
+use Laminas\ServiceManager\Factory\AbstractFactoryInterface;
 use rollun\logger\Processor\ConditionalProcessor;
-use Zend\ServiceManager\Factory\AbstractFactoryInterface;
 
 class ConditionalProcessorAbstractFactory implements AbstractFactoryInterface
 {

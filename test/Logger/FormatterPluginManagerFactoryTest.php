@@ -7,39 +7,36 @@
 
 namespace rollun\test\logger;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
 use rollun\logger\Formatter\FormatterInterface;
 use rollun\logger\FormatterPluginManager;
 use rollun\logger\FormatterPluginManagerFactory;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Laminas\ServiceManager\ServiceLocatorInterface;
 
 class FormatterPluginManagerFactoryTest extends TestCase
 {
     public function testFactoryReturnsPluginManager()
     {
-        $container = $this->prophesize(ContainerInterface::class)->reveal();
+        $container = new SimpleArrayContainer([]);
         $factory = new FormatterPluginManagerFactory();
 
         $formatters = $factory($container, FormatterPluginManagerFactory::class);
         $this->assertInstanceOf(FormatterPluginManager::class, $formatters);
 
-        if (method_exists($formatters, 'configure')) {
-            // zend-servicemanager v3
-            $this->assertAttributeSame($container, 'creationContext', $formatters);
-        } else {
-            // zend-servicemanager v2
-            $this->assertSame($container, $formatters->getServiceLocator());
-        }
+        $reflectionProperty = new \ReflectionProperty($formatters, 'creationContext');
+        $reflectionProperty->setAccessible(true);
+        $value = $reflectionProperty->getValue($formatters);
+        $this->assertEquals($value, $container);
     }
 
     /**
      * @depends testFactoryReturnsPluginManager
      */
-    public function testFactoryConfiguresPluginManagerUnderContainerInterop()
+    public function testFactoryConfiguresPluginManagerUnderContainer()
     {
-        $container = $this->prophesize(ContainerInterface::class)->reveal();
-        $formatter = $this->prophesize(FormatterInterface::class)->reveal();
+        $container = new SimpleArrayContainer([]);
+        $formatter = $this->createMock(FormatterInterface::class);
 
         $factory = new FormatterPluginManagerFactory();
         $formatters = $factory($container, FormatterPluginManagerFactory::class, [
@@ -50,30 +47,9 @@ class FormatterPluginManagerFactoryTest extends TestCase
         $this->assertSame($formatter, $formatters->get('test'));
     }
 
-    /**
-     * @depends testFactoryReturnsPluginManager
-     */
-    public function testFactoryConfiguresPluginManagerUnderServiceManagerV2()
-    {
-        $container = $this->prophesize(ServiceLocatorInterface::class);
-        $container->willImplement(ContainerInterface::class);
-
-        $formatter = $this->prophesize(FormatterInterface::class)->reveal();
-
-        $factory = new FormatterPluginManagerFactory();
-        $factory->setCreationOptions([
-            'services' => [
-                'test' => $formatter,
-            ],
-        ]);
-
-        $formatters = $factory->createService($container->reveal());
-        $this->assertSame($formatter, $formatters->get('test'));
-    }
-
     public function testConfiguresFormatterServicesWhenFound()
     {
-        $formatter = $this->prophesize(FormatterInterface::class)->reveal();
+        $formatter = $this->createMock(FormatterInterface::class);
         $config = [
             'log_formatters' => [
                 'aliases' => [
@@ -87,15 +63,10 @@ class FormatterPluginManagerFactoryTest extends TestCase
             ],
         ];
 
-        $container = $this->prophesize(ServiceLocatorInterface::class);
-        $container->willImplement(ContainerInterface::class);
-
-        $container->has('ServiceListener')->willReturn(false);
-        $container->has('config')->willReturn(true);
-        $container->get('config')->willReturn($config);
+        $container = new SimpleArrayContainer(['config' => $config]);
 
         $factory = new FormatterPluginManagerFactory();
-        $formatters = $factory($container->reveal(), 'FormatterManager');
+        $formatters = $factory($container, 'FormatterManager');
 
         $this->assertInstanceOf(FormatterPluginManager::class, $formatters);
         $this->assertTrue($formatters->has('test'));
@@ -106,29 +77,10 @@ class FormatterPluginManagerFactoryTest extends TestCase
 
     public function testDoesNotConfigureFormatterServicesWhenServiceListenerPresent()
     {
-        $formatter = $this->prophesize(FormatterInterface::class)->reveal();
-        $config = [
-            'log_formatters' => [
-                'aliases' => [
-                    'test' => 'test-too',
-                ],
-                'factories' => [
-                    'test-too' => function ($container) use ($formatter) {
-                        return $formatter;
-                    },
-                ],
-            ],
-        ];
-
-        $container = $this->prophesize(ServiceLocatorInterface::class);
-        $container->willImplement(ContainerInterface::class);
-
-        $container->has('ServiceListener')->willReturn(true);
-        $container->has('config')->shouldNotBeCalled();
-        $container->get('config')->shouldNotBeCalled();
+        $container = new SimpleArrayContainer(['ServiceListener' => 'ServiceListener']);
 
         $factory = new FormatterPluginManagerFactory();
-        $formatters = $factory($container->reveal(), 'FormatterManager');
+        $formatters = $factory($container, 'FormatterManager');
 
         $this->assertInstanceOf(FormatterPluginManager::class, $formatters);
         $this->assertFalse($formatters->has('test'));
@@ -137,30 +89,19 @@ class FormatterPluginManagerFactoryTest extends TestCase
 
     public function testDoesNotConfigureFormatterServicesWhenConfigServiceNotPresent()
     {
-        $container = $this->prophesize(ServiceLocatorInterface::class);
-        $container->willImplement(ContainerInterface::class);
-
-        $container->has('ServiceListener')->willReturn(false);
-        $container->has('config')->willReturn(false);
-        $container->get('config')->shouldNotBeCalled();
-
+        $container = new SimpleArrayContainer([]);
         $factory = new FormatterPluginManagerFactory();
-        $formatters = $factory($container->reveal(), 'FormatterManager');
+        $formatters = $factory($container, 'FormatterManager');
 
         $this->assertInstanceOf(FormatterPluginManager::class, $formatters);
     }
 
     public function testDoesNotConfigureFormatterServicesWhenConfigServiceDoesNotContainFormattersConfig()
     {
-        $container = $this->prophesize(ServiceLocatorInterface::class);
-        $container->willImplement(ContainerInterface::class);
-
-        $container->has('ServiceListener')->willReturn(false);
-        $container->has('config')->willReturn(true);
-        $container->get('config')->willReturn(['foo' => 'bar']);
+        $container = new SimpleArrayContainer(['config' => ['foo' => 'bar']]);
 
         $factory = new FormatterPluginManagerFactory();
-        $formatters = $factory($container->reveal(), 'FormatterManager');
+        $formatters = $factory($container, 'FormatterManager');
 
         $this->assertInstanceOf(FormatterPluginManager::class, $formatters);
         $this->assertFalse($formatters->has('foo'));

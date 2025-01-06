@@ -6,10 +6,10 @@
 
 namespace rollun\logger\Middleware\Factory;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use rollun\logger\Middleware\RequestLoggedMiddleware;
-use Zend\ServiceManager\Factory\FactoryInterface;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 
 /**
  * Class RequestLoggedMiddlewareFactory

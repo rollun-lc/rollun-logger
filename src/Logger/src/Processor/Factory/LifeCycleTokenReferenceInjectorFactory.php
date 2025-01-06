@@ -6,10 +6,10 @@
 
 namespace rollun\logger\Processor\Factory;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use rollun\logger\Processor\LifeCycleTokenInjector;
 use rollun\logger\LifeCycleToken;
-use Zend\ServiceManager\Factory\FactoryInterface;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class LifeCycleTokenReferenceInjectorFactory implements FactoryInterface
 {

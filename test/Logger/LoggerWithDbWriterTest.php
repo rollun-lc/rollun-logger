@@ -12,7 +12,7 @@ use rollun\logger\Logger;
 use Psr\Log\LogLevel;
 use Psr\Container\ContainerInterface;
 use rollun\logger\Processor\LifeCycleTokenInjector;
-use Zend\Db\TableGateway\TableGateway;
+use Laminas\Db\TableGateway\TableGateway;
 
 class LoggerWithDbWriterTest extends TestCase
 {
@@ -31,7 +31,7 @@ class LoggerWithDbWriterTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
 
     {
         $this->markTestIncomplete("TODO: Automatic apply log table migration.");

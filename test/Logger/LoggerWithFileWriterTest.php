@@ -34,7 +34,7 @@ class LoggerWithFileWriterTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         $this->filename = tempnam(sys_get_temp_dir(), 'csv');
         $this->logger = new Logger([
@@ -58,7 +58,7 @@ class LoggerWithFileWriterTest extends TestCase
         ]);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         unlink($this->filename);
     }
@@ -67,7 +67,7 @@ class LoggerWithFileWriterTest extends TestCase
     {
         $this->logger->log(LogLevel::INFO, 'test', [1, 'next', 'key' => 'val']);
         $message = file_get_contents($this->filename);
-        $this->assertContains('test', $message);
-        $this->assertContains('info', $message);
+        $this->assertStringContainsString('test', $message);
+        $this->assertStringContainsString('info', $message);
     }
 }

@@ -19,8 +19,8 @@ use rollun\logger\Exception\InvalidArgumentException;
 use rollun\logger\Writer\WriterInterface;
 use rollun\logger\WriterPluginManager;
 use Traversable;
-use Zend\ServiceManager\ServiceManager;
-use Zend\ServiceManager\Test\CommonPluginManagerTrait;
+use Laminas\ServiceManager\ServiceManager;
+use Laminas\ServiceManager\Test\CommonPluginManagerTrait;
 
 class WriterPluginManagerCompatibilityTest extends TestCase
 {

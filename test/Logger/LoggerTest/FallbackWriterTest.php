@@ -15,7 +15,7 @@ class FallbackWriterTest extends TestCase
 {
     protected const FILENAME = 'stream.log';
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         if (file_exists(__DIR__. '/' . self::FILENAME)) {
             unlink(__DIR__. '/' . self::FILENAME);
@@ -40,7 +40,8 @@ class FallbackWriterTest extends TestCase
         $this->assertCount(1, $fallbackWriter->events);
 
         $event = end($fallbackWriter->events);
-        $this->assertContains('failed to write log message.', $event['message']);
+        //$this->assertContains('failed to write log message.', $event['message']);
+        $this->assertStringContainsString('failed to write log message.', $event['message']);
         $this->assertEquals($exception, $event['context']['exception']);
         $this->assertEquals($message, $event['context']['failedEvent']['message']);
     }
@@ -98,7 +99,7 @@ class FallbackWriterTest extends TestCase
         $logger
             ->method('logError')
             ->willReturnCallback(function (string $error) {
-                $this->assertContains('failed to write log message. RuntimeException: Fail.', $error);
+                $this->assertStringContainsString('failed to write log message. RuntimeException: Fail.', $error);
             });
 
         /** @var Logger $logger */
@@ -132,9 +133,9 @@ class FallbackWriterTest extends TestCase
         $logger->info($message = 'Message to be logged');
 
         $log = file_get_contents($filename);
-        $this->assertContains('failed to write log message.', $log);
-        $this->assertContains('RuntimeException: Fail.', $log);
-        $this->assertContains($message, $log);
+        $this->assertStringContainsString('failed to write log message.', $log);
+        $this->assertStringContainsString('RuntimeException: Fail.', $log);
+        $this->assertStringContainsString($message, $log);
     }
 
     /**

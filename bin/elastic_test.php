@@ -6,7 +6,7 @@ use rollun\logger\LifeCycleToken;
 chdir(dirname(__DIR__));
 
 require 'vendor/autoload.php';
-/** @var \Zend\ServiceManager\ServiceManager $container */
+/** @var \Laminas\ServiceManager\ServiceManager $container */
 $container = require "config/container.php";
 $lifeCycleToken = LifeCycleToken::generateToken();
 $container->setService(LifeCycleToken::class, $lifeCycleToken);

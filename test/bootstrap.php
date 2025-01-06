@@ -17,3 +17,7 @@ if (getenv("APP_ENV") != 'test') {
     echo "You cannot start test if environment var APP_ENV not set in test!";
     exit(1);
 }
+
+// Setup autoloading
+require 'vendor/autoload.php';
+//require_once 'config/env_configurator.php';

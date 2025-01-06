@@ -22,7 +22,7 @@ class Backtrace implements ProcessorInterface
      * Classes within these namespaces in the stack are ignored
      * @var array
      */
-    protected $ignoredNamespaces = ['Zend\\Log', 'rollun\\logger'];
+    protected $ignoredNamespaces = ['Laminas\\Log', 'rollun\\logger'];
 
     /**
      * Set options for a backtrace processor. Accepted options are:

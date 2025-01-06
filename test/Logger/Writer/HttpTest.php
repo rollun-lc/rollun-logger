@@ -8,9 +8,9 @@ namespace rollun\test\logger\Writer;
 
 use PHPUnit\Framework\TestCase;
 use rollun\logger\Writer\Http as HttpWriter;
-use Zend\Http\Client;
-use Zend\Http\Request;
-use Zend\Http\Response;
+use Laminas\Http\Client;
+use Laminas\Http\Request;
+use Laminas\Http\Response;
 
 class HttpTest extends TestCase
 {
@@ -24,7 +24,7 @@ class HttpTest extends TestCase
 
     protected $requestRawBody;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->clientMock = new class extends Client
         {

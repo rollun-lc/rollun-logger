@@ -9,7 +9,7 @@ error_reporting(E_ALL ^ E_USER_DEPRECATED ^ E_DEPRECATED);
 chdir(dirname(__DIR__));
 require 'vendor/autoload.php';
 
-/** @var \Interop\Container\ContainerInterface $container */
+/** @var \Laminas\ServiceManager\ServiceManager $container */
 $container = require 'config/container.php';
 
 $lifeCycleToken = LifeCycleToken::generateToken();

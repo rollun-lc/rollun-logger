@@ -61,9 +61,15 @@ class LifeCycleToken implements Serializable
      */
     public static function generateToken()
     {
-        $token = new LifeCycleToken(self::IdGenerate(30));
+        $id = self::IdGenerate(30);
 
-        return $token;
+        // Добавляем pid в начало lifecycleToken, чтобы потом можно было искать логи по pid
+        $pid = getmypid();
+        if ($pid !== false) {
+            $id = self::replaceStartWithPid($id, $pid);
+        }
+
+        return new LifeCycleToken($id);
     }
 
     /**
@@ -92,6 +98,25 @@ class LifeCycleToken implements Serializable
         $id = implode("", $id);
 
         return $id;
+    }
+
+    private static function replaceStartWithPid(string $lifecycleToken, int $pid): string
+    {
+        $pidWithDelimiter = $pid . '_';
+
+        $originalLength = strlen($lifecycleToken);
+        $pidWithDelimiterLength = strlen($pidWithDelimiter);
+
+        // Если pid длиннее чем lifecycleToken, то ничего не делаем. В норме таких ситуаций не должно возникнуть.
+        // Так как длина токена 30, а максимальная у pid - 5 (с разделителем - 6)
+        if ($pidWithDelimiterLength >= $originalLength) {
+            return $lifecycleToken;
+        }
+
+        $remainingLength = $originalLength - $pidWithDelimiterLength;
+        $remainingStr = substr($lifecycleToken, $pidWithDelimiterLength, $remainingLength);
+
+        return $pidWithDelimiter . $remainingStr;
     }
 
     /**

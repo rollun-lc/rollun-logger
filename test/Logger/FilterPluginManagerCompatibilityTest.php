@@ -17,8 +17,8 @@ use rollun\logger\Filter\Regex;
 use rollun\logger\Filter\Validator;
 use rollun\logger\FilterPluginManager;
 use rollun\logger\Exception\InvalidArgumentException;
-use Zend\ServiceManager\ServiceManager;
-use Zend\ServiceManager\Test\CommonPluginManagerTrait;
+use Laminas\ServiceManager\ServiceManager;
+use Laminas\ServiceManager\Test\CommonPluginManagerTrait;
 
 class FilterPluginManagerCompatibilityTest extends TestCase
 {

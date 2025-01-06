@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   nginx:
     build:
@@ -13,16 +11,11 @@ services:
       - php-fpm
 
   php-fpm:
-    build:
-      context: docker/php-fpm
-      dockerfile: Dockerfile
+    image: maxrollundev/php-fpm-dev-8.0
     volumes:
       - ./:/var/www/app
-      - /home/work/Work/.ssh:/root/.ssh
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     environment:
-      APP_ENV: test
+      APP_ENV: "dev"
       PHP_IDE_CONFIG: "serverName=rollun-logger"
       APP_DEBUG: "true"
       LOGS_REDIS_HOST: "host.docker.internal"

@@ -31,7 +31,7 @@ return [
                     'options' => [
                         'formatter' => new FluentdFormatter(
                             // You can change maxSize to any you want, value in bytes
-                            new JsonTruncator(1000)
+                            new JsonTruncator(maxSize: 1000)
                         )
                     ],
                 ],    

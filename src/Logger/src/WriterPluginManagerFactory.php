@@ -9,27 +9,18 @@
 
 namespace rollun\logger;
 
-use Interop\Container\ContainerInterface;
-use Interop\Container\Exception\ContainerException;
-use Zend\ServiceManager\Config;
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Laminas\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerInterface;
+use Laminas\ServiceManager\Config;
 
 class WriterPluginManagerFactory implements FactoryInterface
 {
-    /**
-     * zend-servicemanager v2 support for invocation options.
-     *
-     * @param array
-     */
-    protected $creationOptions;
-
     /**
      * {@inheritDoc}
      *
      * @return WriterPluginManager
      */
-    public function __invoke(ContainerInterface $container, $name, array $options = null)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $pluginManager = new WriterPluginManager($container, $options ?: []);
 
@@ -55,27 +46,5 @@ class WriterPluginManagerFactory implements FactoryInterface
         (new Config($config['log_writers']))->configureServiceManager($pluginManager);
 
         return $pluginManager;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return WriterPluginManager
-     * @throws ContainerException
-     */
-    public function createService(ServiceLocatorInterface $container, $name = null, $requestedName = null)
-    {
-        return $this($container, $requestedName ?: WriterPluginManager::class, $this->creationOptions);
-    }
-
-    /**
-     * zend-servicemanager v2 support for invocation options.
-     *
-     * @param array $options
-     * @return void
-     */
-    public function setCreationOptions(array $options)
-    {
-        $this->creationOptions = $options;
     }
 }

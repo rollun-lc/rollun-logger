@@ -5,9 +5,9 @@ namespace rollun\logger\Formatter\Factory;
 
 
 use Interop\Container\ContainerInterface;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 use rollun\logger\Formatter\LogStashFormatter;
 use rollun\logger\Services\JsonTruncator;
-use Zend\ServiceManager\Factory\FactoryInterface;
 
 class LogStashFormatterFactory implements FactoryInterface
 {

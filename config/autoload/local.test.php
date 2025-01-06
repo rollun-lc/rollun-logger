@@ -23,11 +23,11 @@ use rollun\logger\Processor\ProcessorWithCount;
 use rollun\logger\ProcessorPluginManagerFactory;
 use rollun\logger\Writer\Db as WriterDb;
 use rollun\logger\Writer\Elasticsearch;
+use Laminas\Db\Adapter\AdapterInterface;
+use Laminas\ServiceManager\Factory\InvokableFactory;
 use rollun\logger\Writer\Mock as WriterMock;
 use rollun\logger\Writer\Udp;
 use rollun\logger\WriterPluginManagerFactory;
-use Zend\Db\Adapter\AdapterInterface;
-use Zend\ServiceManager\Factory\InvokableFactory;
 
 return [
 	'db' => [

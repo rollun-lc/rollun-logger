@@ -4,8 +4,8 @@
 namespace rollun\logger\Processor;
 
 
+use Laminas\Cache\Storage\StorageInterface;
 use rollun\logger\DTO\LogsCountInfo;
-use Zend\Cache\Storage\StorageInterface;
 
 class CountPerTime implements ProcessorInterface
 {
@@ -19,8 +19,7 @@ class CountPerTime implements ProcessorInterface
 
     public const KEY_ON_FALSE = 'onFalse';
 
-    /** @var StorageInterface */
-    private $storage;
+    private StorageInterface $storage;
 
     /**
      * Key to save in storage

@@ -5,7 +5,7 @@ namespace rollun\logger\Writer\Filter;
 
 
 use rollun\logger\Filter\FilterInterface;
-use Zend\Cache\Storage\StorageInterface;
+use Laminas\Cache\Storage\StorageInterface;
 
 class UniqMessageFilter implements FilterInterface
 {

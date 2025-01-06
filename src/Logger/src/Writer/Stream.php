@@ -14,7 +14,7 @@ use rollun\logger\Exception\InvalidArgumentException;
 use rollun\logger\Exception\RuntimeException;
 use Traversable;
 use rollun\logger\Formatter\Simple as SimpleFormatter;
-use Zend\Stdlib\ErrorHandler;
+use Laminas\Stdlib\ErrorHandler;
 
 class Stream extends AbstractWriter
 {

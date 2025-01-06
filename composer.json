@@ -1,6 +1,6 @@
 {
   "name": "rollun-com/rollun-logger",
-  "description": "Zend style Logger",
+  "description": "Laminas style Logger",
   "minimum-stability": "stable",
   "license": "proprietary",
   "authors": [
@@ -14,34 +14,36 @@
     }
   ],
   "require": {
-    "php": "^7.2",
+    "php": "^8.0",
     "ext-json": "*",
     "ext-sockets": "*",
-    "code-tool/jaeger-client-php": "^2.16",
-    "zendframework/zend-stdlib": "^3.1",
-    "zendframework/zend-servicemanager": "^3.3",
+    "code-tool/jaeger-client-php": "^3.3",
+    "laminas/laminas-stdlib": "^3.7.0",
+    "laminas/laminas-servicemanager": "^3.10",
     "psr/http-message": "^1.0",
-    "zendframework/zend-http": "^2.7",
-    "elasticsearch/elasticsearch": "^6.7",
-    "endclothing/prometheus_client_php": "^1.0",
+    "laminas/laminas-http": "^2.15",
+    "elasticsearch/elasticsearch": "^7.16",
+    "endclothing/prometheus_client_php": "^0.9.1",
     "psr/http-server-middleware": "^1.0",
-    "zendframework/zend-mail": "^2.10",
-    "zendframework/zend-cache": "^2.9"
-  },
-  "suggest": {
+    "laminas/laminas-mail": "^2.15.1",
+    "laminas/laminas-cache": "3.1.2",
+    "laminas/laminas-cache-storage-adapter-filesystem": "^2.0",
+    "laminas/laminas-filter": "^2.14.0",
+    "psr/log": "^1.1.4",
+    "laminas/laminas-cache-storage-adapter-redis": "^2.6"
   },
   "require-dev": {
-    "ext-redis": "*" ,
-    "zendframework/zend-component-installer": "^1.0",
-    "zendframework/zend-config-aggregator": "^1.0",
-    "zfcampus/zf-development-mode": "^3.1",
-    "symfony/dotenv": "^4.1",
-    "phpunit/phpunit": "^7",
-    "squizlabs/php_codesniffer": "^3.3",
-    "zendframework/zend-validator": "^2.13",
-    "zendframework/zend-filter": "^2.9",
-    "zendframework/zend-db": "^2.11",
-    "zendframework/zend-diactoros": "^2.2"
+    "ext-redis": "*",
+    "phpunit/phpunit": "^9.5.10",
+    "symfony/dotenv": "^6.0.3",
+    "laminas/laminas-config-aggregator": "^1.7",
+    "laminas/laminas-db": "^2.13.4",
+    "laminas/laminas-diactoros": "^2.8.0",
+    "laminas/laminas-stratigility": "^3.5.0",
+    "mezzio/mezzio": "^3.9",
+    "phpspec/prophecy": "^1.19"
+  },
+  "suggest": {
   },
   "autoload": {
     "psr-4": {

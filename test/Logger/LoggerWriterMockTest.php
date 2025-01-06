@@ -34,7 +34,7 @@ class LoggerWriterMockTest extends TestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         $this->container = include 'config/container.php';
         $this->logger = new Logger([
@@ -57,7 +57,7 @@ class LoggerWriterMockTest extends TestCase
     {
         $this->logger->log(LogLevel::INFO, ['test']);
         $this->assertEquals(count($this->logWriter->events), 1);
-        $this->assertContains('test', $this->logWriter->events[0]['message']);
+        $this->assertStringContainsString('test', $this->logWriter->events[0]['message']);
         $this->assertArrayHasKey('id', $this->logWriter->events[0]);
     }
 }

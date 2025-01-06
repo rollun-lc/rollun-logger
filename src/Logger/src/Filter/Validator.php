@@ -11,38 +11,46 @@ namespace rollun\logger\Filter;
 
 use Traversable;
 use rollun\logger\Exception\InvalidArgumentException;
-use Zend\Validator\ValidatorInterface as ZendValidator;
+use Laminas\Validator\ValidatorInterface;
 
 class Validator implements FilterInterface
 {
     /**
      * Regex to match
      *
-     * @var ZendValidator
+     * @var ValidatorInterface
      */
     protected $validator;
 
     /**
      * Filter out any log messages not matching the validator
      *
-     * @param  ZendValidator|array|Traversable $validator
+     * @param  ValidatorInterface|array|Traversable $validator
      * @throws InvalidArgumentException
      */
     public function __construct($validator)
     {
+        $this->validator = self::resolveValidator($validator);
+    }
+
+    private static function resolveValidator($validator): ValidatorInterface
+    {
+        if ($validator instanceof ValidatorInterface) {
+            return $validator;
+        }
         if ($validator instanceof Traversable) {
             $validator = iterator_to_array($validator);
         }
         if (is_array($validator)) {
-            $validator = isset($validator['validator']) ? $validator['validator'] : null;
+            $validator = $validator['validator'] ?? null;
         }
-        if (! $validator instanceof ZendValidator) {
+        if (!$validator instanceof ValidatorInterface) {
             throw new InvalidArgumentException(sprintf(
-                'Parameter of type %s is invalid; must implement Zend\Validator\ValidatorInterface',
+                'Parameter of type %s is invalid; must implement Laminas\Validator\ValidatorInterface',
                 (is_object($validator) ? get_class($validator) : gettype($validator))
             ));
         }
-        $this->validator = $validator;
+        return $validator;
     }
 
     /**

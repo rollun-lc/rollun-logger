@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace rollun\logger\Writer;
 
-use Zend\Http\Client;
-use Zend\Http\Response;
+use Laminas\Http\Client;
+use Laminas\Http\Response;
 
 /**
  * Class Slack

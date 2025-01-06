@@ -61,12 +61,26 @@ class FingersCrossedTest extends TestCase
     {
         $options = ['writer' => 'mock', 'priority' => 3];
         $writer = new FingersCrossedWriter($options);
-        $this->assertAttributeInstanceOf(Mock::class, 'writer', $writer);
 
-        $filters = $this->readAttribute($writer, 'filters');
+        //$this->assertAttributeInstanceOf(Mock::class, 'writer', $writer);
+        $property = new \ReflectionProperty($writer, 'writer');
+        $property->setAccessible(true);
+        $instance = $property->getValue($writer);
+        $this->assertInstanceOf(MockWriter::class, $instance);
+
+        //$filters = $this->readAttribute($writer, 'filters');
+        $property = new \ReflectionProperty($writer, 'filters');
+        $property->setAccessible(true);
+        $filters = $property->getValue($writer);
+
         $this->assertCount(1, $filters);
         $this->assertInstanceOf(Priority::class, $filters[0]);
-        $this->assertAttributeEquals(3, 'priority', $filters[0]);
+
+        //$this->assertAttributeEquals(3, 'priority', $filters[0]);
+        $property = new \ReflectionProperty($filters[0], 'priority');
+        $property->setAccessible(true);
+        $priority = $property->getValue($filters[0]);
+        $this->assertEquals(3, $priority);
     }
 
     public function testFormattingIsNotSupported()
@@ -75,6 +89,11 @@ class FingersCrossedTest extends TestCase
         $writer = new FingersCrossedWriter($options);
 
         $writer->setFormatter($this->createMock(FormatterInterface::class));
-        $this->assertAttributeEmpty('formatter', $writer);
+
+        //$this->assertAttributeEmpty('formatter', $writer);
+        $property = new \ReflectionProperty($writer, 'formatter');
+        $property->setAccessible(true);
+        $formatter = $property->getValue($writer);
+        $this->assertNull($formatter);
     }
 }

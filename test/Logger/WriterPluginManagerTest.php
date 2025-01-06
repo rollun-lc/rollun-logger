@@ -12,7 +12,7 @@ namespace rollun\test\logger;
 use PHPUnit\Framework\TestCase;
 use rollun\logger\Writer\Mock;
 use rollun\logger\WriterPluginManager;
-use Zend\ServiceManager\ServiceManager;
+use Laminas\ServiceManager\ServiceManager;
 
 class WriterPluginManagerTest extends TestCase
 {
@@ -21,7 +21,7 @@ class WriterPluginManagerTest extends TestCase
      */
     protected $plugins;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->plugins = new WriterPluginManager(new ServiceManager());
     }

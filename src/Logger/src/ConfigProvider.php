@@ -34,7 +34,7 @@ use rollun\logger\Writer\Tcp;
 use rollun\logger\Writer\Udp;
 use rollun\logger\Writer\HttpAsyncMetric;
 use rollun\logger\Formatter\Metric;
-use Zend\ServiceManager\Factory\InvokableFactory;
+use Laminas\ServiceManager\Factory\InvokableFactory;
 
 class ConfigProvider
 {
@@ -138,7 +138,7 @@ class ConfigProvider
                         'name'    => Stream::class,
                         'options' => [
                             'stream'    => 'php://stdout',
-                            'formatter' => FluentdFormatter::class
+                            'formatter' => new FluentdFormatter()
                         ],
                     ],
                     'udp_logstash' => [

@@ -1,9 +1,9 @@
 <?php
 
 use Symfony\Component\Dotenv\Dotenv;
-use Zend\ConfigAggregator\ArrayProvider;
-use Zend\ConfigAggregator\ConfigAggregator;
-use Zend\ConfigAggregator\PhpFileProvider;
+use Laminas\ConfigAggregator\ArrayProvider;
+use Laminas\ConfigAggregator\ConfigAggregator;
+use Laminas\ConfigAggregator\PhpFileProvider;
 
 // To enable or disable caching, set the `ConfigAggregator::ENABLE_CACHE` boolean in
 // `config/autoload/local.php`.
@@ -18,8 +18,8 @@ $cacheConfig = [
 $appEnv = getenv('APP_ENV');
 
 $aggregator = new ConfigAggregator([
-    \Zend\Validator\ConfigProvider::class,
-    \Zend\Db\ConfigProvider::class,
+    \Laminas\Validator\ConfigProvider::class,
+    \Laminas\Db\ConfigProvider::class,
     \rollun\tracer\ConfigProvider::class,
     \rollun\logger\ConfigProvider::class,
 

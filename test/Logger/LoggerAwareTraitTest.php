@@ -23,12 +23,20 @@ class LoggerAwareTraitTest extends TestCase
     {
         $object = $this->getObjectForTrait(LoggerAwareTrait::class);
 
-        $this->assertAttributeEquals(null, 'logger', $object);
+        //$this->assertAttributeEquals(null, 'logger', $object);
+        $reflectionProperty = new \ReflectionProperty($object, 'logger');
+        $reflectionProperty->setAccessible(true);
+        $value = $reflectionProperty->getValue($object);
+        $this->assertEquals($value, null);
 
         $logger = new Logger;
 
         $object->setLogger($logger);
 
-        $this->assertAttributeEquals($logger, 'logger', $object);
+        //$this->assertAttributeEquals($logger, 'logger', $object);
+        $reflectionProperty = new \ReflectionProperty($object, 'logger');
+        $reflectionProperty->setAccessible(true);
+        $value = $reflectionProperty->getValue($object);
+        $this->assertEquals($value, $logger);
     }
 }

@@ -33,7 +33,12 @@ class PsrTest extends TestCase
     {
         $psrLogger = $this->createMock(LoggerInterface::class);
         $writer = new PsrWriter($psrLogger);
-        $this->assertAttributeSame($psrLogger, 'logger', $writer);
+
+        //$this->assertAttributeSame($psrLogger, 'logger', $writer);
+        $property = new \ReflectionProperty($writer, 'logger');
+        $property->setAccessible(true);
+        $logger = $property->getValue($writer);
+        $this->assertSame($psrLogger, $logger);
     }
 
     /**
@@ -50,10 +55,23 @@ class PsrTest extends TestCase
             'logger' => $psrLogger,
         ]);
 
-        $this->assertAttributeSame($psrLogger, 'logger', $writer);
-        $this->assertAttributeSame($formatter, 'formatter', $writer);
+        //$this->assertAttributeSame($psrLogger, 'logger', $writer);
+        //$this->assertAttributeSame($formatter, 'formatter', $writer);
+        $property = new \ReflectionProperty($writer, 'logger');
+        $property->setAccessible(true);
+        $instance = $property->getValue($writer);
+        $this->assertSame($psrLogger, $instance);
 
-        $filters = self::readAttribute($writer, 'filters');
+        $property = new \ReflectionProperty($writer, 'formatter');
+        $property->setAccessible(true);
+        $instance = $property->getValue($writer);
+        $this->assertSame($formatter, $instance);
+
+        //$filters = self::readAttribute($writer, 'filters');
+        $property = new \ReflectionProperty($writer, 'filters');
+        $property->setAccessible(true);
+        $filters = $property->getValue($writer);
+
         $this->assertCount(1, $filters);
         $this->assertEquals($filter, $filters[0]);
     }
@@ -64,7 +82,11 @@ class PsrTest extends TestCase
     public function testFallbackLoggerIsNullLogger()
     {
         $writer = new PsrWriter;
-        $this->assertAttributeInstanceOf(NullLogger::class, 'logger', $writer);
+        //$this->assertAttributeInstanceOf(NullLogger::class, 'logger', $writer);
+        $property = new \ReflectionProperty($writer, 'logger');
+        $property->setAccessible(true);
+        $logger = $property->getValue($writer);
+        $this->assertInstanceOf(NullLogger::class, $logger);
     }
 
     /**

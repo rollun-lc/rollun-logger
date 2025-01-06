@@ -9,11 +9,9 @@
 
 namespace rollun\logger;
 
-use Interop\Container\ContainerInterface;
-use Interop\Container\Exception\ContainerException;
-use Zend\ServiceManager\AbstractFactoryInterface;
-use Zend\ServiceManager\AbstractPluginManager;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Laminas\ServiceManager\Factory\AbstractFactoryInterface;
+use Psr\Container\ContainerInterface;
+use Laminas\ServiceManager\AbstractPluginManager;
 
 /**
  * Logger abstract service factory.
@@ -50,14 +48,6 @@ class LoggerAbstractServiceFactory implements AbstractFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function canCreateServiceWithName(ServiceLocatorInterface $container, $name, $requestedName)
-    {
-        return $this->canCreate($container, $requestedName);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $config = $this->getConfig($container);
@@ -66,15 +56,6 @@ class LoggerAbstractServiceFactory implements AbstractFactoryInterface
         $this->processConfig($config, $container);
 
         return new Logger($config);
-    }
-
-    /**
-     * {@inheritDoc}
-     * @throws ContainerException
-     */
-    public function createServiceWithName(ServiceLocatorInterface $container, $name, $requestedName)
-    {
-        return $this($container, $requestedName);
     }
 
     /**

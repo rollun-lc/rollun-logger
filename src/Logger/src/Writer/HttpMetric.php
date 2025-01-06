@@ -7,8 +7,8 @@ namespace rollun\logger\Writer;
 use InvalidArgumentException;
 use RuntimeException;
 use Traversable;
-use Zend\Http\Client;
-use Zend\Uri\Http as HttpUri;
+use Laminas\Http\Client;
+use Laminas\Uri\Http as HttpUri;
 
 class HttpMetric extends AbstractWriter
 {
@@ -47,7 +47,7 @@ class HttpMetric extends AbstractWriter
         }
 
         if (!$client instanceof Client) {
-            throw new InvalidArgumentException('You must pass a valid Zend\Http\Client');
+            throw new InvalidArgumentException('You must pass a valid Laminas\Http\Client');
         }
 
         $this->client = $client;

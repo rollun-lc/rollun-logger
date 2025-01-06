@@ -19,8 +19,8 @@ use rollun\logger\Filter\FilterInterface;
 use rollun\logger\Filter\Priority;
 use rollun\logger\FilterPluginManager;
 use rollun\logger\FormatterPluginManager;
-use Zend\ServiceManager\ServiceManager;
-use Zend\Stdlib\ErrorHandler;
+use Laminas\ServiceManager\ServiceManager;
+use Laminas\Stdlib\ErrorHandler;
 
 abstract class AbstractWriter implements WriterInterface
 {
@@ -53,14 +53,14 @@ abstract class AbstractWriter implements WriterInterface
     protected $formatter;
 
     /**
-     * Use Zend\Stdlib\ErrorHandler to report errors during calls to write
+     * Use Laminas\Stdlib\ErrorHandler to report errors during calls to write
      *
      * @var bool
      */
     protected $convertWriteErrorsToExceptions = true;
 
     /**
-     * Error level passed to Zend\Stdlib\ErrorHandler::start for errors reported during calls to write
+     * Error level passed to Laminas\Stdlib\ErrorHandler::start for errors reported during calls to write
      *
      * @var bool
      */
