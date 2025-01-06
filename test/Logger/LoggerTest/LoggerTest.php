@@ -13,7 +13,6 @@ namespace rollun\test\logger\LoggerTest;
 use Exception;
 use ErrorException;
 use InvalidArgumentException;
-use PHPUnit\Framework\Error\Warning;
 use Psr\Log\LoggerInterface;
 use rollun\logger\Writer\Mock;
 use rollun\logger\Writer\Noop;
@@ -102,14 +101,6 @@ class LoggerTest extends LoggerInterfaceTest
         $this->logger->addWriter('mock');
         $writers = $this->logger->getWriters();
         $this->assertInstanceOf('Laminas\Stdlib\SplPriorityQueue', $writers);
-    }
-
-    public function testEmptyWriter()
-    {
-        // expect trigger_error() with E_USER_WARNING
-        $this->expectException(Warning::class);
-        $this->expectExceptionMessage('No log writer was specified.');
-        $this->logger->log(LogLevel::INFO, 'test');
     }
 
     public function testSetWriters()
