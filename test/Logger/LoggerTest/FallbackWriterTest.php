@@ -15,7 +15,7 @@ class FallbackWriterTest extends TestCase
 {
     protected const FILENAME = 'stream.log';
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         if (file_exists(__DIR__ . '/' . self::FILENAME)) {
             unlink(__DIR__ . '/' . self::FILENAME);
@@ -79,7 +79,7 @@ class FallbackWriterTest extends TestCase
                 ];
 
                 foreach ($expectedMessages as $expectedMessage) {
-                    if (str_contains($message, $expectedMessage)) {
+                    if ($this->strContains($message, $expectedMessage)) {
                         return true;
                     }
                 }
@@ -175,5 +175,10 @@ class FallbackWriterTest extends TestCase
         /** @var Logger $logger */
         $logger->addWriter($failedWriter);
         $logger->info($message, $context);
+    }
+
+    private function strContains(string $haystack, string $needle): bool
+    {
+        return $needle !== '' && mb_strpos($haystack, $needle) !== false;
     }
 }
