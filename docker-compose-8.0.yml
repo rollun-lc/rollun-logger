@@ -11,9 +11,9 @@ services:
       - php-fpm
 
   php-fpm:
-    image: ghcr.io/rollun-lc/rollun-ops/base-images/php-fpm-8.1
+    image: maxrollundev/php-fpm-dev-8.0
     volumes:
-      - ./:/var/www/html
+      - ./:/var/www/app
     environment:
       APP_ENV: "dev"
       PHP_IDE_CONFIG: "serverName=rollun-logger"

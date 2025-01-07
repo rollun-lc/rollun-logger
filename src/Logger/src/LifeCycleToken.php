@@ -163,6 +163,18 @@ class LifeCycleToken implements Serializable
         return $this->parentToken;
     }
 
+    public function __serialize(): array
+    {
+        return [
+            'token' => $this->token
+        ];
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->token = $data['token'];
+    }
+
     /**
      * Serialize only own token. Parent token not saved (serialized) and not accessibly after serialization.
      * String representation of object
@@ -186,11 +198,11 @@ class LifeCycleToken implements Serializable
      * @return void
      * @since 5.1.0
      */
-    public function unserialize($serialized)
+    public function unserialize($data)
     {
         $this->__construct(
             self::generateToken()->toString(),
-            new self($serialized)
+            new self($data)
         );
     }
 

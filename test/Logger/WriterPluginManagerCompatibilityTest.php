@@ -27,7 +27,7 @@ class WriterPluginManagerCompatibilityTest extends TestCase
     use CommonPluginManagerTrait;
     use ServicesNotSharedByDefaultTrait;
 
-    protected function getPluginManager()
+    protected static function getPluginManager(): WriterPluginManager
     {
         return new WriterPluginManager(new ServiceManager());
     }

@@ -21,7 +21,7 @@ class FormatterPluginManagerCompatibilityTest extends TestCase
     use CommonPluginManagerTrait;
     use ServicesNotSharedByDefaultTrait;
 
-    protected function getPluginManager()
+    protected static function getPluginManager(): FormatterPluginManager
     {
         return new FormatterPluginManager(new ServiceManager());
     }

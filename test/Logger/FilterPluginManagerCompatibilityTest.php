@@ -25,7 +25,7 @@ class FilterPluginManagerCompatibilityTest extends TestCase
     use CommonPluginManagerTrait;
     use ServicesNotSharedByDefaultTrait;
 
-    protected function getPluginManager()
+    protected static function getPluginManager(): FilterPluginManager
     {
         return new FilterPluginManager(new ServiceManager());
     }
