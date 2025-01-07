@@ -68,7 +68,7 @@ class FallbackWriterTest extends TestCase
         $logger = $this->getMockBuilder(Logger::class)
             ->setConstructorArgs([
                 'options' => $options
-            ])->setMethods(['logError'])
+            ])->onlyMethods(['logError'])
             ->getMock();
         $logger
             ->expects($this->exactly(2))
@@ -160,7 +160,7 @@ class FallbackWriterTest extends TestCase
         $context = ['value' => 'Random context value'];
 
         $logger = $this->getMockBuilder(Logger::class)
-            ->setMethods(['logError', 'failedWriterEventToString'])
+            ->onlyMethods(['logError', 'failedWriterEventToString'])
             ->getMock();
         $logger
             ->expects($this->once())
