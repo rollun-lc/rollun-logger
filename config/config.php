@@ -12,7 +12,9 @@ $cacheConfig = [
 ];
 
 // Make environment variables stored in .env accessible via getenv(), $_ENV or $_SERVER.
-(new Dotenv())->load('.env');
+if (file_exists('.env')) {
+    (new Dotenv())->load('.env');
+}
 
 // Determine application environment ('dev' or 'prod').
 $appEnv = getenv('APP_ENV');
