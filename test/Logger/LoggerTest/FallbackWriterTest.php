@@ -17,8 +17,8 @@ class FallbackWriterTest extends TestCase
 
     protected function tearDown(): void
     {
-        if (file_exists(__DIR__. '/' . self::FILENAME)) {
-            unlink(__DIR__. '/' . self::FILENAME);
+        if (file_exists(__DIR__ . '/' . self::FILENAME)) {
+            unlink(__DIR__ . '/' . self::FILENAME);
         }
     }
 
@@ -68,15 +68,24 @@ class FallbackWriterTest extends TestCase
         $logger = $this->getMockBuilder(Logger::class)
             ->setConstructorArgs([
                 'options' => $options
-            ])->setMethods(['logError'])
+            ])->onlyMethods(['logError'])
             ->getMock();
         $logger
             ->expects($this->exactly(2))
             ->method('logError')
-            ->withConsecutive(
-                [$this->stringContains('failed to write log message. RuntimeException: Writer fail.')],
-                [$this->stringContains('failed to write log message. RuntimeException: Fallback writer fail.')]
-            )->willReturn(null);
+            ->with($this->callback(function ($message) {
+                $expectedMessages = [
+                    'failed to write log message. RuntimeException: Writer fail.',
+                    'failed to write log message. RuntimeException: Fallback writer fail.',
+                ];
+
+                foreach ($expectedMessages as $expectedMessage) {
+                    if (str_contains($message, $expectedMessage)) {
+                        return true;
+                    }
+                }
+                return false;
+            }));
 
         /** @var Logger $logger */
         $logger->addWriter($failedWriter);
@@ -151,11 +160,8 @@ class FallbackWriterTest extends TestCase
         $context = ['value' => 'Random context value'];
 
         $logger = $this->getMockBuilder(Logger::class)
-            ->setMethods(['logError', 'failedWriterEventToString'])
+            ->onlyMethods(['logError', 'failedWriterEventToString'])
             ->getMock();
-        $logger
-            ->method('logError')
-            ->willReturn(null);
         $logger
             ->expects($this->once())
             ->method('failedWriterEventToString')
