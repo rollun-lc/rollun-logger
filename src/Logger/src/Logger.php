@@ -427,12 +427,7 @@ class Logger implements PsrLoggerInterface
         return $this;
     }
 
-    /**
-     * Get processors
-     *
-     * @return SplPriorityQueue
-     */
-    public function getProcessors()
+    public function getProcessors(): SplPriorityQueue
     {
         return $this->processors;
     }
@@ -619,9 +614,8 @@ class Logger implements PsrLoggerInterface
 
     /**
      * Unregister error handler
-     *
      */
-    public static function unregisterErrorHandler()
+    public static function unregisterErrorHandler(): void
     {
         restore_error_handler();
         static::$registeredErrorHandler = false;
@@ -735,18 +729,14 @@ class Logger implements PsrLoggerInterface
     /**
      * Unregister exception handler
      */
-    public static function unregisterExceptionHandler()
+    public static function unregisterExceptionHandler(): void
     {
         restore_exception_handler();
         static::$registeredExceptionHandler = false;
     }
 
-    /**
-     * @param string $error
-     */
-    protected function logError(string $error)
+    protected function logError(string $error): void
     {
         error_log($error);
     }
-
 }
