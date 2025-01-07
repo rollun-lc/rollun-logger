@@ -1,0 +1,22 @@
+name: PHP Composer
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    env:
+      # https://github.com/docker/compose/issues/7306
+      COMPOSE_INTERACTIVE_NO_CLI: 1
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Init project
+        run: make init
+
+      - name: Run tests
+        run: make test
