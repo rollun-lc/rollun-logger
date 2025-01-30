@@ -9,6 +9,7 @@ use Prometheus\Collector as PrometheusCollector;
 use Prometheus\CollectorRegistry;
 use Prometheus\Exception\MetricsRegistrationException;
 use Prometheus\Storage\Adapter;
+use rollun\logger\LifeCycleToken;
 use rollun\logger\Prometheus\Collector;
 use rollun\logger\Prometheus\PushGateway;
 
@@ -25,7 +26,10 @@ class PrometheusWriter extends AbstractWriter
     public const METHOD_POST = 'post';
     public const METHOD_PUT = 'put';
     public const METHOD_DELETE = 'delete';
-    public const METHODS = [self::METHOD_POST, self::METHOD_PUT, self::METHOD_DELETE];
+    public const METHODS
+        = [
+            self::METHOD_POST, self::METHOD_PUT, self::METHOD_DELETE
+        ];
 
     public const METRIC_ID = 'metricId';
     public const VALUE = 'value';
@@ -37,16 +41,17 @@ class PrometheusWriter extends AbstractWriter
     public const ACTION = 'action';
     public const WITH_SERVICE_NAME = self::SERVICE;
 
-    public const KEYS = [
-        self::METRIC_ID,
-        self::VALUE,
-        self::GROUPS,
-        self::LABELS,
-        self::METHOD,
-        self::REFRESH,
-        self::SERVICE,
-        self::ACTION,
-    ];
+    public const KEYS
+        = [
+            self::METRIC_ID,
+            self::VALUE,
+            self::GROUPS,
+            self::LABELS,
+            self::METHOD,
+            self::REFRESH,
+            self::SERVICE,
+            self::ACTION,
+        ];
 
     /**
      * @var CollectorRegistry
@@ -77,7 +82,8 @@ class PrometheusWriter extends AbstractWriter
         string $jobName,
         string $type,
         array $options = null
-    ) {
+    )
+    {
         $this->collector = $collector;
         $this->pushGateway = $pushGateway;
         $this->jobName = $jobName;
@@ -114,12 +120,16 @@ class PrometheusWriter extends AbstractWriter
     protected function prepareData(array $event): array
     {
         // required data
-        $event['prometheusMetricId'] = isset($event['context'][self::METRIC_ID]) ? (string)$event['context'][self::METRIC_ID] : null;
-        $event['prometheusValue'] = isset($event['context'][self::VALUE]) ? (float)$event['context'][self::VALUE] : 0;
+        $event['prometheusMetricId'] = isset($event['context'][self::METRIC_ID])
+            ? (string)$event['context'][self::METRIC_ID] : null;
+        $event['prometheusValue'] = isset($event['context'][self::VALUE])
+            ? (float)$event['context'][self::VALUE] : 0;
 
         // prepare groups
-        $event['prometheusGroups'] = isset($event['context'][self::GROUPS]) ? (array)$event['context'][self::GROUPS] : [];
-        $serviceName = $event['context'][self::SERVICE] ?? getenv('SERVICE_NAME');
+        $event['prometheusGroups'] = isset($event['context'][self::GROUPS])
+            ? (array)$event['context'][self::GROUPS] : [];
+        $serviceName = $event['context'][self::SERVICE] ??
+            getenv('SERVICE_NAME');
         $withName = $serviceName ? true : false;
         if ($withName && $serviceName) {
             $event['prometheusGroups']['service'] = $serviceName;
@@ -127,12 +137,15 @@ class PrometheusWriter extends AbstractWriter
 
         // action
         if (isset($event['context'][self::ACTION])) {
-            $event['prometheusGroups']['action'] = $event['context'][self::ACTION];
+            $event['prometheusGroups']['action']
+                = $event['context'][self::ACTION];
         }
 
         // other
-        $event['prometheusLabels'] = isset($event['context'][self::LABELS]) ? (array)$event['context'][self::LABELS] : [];
-        $event['prometheusMethod'] = isset($event['context'][self::METHOD]) ? (string)$event['context'][self::METHOD] : self::METHOD_POST;
+        $event['prometheusLabels'] = isset($event['context'][self::LABELS])
+            ? (array)$event['context'][self::LABELS] : [];
+        $event['prometheusMethod'] = isset($event['context'][self::METHOD])
+            ? (string)$event['context'][self::METHOD] : self::METHOD_POST;
         $event['prometheusRefresh'] = !empty($event['context'][self::REFRESH]);
 
         return $event;
@@ -145,7 +158,9 @@ class PrometheusWriter extends AbstractWriter
      */
     protected function isValid(array $event): bool
     {
-        if (empty(getenv('PROMETHEUS_HOST')) || empty($event['prometheusMetricId'])) {
+        if (empty(getenv('PROMETHEUS_HOST'))
+            || empty($event['prometheusMetricId'])
+        ) {
             return false;
         }
 
@@ -191,7 +206,7 @@ class PrometheusWriter extends AbstractWriter
         );
         $gauge->set($event['prometheusValue'], $event['prometheusLabels']);
 
-        $this->send($gauge, $event['prometheusMethod'], $event['prometheusGroups']);
+        $this->sendAbstract($gauge, $event);
     }
 
     /**
@@ -210,12 +225,16 @@ class PrometheusWriter extends AbstractWriter
         );
 
         if ($event['prometheusRefresh']) {
-            $counter->set($event['prometheusValue'], $event['prometheusLabels']);
+            $counter->set(
+                $event['prometheusValue'], $event['prometheusLabels']
+            );
         } else {
-            $counter->incBy($event['prometheusValue'], $event['prometheusLabels']);
+            $counter->incBy(
+                $event['prometheusValue'], $event['prometheusLabels']
+            );
         }
 
-        $this->send($counter, $event['prometheusMethod'], $event['prometheusGroups']);
+        $this->sendAbstract($counter, $event);
     }
 
     /**
@@ -234,15 +253,38 @@ class PrometheusWriter extends AbstractWriter
         return $this->collector->getAdapter();
     }
 
+    private function sendAbstract(PrometheusCollector $collector, array $event)
+    {
+        $headers = isset($event[LifeCycleToken::KEY_LIFECYCLE_TOKEN]) ? [
+            'LifeCycleToken' => $event[LifeCycleToken::KEY_LIFECYCLE_TOKEN]
+        ] : [];
+        $this->send(
+            collector: $collector,
+            method: $event['prometheusMethod'],
+            groups: $event['prometheusGroups'],
+            headers: $headers
+        );
+    }
+
     /**
-     * @param PrometheusCollector $collector
-     * @param string              $method
-     * @param array               $groups
+     * @param array<string,string> $headers
      *
      * @throws GuzzleException
      */
-    protected function send(PrometheusCollector $collector, string $method, array $groups)
+    protected function send(
+        PrometheusCollector $collector,
+        string $method,
+        array $groups,
+        array $headers = []
+    )
     {
-        $this->pushGateway->doRequest($this->getCollectorRegistry(), $collector, $this->jobName, $groups, $method);
+        $this->pushGateway->doRequest(
+            collectorRegistry: $this->getCollectorRegistry(),
+            collector: $collector,
+            job: $this->jobName,
+            groupingKey: $groups,
+            method: $method,
+            headers: $headers
+        );
     }
 }

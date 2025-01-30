@@ -43,11 +43,7 @@ class PushGateway
     }
 
     /**
-     * @param CollectorRegistry $collectorRegistry
-     * @param Collector         $collector
-     * @param string            $job
-     * @param array             $groupingKey
-     * @param string            $method
+     * @param array<string, string> $headers
      *
      * @return ResponseInterface
      * @throws GuzzleException
@@ -57,7 +53,8 @@ class PushGateway
         Collector $collector,
         string $job,
         array $groupingKey,
-        string $method
+        string $method,
+        array $headers = []
     ): ResponseInterface {
         $url = "http://{$this->host}:{$this->port}/metrics/job/" . $job;
         if (!empty($groupingKey)) {
@@ -72,9 +69,12 @@ class PushGateway
         }
         $client = new Client();
         $requestOptions = [
-            'headers'         => [
-                'Content-Type' => RenderTextFormat::MIME_TYPE,
-            ],
+            'headers'         => array_merge(
+                [
+                    'Content-Type' => RenderTextFormat::MIME_TYPE,
+                ],
+                $headers
+            ),
             'connect_timeout' => 10,
             'timeout'         => 20,
         ];
