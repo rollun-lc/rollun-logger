@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace rollun\logger\Writer;
 
 use InvalidArgumentException;
+use rollun\logger\LifeCycleToken;
 use RuntimeException;
 
 /**
@@ -84,6 +85,8 @@ class HttpAsync extends AbstractWriter
         // parse host, path, port from url
         $parts = $this->parseUrl($event);
 
+        $lifeCycleToken = $event[LifeCycleToken::KEY_LIFECYCLE_TOKEN] ?? null;
+
         // call formatter
         if ($this->hasFormatter()) {
             $event = $this->getFormatter()->format($event);
@@ -104,6 +107,9 @@ class HttpAsync extends AbstractWriter
         $out .= "Host: {$parts['host']}\r\n";
         $out .= "Accept: application/json\r\n";
         $out .= "Content-Type: application/json\r\n";
+        if ($lifeCycleToken !== null) {
+            $out .= "LifeCycleToken: $lifeCycleToken\r\n";
+        }
         $out .= "Content-Length: " . strlen($data) . "\r\n";
         $out .= "Connection: Close\r\n\r\n";
         $out .= $data;
