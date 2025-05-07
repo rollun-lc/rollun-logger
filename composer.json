@@ -38,8 +38,7 @@
     "symfony/dotenv": "^6.0.3",
     "laminas/laminas-config-aggregator": "^1.7",
     "laminas/laminas-db": "^2.13.4",
-    "laminas/laminas-diactoros": "^2.8.0",
-    "mezzio/mezzio": "^3.9"
+    "laminas/laminas-diactoros": "^2.8.0"
   },
   "suggest": {
   },
