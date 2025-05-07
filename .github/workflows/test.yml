@@ -1,4 +1,4 @@
-name: Test PHP 8.1
+name: Check PHP 8.1
 
 on:
   push:
@@ -15,8 +15,5 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Init project
-        run: make init
-
-      - name: Run tests
-        run: make test
+      - name: Check project
+        run: make init check down
