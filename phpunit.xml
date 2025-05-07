@@ -1,22 +1,28 @@
 <?xml version="1.0"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bootstrap="test/bootstrap.php" colors="true" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
-  <coverage processUncoveredFiles="true">
-    <include>
-      <directory suffix=".php">src</directory>
-    </include>
-  </coverage>
-  <testsuites>
-    <testsuite name="rollun\\test\\logger\\">
-      <directory>./test/Logger/</directory>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         bootstrap="test/bootstrap.php"
+         colors="true"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
 
-<!--  In 8.1 getPluginManager should be static in 8.0 is non-static, because of different version of laminas-service-manager -->
-      <exclude>./test/Logger/FilterPluginManagerCompatibilityTest.php</exclude>
-      <exclude>./test/Logger/FormatterPluginManagerCompatibilityTest.php</exclude>
-      <exclude>./test/Logger/WriterPluginManagerCompatibilityTest.php</exclude>
-    </testsuite>
-  </testsuites>
-  <php>
-    <env name="APP_ENV" value="test" force="true"/>
-    <env name="APP_DEBUG" value="1" force="true"/>
-  </php>
+    <coverage processUncoveredFiles="true">
+        <include>
+            <directory suffix=".php">src</directory>
+        </include>
+    </coverage>
+
+    <testsuites>
+        <testsuite name="All">
+            <directory>./test/Logger/</directory>
+
+            <!--  In 8.1 getPluginManager should be static in 8.0 is non-static, because of different version of laminas-service-manager -->
+            <exclude>./test/Logger/FilterPluginManagerCompatibilityTest.php</exclude>
+            <exclude>./test/Logger/FormatterPluginManagerCompatibilityTest.php</exclude>
+            <exclude>./test/Logger/WriterPluginManagerCompatibilityTest.php</exclude>
+        </testsuite>
+    </testsuites>
+
+    <php>
+        <env name="APP_ENV" value="test" force="true"/>
+        <env name="APP_DEBUG" value="1" force="true"/>
+    </php>
 </phpunit>

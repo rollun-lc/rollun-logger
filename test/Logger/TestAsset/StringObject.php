@@ -7,7 +7,7 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
-namespace rollun\test\logger\TestAsset;
+namespace Rollun\Test\Logger\TestAsset;
 
 class StringObject
 {

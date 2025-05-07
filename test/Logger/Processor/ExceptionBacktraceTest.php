@@ -1,6 +1,6 @@
 <?php
 
-namespace rollun\test\logger\Processor;
+namespace Rollun\Test\Logger\Processor;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
@@ -8,7 +8,7 @@ use rollun\logger\Processor\ExceptionBacktrace;
 
 /**
  * Class ExceptionBacktraceTest
- * @package rollun\test\logger\Processor
+ * @package Rollun\Test\Logger\Processor
  */
 class ExceptionBacktraceTest extends TestCase
 {

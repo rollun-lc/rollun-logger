@@ -4,7 +4,7 @@
  * @license LICENSE.md New BSD License
  */
 
-namespace rollun\test\logger\Processor;
+namespace Rollun\Test\Logger\Processor;
 
 use rollun\logger\Processor\LifeCycleTokenInjector;
 use PHPUnit\Framework\TestCase;

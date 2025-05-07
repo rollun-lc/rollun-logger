@@ -4,7 +4,7 @@
  * @license LICENSE.md New BSD License
  */
 
-namespace rollun\test\logger;
+namespace Rollun\Test\Logger;
 
 use PHPUnit\Framework\TestCase;
 use rollun\logger\LifeCycleToken;

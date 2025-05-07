@@ -1,6 +1,6 @@
 <?php
 
-namespace rollun\test\logger;
+namespace Rollun\Test\Logger;
 
 use Exception;
 use Psr\Container\ContainerExceptionInterface;

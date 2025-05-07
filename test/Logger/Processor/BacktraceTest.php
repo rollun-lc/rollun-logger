@@ -8,7 +8,7 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
-namespace rollun\test\logger\Processor;
+namespace Rollun\Test\Logger\Processor;
 
 use PHPUnit\Framework\TestCase;
 use rollun\logger\Processor\Backtrace;

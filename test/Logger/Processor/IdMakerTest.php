@@ -4,7 +4,7 @@
  * @license LICENSE.md New BSD License
  */
 
-namespace rollun\test\Logger\Processor;
+namespace Rollun\Test\Logger\Processor;
 
 use PHPUnit\Framework\TestCase;
 use rollun\logger\Processor\IdMaker;

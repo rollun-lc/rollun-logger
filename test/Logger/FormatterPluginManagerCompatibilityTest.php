@@ -7,7 +7,7 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
-namespace rollun\test\logger;
+namespace Rollun\Test\Logger;
 
 use PHPUnit\Framework\TestCase;
 use rollun\logger\Exception\InvalidArgumentException;

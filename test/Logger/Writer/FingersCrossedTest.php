@@ -7,7 +7,7 @@
 * @license   http://framework.zend.com/license/new-bsd New BSD License
 */
 
-namespace rollun\test\logger\Writer;
+namespace Rollun\Test\Logger\Writer;
 
 use PHPUnit\Framework\TestCase;
 use rollun\logger\Filter\Priority;

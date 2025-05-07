@@ -6,7 +6,7 @@
  * Time: 13:02
  */
 
-namespace rollun\test\logger;
+namespace Rollun\Test\Logger;
 
 use PHPUnit\Framework\TestCase;
 use rollun\logger\Formatter\FluentdFormatter;

@@ -8,14 +8,14 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
-namespace rollun\test\logger\Formatter;
+namespace Rollun\Test\Logger\Formatter;
 
 use ArrayIterator;
 use DateTime;
 use EmptyIterator;
 use PHPUnit\Framework\TestCase;
 use stdClass;
-use rollun\test\logger\TestAsset\StringObject;
+use Rollun\Test\Logger\TestAsset\StringObject;
 use rollun\logger\Formatter\Base as BaseFormatter;
 
 class BaseTest extends TestCase

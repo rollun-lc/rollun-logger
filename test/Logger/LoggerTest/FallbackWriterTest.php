@@ -1,7 +1,7 @@
 <?php
 
 
-namespace rollun\test\logger\LoggerTest;
+namespace Rollun\Test\Logger\LoggerTest;
 
 
 use PHPUnit\Framework\TestCase;

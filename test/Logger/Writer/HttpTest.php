@@ -4,7 +4,7 @@
  * @license LICENSE.md New BSD License
  */
 
-namespace rollun\test\logger\Writer;
+namespace Rollun\Test\Logger\Writer;
 
 use PHPUnit\Framework\TestCase;
 use rollun\logger\Writer\Http as HttpWriter;

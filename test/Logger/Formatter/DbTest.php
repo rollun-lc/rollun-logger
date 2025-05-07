@@ -7,7 +7,7 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
-namespace rollun\test\logger\Formatter;
+namespace Rollun\Test\Logger\Formatter;
 
 use DateTime;
 use PHPUnit\Framework\TestCase;

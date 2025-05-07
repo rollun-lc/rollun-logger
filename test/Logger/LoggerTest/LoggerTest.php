@@ -8,7 +8,7 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
-namespace rollun\test\logger\LoggerTest;
+namespace Rollun\Test\Logger\LoggerTest;
 
 use Exception;
 use ErrorException;

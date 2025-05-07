@@ -5,7 +5,7 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
-namespace rollun\test\logger;
+namespace Rollun\Test\Logger;
 
 use Psr\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;

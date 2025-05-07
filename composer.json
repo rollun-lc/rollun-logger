@@ -50,7 +50,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "rollun\\test\\logger\\": "test/Logger"
+      "Rollun\\Test\\Logger\\": "test/Logger"
     }
   },
   "scripts": {
