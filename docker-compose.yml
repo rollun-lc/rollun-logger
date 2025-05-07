@@ -11,9 +11,16 @@ services:
       - php-fpm
 
   php-fpm:
-    image: ghcr.io/rollun-lc/rollun-ops/base-images/php-fpm-8.1
+    build:
+      context: docker/php-fpm/8.1
+      dockerfile: Dockerfile
+      args:
+        WWW_DATA_UID: ${DOCKER_USER_UID}
+        WWW_DATA_GID: ${DOCKER_USER_GID}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
-      - ./:/var/www/html
+      - ./:/var/www/app
     environment:
       APP_ENV: "dev"
       PHP_IDE_CONFIG: "serverName=rollun-logger"
