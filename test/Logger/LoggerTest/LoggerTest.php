@@ -396,7 +396,7 @@ class LoggerTest extends LoggerInterfaceTest
         $this->assertFalse(Logger::registerExceptionHandler($this->logger));
 
         // get the internal exception handler
-        $exceptionHandler = set_exception_handler(function ($e) {
+        $exceptionHandler = set_exception_handler(function ($e): void {
 
         });
         set_exception_handler($exceptionHandler);

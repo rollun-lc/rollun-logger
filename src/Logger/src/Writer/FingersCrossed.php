@@ -115,7 +115,7 @@ class FingersCrossed extends AbstractWriter
             throw new InvalidArgumentException(sprintf(
                 'Writer must implement %s\WriterInterface; received "%s"',
                 __NAMESPACE__,
-                is_object($writer) ? get_class($writer) : gettype($writer)
+                get_debug_type($writer)
             ));
         }
 
@@ -152,7 +152,7 @@ class FingersCrossed extends AbstractWriter
             throw new InvalidArgumentException(sprintf(
                 'Writer plugin manager must extend %s\WriterPluginManager; received %s',
                 __NAMESPACE__,
-                is_object($plugins) ? get_class($plugins) : gettype($plugins)
+                get_debug_type($plugins)
             ));
         }
 

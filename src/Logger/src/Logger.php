@@ -322,7 +322,7 @@ class Logger implements PsrLoggerInterface
 
         if (!$writer instanceof WriterInterface) {
             throw new Exception\InvalidArgumentException(sprintf(
-                'Writer must implement %s\Writer\WriterInterface; received "%s"', __NAMESPACE__, is_object($writer) ? get_class($writer) : gettype($writer)
+                'Writer must implement %s\Writer\WriterInterface; received "%s"', __NAMESPACE__, get_debug_type($writer)
             ));
         }
 
@@ -384,7 +384,7 @@ class Logger implements PsrLoggerInterface
         }
         if (!$plugins instanceof ProcessorPluginManager) {
             throw new Exception\InvalidArgumentException(sprintf(
-                'processor plugin manager must extend %s\ProcessorPluginManager; received %s', __NAMESPACE__, is_object($plugins) ? get_class($plugins) : gettype($plugins)
+                'processor plugin manager must extend %s\ProcessorPluginManager; received %s', __NAMESPACE__, get_debug_type($plugins)
             ));
         }
 
@@ -419,7 +419,7 @@ class Logger implements PsrLoggerInterface
             $processor = $this->processorPlugin($processor, $options);
         } elseif (!$processor instanceof ProcessorInterface) {
             throw new Exception\InvalidArgumentException(sprintf(
-                'Processor must implement' . ProcessorInterface::class . '; received "%s"', is_object($processor) ? get_class($processor) : gettype($processor)
+                'Processor must implement' . ProcessorInterface::class . '; received "%s"', get_debug_type($processor)
             ));
         }
         $this->processors->insert($processor, $priority);
@@ -637,7 +637,7 @@ class Logger implements PsrLoggerInterface
 
         $errorPriorityMap = static::$errorPriorityMap;
 
-        register_shutdown_function(function () use ($logger, $errorPriorityMap) {
+        register_shutdown_function(function () use ($logger, $errorPriorityMap): void {
             $error = error_get_last();
 
             $isFatalError = !in_array(
@@ -691,7 +691,7 @@ class Logger implements PsrLoggerInterface
 
         $errorPriorityMap = static::$errorPriorityMap;
 
-        set_exception_handler(function ($exception) use ($logger, $errorPriorityMap) {
+        set_exception_handler(function ($exception) use ($logger, $errorPriorityMap): void {
             $logMessages = [];
 
             do {

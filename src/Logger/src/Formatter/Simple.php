@@ -74,7 +74,7 @@ class Simple extends Base
             $output = str_replace("%$name%", $value, $output);
         }
 
-        if (isset($event['context']) && empty($event['context']) && false !== strpos($this->format, '%context%')
+        if (isset($event['context']) && empty($event['context']) && str_contains($this->format, '%context%')
         ) {
             $output = rtrim($output, ' ');
         }

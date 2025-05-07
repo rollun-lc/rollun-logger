@@ -81,7 +81,7 @@ class WriterPluginManager extends AbstractPluginManager
                 '%s can only create instances of %s; %s is invalid',
                 get_class($this),
                 $this->instanceOf,
-                (is_object($instance) ? get_class($instance) : gettype($instance))
+                (get_debug_type($instance))
             ));
         }
     }
@@ -101,7 +101,7 @@ class WriterPluginManager extends AbstractPluginManager
         } catch (InvalidServiceException $e) {
             throw new InvalidArgumentException(sprintf(
                 'Plugin of type %s is invalid; must implement %s\Writer\WriterInterface',
-                (is_object($plugin) ? get_class($plugin) : gettype($plugin)),
+                (get_debug_type($plugin)),
                 __NAMESPACE__
             ));
         }

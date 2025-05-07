@@ -36,7 +36,7 @@ class RequestLoggerMiddlewareTest extends TestCase
         $logger
             ->expects($this->once())
             ->method('info')
-            ->willReturnCallback(function (string $message) {
+            ->willReturnCallback(function (string $message): void {
                 $messageParts = explode(' ', $message);
                 // Expected format '[Datetime] Method - URL <- Ip address' and there is 6 parts separated by space
                 $this->assertCount(6, $messageParts);

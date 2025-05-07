@@ -266,7 +266,7 @@ class LifeCycleToken implements Serializable
     {
         if ($GLOBALS['argv']) {
             foreach ($GLOBALS['argv'] as $value) {
-                if (strpos($value, 'lifecycleToken') === 0) {
+                if (str_starts_with($value, 'lifecycleToken')) {
                     return explode(':', $value, 2)[1] ?? null;
                 }
             }

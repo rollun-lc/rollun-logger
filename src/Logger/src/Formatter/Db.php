@@ -52,7 +52,7 @@ class Db implements FormatterInterface
     public function format(array $event)
     {
         $format = $this->getDateTimeFormat();
-        array_walk_recursive($event, function (&$value) use ($format) {
+        array_walk_recursive($event, function (&$value) use ($format): void {
             if ($value instanceof DateTime) {
                 $value = $value->format($format);
             }

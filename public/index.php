@@ -14,7 +14,7 @@ chdir(dirname(__DIR__));
 require 'vendor/autoload.php';
 
 // Self-called anonymous function that creates its own scope and keep the global namespace clean
-call_user_func(function () {
+call_user_func(function (): void {
     // Init lifecycle token
     $lifeCycleToken = LifeCycleToken::generateToken();
 

@@ -44,7 +44,7 @@ class ExceptionBacktrace implements ProcessorInterface
         $exception = $event['context']['exception'];
 
         if (!($exception instanceof Throwable)) {
-            $type = is_object($exception) ? get_class($exception) : gettype($exception);
+            $type = get_debug_type($exception);
             throw new InvalidArgumentException(
                 'Exception argument must implement \Throwable interface, ' . $type . ' given'
             );

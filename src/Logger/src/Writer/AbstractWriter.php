@@ -149,7 +149,7 @@ abstract class AbstractWriter implements WriterInterface
             throw new InvalidArgumentException(sprintf(
                 'Filter must implement %s\Filter\FilterInterface; received "%s"',
                 __NAMESPACE__,
-                is_object($filter) ? get_class($filter) : gettype($filter)
+                get_debug_type($filter)
             ));
         }
 
@@ -186,7 +186,7 @@ abstract class AbstractWriter implements WriterInterface
             throw new InvalidArgumentException(sprintf(
                 'Writer plugin manager must extend %s; received %s',
                 FilterPluginManager::class,
-                is_object($plugins) ? get_class($plugins) : gettype($plugins)
+                get_debug_type($plugins)
             ));
         }
 
@@ -236,7 +236,7 @@ abstract class AbstractWriter implements WriterInterface
                 sprintf(
                     'Writer plugin manager must extend %s; received %s',
                     FormatterPluginManager::class,
-                    is_object($plugins) ? get_class($plugins) : gettype($plugins)
+                    get_debug_type($plugins)
                 )
             );
         }
@@ -314,7 +314,7 @@ abstract class AbstractWriter implements WriterInterface
             throw new InvalidArgumentException(sprintf(
                 'Formatter must implement %s\Formatter\FormatterInterface; received "%s"',
                 __NAMESPACE__,
-                is_object($formatter) ? get_class($formatter) : gettype($formatter)
+                get_debug_type($formatter)
             ));
         }
 

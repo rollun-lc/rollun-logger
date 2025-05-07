@@ -107,7 +107,7 @@ class FallbackWriterTest extends TestCase
             ->getMock();
         $logger
             ->method('logError')
-            ->willReturnCallback(function (string $error) {
+            ->willReturnCallback(function (string $error): void {
                 $this->assertStringContainsString('failed to write log message. RuntimeException: Fail.', $error);
             });
 

@@ -102,7 +102,7 @@ class Backtrace implements ProcessorInterface
     protected function shouldIgnoreFrame(string $class)
     {
         foreach ($this->ignoredNamespaces as $ignoredNamespace) {
-            if (false !== strpos($class, $ignoredNamespace)) {
+            if (str_contains($class, $ignoredNamespace)) {
                 return true;
             }
         }
