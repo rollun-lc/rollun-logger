@@ -31,3 +31,8 @@ services:
     image: redis:alpine
     ports:
       - 6379:6379
+
+  csfixer:
+    image: ghcr.io/php-cs-fixer/php-cs-fixer:3.66-php8.1
+    volumes:
+      - ./:/code
