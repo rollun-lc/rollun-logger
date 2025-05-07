@@ -38,7 +38,8 @@
     "symfony/dotenv": "^6.0.3",
     "laminas/laminas-config-aggregator": "^1.7",
     "laminas/laminas-db": "^2.13.4",
-    "laminas/laminas-diactoros": "^2.8.0"
+    "laminas/laminas-diactoros": "^2.8.0",
+    "rector/rector": "^2.0"
   },
   "suggest": {
   },
@@ -60,6 +61,7 @@
     "clear-config-cache": "php bin/clear-config-cache.php",
     "code-sniffer": "phpcs ./src",
     "code-beautiful": "phpcbf ./src",
-    "server": "php -S 0.0.0.0:8000 -t public public/index.php"
+    "server": "php -S 0.0.0.0:8000 -t public public/index.php",
+    "rector": "rector process --dry-run"
   }
 }

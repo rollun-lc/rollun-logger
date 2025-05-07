@@ -73,3 +73,6 @@ composer-test:
 
 composer-test-8.0:
 	docker compose -f docker-compose-8.0.yml exec php-fpm composer test
+
+rector:
+	docker compose exec php-fpm composer rector
