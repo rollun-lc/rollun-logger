@@ -40,8 +40,7 @@
     "laminas/laminas-db": "^2.13.4",
     "laminas/laminas-diactoros": "^2.8.0",
     "laminas/laminas-stratigility": "^3.5.0",
-    "mezzio/mezzio": "^3.9",
-    "phpspec/prophecy": "^1.19"
+    "mezzio/mezzio": "^3.9"
   },
   "suggest": {
   },
