@@ -32,7 +32,7 @@ class SuppressFilter implements FilterInterface
             $suppress = iterator_to_array($suppress);
         }
         if (is_array($suppress)) {
-            $suppress = isset($suppress['suppress']) ? $suppress['suppress'] : false;
+            $suppress = $suppress['suppress'] ?? false;
         }
         if (! is_bool($suppress)) {
             throw new InvalidArgumentException(

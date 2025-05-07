@@ -99,7 +99,7 @@ class HttpAsync extends AbstractWriter
         $port = isset($parts['port']) ? (int)$parts['port'] : 80;
 
         // prepare path
-        $path = isset($parts['path']) ? $parts['path'] : '/';
+        $path = $parts['path'] ?? '/';
 
         // prepare out
         $out = '';

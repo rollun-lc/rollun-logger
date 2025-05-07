@@ -38,8 +38,8 @@ class Priority implements FilterInterface
             $priority = iterator_to_array($priority);
         }
         if (is_array($priority)) {
-            $operator = isset($priority['operator']) ? $priority['operator'] : null;
-            $priority = isset($priority['priority']) ? $priority['priority'] : null;
+            $operator = $priority['operator'] ?? null;
+            $priority = $priority['priority'] ?? null;
         }
         if (! is_int($priority) && ! ctype_digit($priority)) {
             throw new InvalidArgumentException(sprintf(
@@ -49,7 +49,7 @@ class Priority implements FilterInterface
         }
 
         $this->priority = (int) $priority;
-        $this->operator = $operator === null ? '<=' : $operator;
+        $this->operator = $operator ?? '<=';
     }
 
     /**

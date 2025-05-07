@@ -40,8 +40,8 @@ class HttpFactory implements FactoryInterface
     {
         $config = (array)$options;
         $client = isset($config[static::KEY_CLIENT]) ? $container->get($config[static::KEY_CLIENT]) : new Client();
-        $uri = isset($config[static::KEY_URI]) ? $config[static::KEY_URI] : null;
-        $options = isset($config[static::KEY_OPTIONS]) ? $config[static::KEY_OPTIONS] : [];
+        $uri = $config[static::KEY_URI] ?? null;
+        $options = $config[static::KEY_OPTIONS] ?? [];
 
         return new Http($client, $uri, $options);
     }

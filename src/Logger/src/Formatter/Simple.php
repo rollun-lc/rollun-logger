@@ -40,15 +40,15 @@ class Simple extends Base
         }
 
         if (is_array($format)) {
-            $dateTimeFormat = isset($format['dateTimeFormat']) ? $format['dateTimeFormat'] : null;
-            $format = isset($format['format']) ? $format['format'] : null;
+            $dateTimeFormat = $format['dateTimeFormat'] ?? null;
+            $format = $format['format'] ?? null;
         }
 
         if (isset($format) && !is_string($format)) {
             throw new InvalidArgumentException('Format must be a string');
         }
 
-        $this->format = isset($format) ? $format : static::DEFAULT_FORMAT;
+        $this->format = $format ?? static::DEFAULT_FORMAT;
 
         parent::__construct($dateTimeFormat);
     }

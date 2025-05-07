@@ -37,7 +37,7 @@ class Base implements FormatterInterface
         }
 
         if (is_array($dateTimeFormat)) {
-            $dateTimeFormat = isset($dateTimeFormat['dateTimeFormat']) ? $dateTimeFormat['dateTimeFormat'] : null;
+            $dateTimeFormat = $dateTimeFormat['dateTimeFormat'] ?? null;
         }
 
         if (null !== $dateTimeFormat) {

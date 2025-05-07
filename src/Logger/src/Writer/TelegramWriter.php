@@ -40,7 +40,7 @@ class TelegramWriter extends AbstractWriter
         }
         if (is_array($options)) {
             parent::__construct($options);
-            $chatIds = isset($options["chat_ids"]) ? $options["chat_ids"] : null;
+            $chatIds = $options["chat_ids"] ?? null;
         }
         InsideConstruct::setConstructParams(["client" => TelegramClient::class]);
         $this->chatIds = $chatIds ?? [];

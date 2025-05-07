@@ -41,9 +41,9 @@ class HttpMetric extends AbstractWriter
 
         if (is_array($client)) {
             parent::__construct($client);
-            $options = isset($client['options']) ? $client['options'] : [];
-            $url = isset($client['url']) ? $client['url'] : null;
-            $client = isset($client['client']) ? $client['client'] : new Client();
+            $options = $client['options'] ?? [];
+            $url = $client['url'] ?? null;
+            $client = $client['client'] ?? new Client();
         }
 
         if (!$client instanceof Client) {
@@ -52,7 +52,7 @@ class HttpMetric extends AbstractWriter
 
         $this->client = $client;
         $this->options = $options;
-        $url = isset($url) ? $url : $client->getUri();
+        $url = $url ?? $client->getUri();
         $this->url = new HttpUri($url);
     }
 

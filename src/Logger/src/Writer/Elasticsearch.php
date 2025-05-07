@@ -68,7 +68,7 @@ class Elasticsearch extends AbstractWriter
 
         $this->client = $client;
         $this->indexName = $indexName;
-        $this->type = $type === null ? self::DEFAULT_TYPE : $type;
+        $this->type = $type ?? self::DEFAULT_TYPE;
     }
 
     /**

@@ -47,9 +47,9 @@ class Http extends AbstractWriter
 
         if (is_array($client)) {
             parent::__construct($client);
-            $options = isset($client['options']) ? $client['options'] : [];
-            $uri = isset($client['uri']) ? $client['uri'] : null;
-            $client = isset($client['client']) ? $client['client'] : null;
+            $options = $client['options'] ?? [];
+            $uri = $client['uri'] ?? null;
+            $client = $client['client'] ?? null;
             $client = is_string($client) ? new $client() : $client;
         }
 
@@ -59,7 +59,7 @@ class Http extends AbstractWriter
 
         $this->client = $client;
         $this->options = $options;
-        $uri = isset($uri) ? $uri : $client->getUri();
+        $uri = $uri ?? $client->getUri();
         $this->uri = new HttpUri($uri);
     }
 

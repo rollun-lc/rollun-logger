@@ -218,8 +218,8 @@ class Logger implements PsrLoggerInterface
                     throw new Exception\InvalidArgumentException('Options must contain a name for the processor');
                 }
 
-                $priority = (isset($processor['priority'])) ? $processor['priority'] : null;
-                $processorOptions = (isset($processor['options'])) ? $processor['options'] : null;
+                $priority = $processor['priority'] ?? null;
+                $processorOptions = $processor['options'] ?? null;
 
                 $this->addProcessor($processor['name'], $priority, $processorOptions);
             }

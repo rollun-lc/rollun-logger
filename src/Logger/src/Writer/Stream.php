@@ -51,10 +51,10 @@ class Stream extends AbstractWriter
 
         if (is_array($streamOrUrl)) {
             parent::__construct($streamOrUrl);
-            $mode            = isset($streamOrUrl['mode']) ? $streamOrUrl['mode'] : null;
-            $logSeparator    = isset($streamOrUrl['log_separator']) ? $streamOrUrl['log_separator'] : null;
-            $filePermissions = isset($streamOrUrl['chmod']) ? $streamOrUrl['chmod'] : $filePermissions;
-            $streamOrUrl     = isset($streamOrUrl['stream']) ? $streamOrUrl['stream'] : null;
+            $mode            = $streamOrUrl['mode'] ?? null;
+            $logSeparator    = $streamOrUrl['log_separator'] ?? null;
+            $filePermissions = $streamOrUrl['chmod'] ?? $filePermissions;
+            $streamOrUrl     = $streamOrUrl['stream'] ?? null;
         }
 
         // Setting the default mode

@@ -34,7 +34,7 @@ class Regex implements FilterInterface
             $regex = iterator_to_array($regex);
         }
         if (is_array($regex)) {
-            $regex = isset($regex['regex']) ? $regex['regex'] : null;
+            $regex = $regex['regex'] ?? null;
         }
         ErrorHandler::start(E_WARNING);
         $result = preg_match($regex, '');

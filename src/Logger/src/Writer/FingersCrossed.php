@@ -76,9 +76,9 @@ class FingersCrossed extends AbstractWriter
         }
 
         if (is_array($writer)) {
-            $filterOrPriority = isset($writer['priority']) ? $writer['priority'] : null;
-            $bufferSize       = isset($writer['bufferSize']) ? $writer['bufferSize'] : null;
-            $writer           = isset($writer['writer']) ? $writer['writer'] : null;
+            $filterOrPriority = $writer['priority'] ?? null;
+            $bufferSize       = $writer['bufferSize'] ?? null;
+            $writer           = $writer['writer'] ?? null;
         }
 
         if (null === $filterOrPriority) {

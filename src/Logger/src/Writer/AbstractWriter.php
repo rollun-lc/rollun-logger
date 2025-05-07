@@ -105,7 +105,7 @@ abstract class AbstractWriter implements WriterInterface
                                     'Options must contain a name for the filter'
                                 );
                             }
-                            $filterOptions = (isset($filter['options'])) ? $filter['options'] : null;
+                            $filterOptions = $filter['options'] ?? null;
                             $this->addFilter($filter['name'], $filterOptions);
                         }
                     }
@@ -120,7 +120,7 @@ abstract class AbstractWriter implements WriterInterface
                     if (!isset($formatter['name'])) {
                         throw new InvalidArgumentException('Options must contain a name for the formatter');
                     }
-                    $formatterOptions = (isset($formatter['options'])) ? $formatter['options'] : null;
+                    $formatterOptions = $formatter['options'] ?? null;
                     $this->setFormatter($formatter['name'], $formatterOptions);
                 }
             }
