@@ -100,7 +100,7 @@ class LoggerTest extends LoggerInterfaceTest
     {
         $this->logger->addWriter('mock');
         $writers = $this->logger->getWriters();
-        $this->assertInstanceOf('Laminas\Stdlib\SplPriorityQueue', $writers);
+        $this->assertInstanceOf(SplPriorityQueue::class, $writers);
     }
 
     public function testSetWriters()
@@ -113,7 +113,7 @@ class LoggerTest extends LoggerInterfaceTest
         $this->logger->setWriters($writers);
 
         $writers = $this->logger->getWriters();
-        $this->assertInstanceOf('Laminas\Stdlib\SplPriorityQueue', $writers);
+        $this->assertInstanceOf(SplPriorityQueue::class, $writers);
         $writer = $writers->extract();
         $this->assertInstanceOf(Noop::class, $writer);
         $writer = $writers->extract();
@@ -128,7 +128,7 @@ class LoggerTest extends LoggerInterfaceTest
         $this->logger->addWriter($writer2, 2);
         $writers = $this->logger->getWriters();
 
-        $this->assertInstanceOf('Laminas\Stdlib\SplPriorityQueue', $writers);
+        $this->assertInstanceOf(SplPriorityQueue::class, $writers);
         $writer = $writers->extract();
         $this->assertInstanceOf(Noop::class, $writer);
         $writer = $writers->extract();
@@ -143,7 +143,7 @@ class LoggerTest extends LoggerInterfaceTest
         $this->logger->addWriter($writer2, 1);
         $writers = $this->logger->getWriters();
 
-        $this->assertInstanceOf('Laminas\Stdlib\SplPriorityQueue', $writers);
+        $this->assertInstanceOf(SplPriorityQueue::class, $writers);
         $writer = $writers->extract();
         $this->assertInstanceOf(Mock::class, $writer);
         $writer = $writers->extract();
@@ -478,7 +478,7 @@ class LoggerTest extends LoggerInterfaceTest
      */
     public function testCatchExceptionNotValidPriority()
     {
-        $this->expectException('Psr\Log\InvalidArgumentException');
+        $this->expectException(\Psr\Log\InvalidArgumentException::class);
         $this->expectExceptionMessage('$level must be one of PSR-3 log levels; received -1');
         $writer = new MockWriter();
         $this->logger->addWriter($writer);

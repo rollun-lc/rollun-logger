@@ -9,6 +9,7 @@
 
 namespace Rollun\Test\Logger;
 
+use Laminas\Db\Adapter\Adapter;
 use PHPUnit\Framework\TestCase;
 use rollun\logger\Logger;
 use rollun\logger\LoggerAbstractServiceFactory;
@@ -102,7 +103,7 @@ class LoggerAbstractServiceFactoryTest extends TestCase
      */
     public function testRetrievesDatabaseServiceFromServiceManagerWhenEncounteringDbWriter()
     {
-        $db = $this->getMockBuilder('Laminas\Db\Adapter\Adapter')
+        $db = $this->getMockBuilder(Adapter::class)
             ->disableOriginalConstructor()
             ->getMock();
 
