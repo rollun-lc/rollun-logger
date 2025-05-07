@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: itprofessor02
@@ -8,7 +9,6 @@
 
 namespace rollun\logger\Formatter;
 
-
 use rollun\logger\Services\JsonTruncator;
 use RuntimeException;
 
@@ -16,9 +16,7 @@ class FluentdFormatter implements FormatterInterface
 {
     public function __construct(
         private ?JsonTruncator $jsonTruncator = null,
-    )
-    {
-    }
+    ) {}
 
     /**
      * Formats data into a single line to be written by the writer.
@@ -50,7 +48,7 @@ class FluentdFormatter implements FormatterInterface
         foreach ($event as $key => $value) {
             if (is_array($value) && count($value) > 0) {
                 $repackEvent[$key] = $this->clearEmptyArrayInEvent($value);
-            } else if (!is_array($value)) {
+            } elseif (!is_array($value)) {
                 $repackEvent[$key] = $value;
             }
         }
@@ -70,7 +68,7 @@ class FluentdFormatter implements FormatterInterface
                 foreach ($value as $nestedKey => $nestedValue) {
                     $repackEvent["$key.$nestedKey"] = $nestedValue;
                 }
-            } else if (!is_array($value)) {
+            } elseif (!is_array($value)) {
                 $repackEvent[$key] = $value;
             }
         }

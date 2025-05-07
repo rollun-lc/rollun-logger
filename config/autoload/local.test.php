@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright © 2014 Rollun LC (http://rollun.com/)
  * @license LICENSE.md New BSD License
@@ -30,51 +31,51 @@ use rollun\logger\Writer\Udp;
 use rollun\logger\WriterPluginManagerFactory;
 
 return [
-	'db' => [
+    'db' => [
         'driver' => getenv('DB_DRIVER') ?: 'Pdo_Mysql',
-		'database' => getenv('DB_NAME'),
-		'username' => getenv('DB_USER'),
-		'password' => getenv('DB_PASS'),
+        'database' => getenv('DB_NAME'),
+        'username' => getenv('DB_USER'),
+        'password' => getenv('DB_PASS'),
         'hostname' => getenv('DB_HOST'),
         'port' => getenv('DB_PORT') ?: 3306,
-	],
-	'log_formatters' => [
-		'factories' => [
-			ContextToString::class => InvokableFactory::class,
-		],
-	],
-	'log_processors' => [
+    ],
+    'log_formatters' => [
+        'factories' => [
+            ContextToString::class => InvokableFactory::class,
+        ],
+    ],
+    'log_processors' => [
         'abstract_factories' => [
             ProcessorAbstractFactory::class,
             ConditionalProcessorAbstractFactory::class,
         ],
-		'factories' => [
+        'factories' => [
             CountPerTime::class => CountPerTimeFactory::class,
-			IdMaker::class => InvokableFactory::class,
-		],
-	],
-	'dependencies' => [
-		'abstract_factories' => [
-			LoggerAbstractServiceFactory::class,
-		],
-		'factories' => [
-			Logger::class => LoggerServiceFactory::class,
-			'LogFilterManager' => FilterPluginManagerFactory::class,
-			'LogFormatterManager' => FormatterPluginManagerFactory::class,
-			'LogProcessorManager' => ProcessorPluginManagerFactory::class,
-			'LogWriterManager' => WriterPluginManagerFactory::class,
-		],
-		'aliases' => [
-			'logDbAdapter' => AdapterInterface::class,
-		],
-	],
+            IdMaker::class => InvokableFactory::class,
+        ],
+    ],
+    'dependencies' => [
+        'abstract_factories' => [
+            LoggerAbstractServiceFactory::class,
+        ],
+        'factories' => [
+            Logger::class => LoggerServiceFactory::class,
+            'LogFilterManager' => FilterPluginManagerFactory::class,
+            'LogFormatterManager' => FormatterPluginManagerFactory::class,
+            'LogProcessorManager' => ProcessorPluginManagerFactory::class,
+            'LogWriterManager' => WriterPluginManagerFactory::class,
+        ],
+        'aliases' => [
+            'logDbAdapter' => AdapterInterface::class,
+        ],
+    ],
     ConditionalProcessorAbstractFactory::KEY => [
         'DuplicateAmazonProductsCrossMatch' => [
             ConditionalProcessorAbstractFactory::KEY_FILTERS => [
                 [
                     'name'    => 'regex',
                     'options' => [
-                        'regex' => '/^TEST$/'
+                        'regex' => '/^TEST$/',
                     ],
                 ],
             ],
@@ -108,67 +109,67 @@ return [
             ],
         ],
     ],
-	'log' => [
-		LoggerInterface::class => [
-			'processors' => [
-				[
-					'name' => IdMaker::class,
-				],
+    'log' => [
+        LoggerInterface::class => [
+            'processors' => [
+                [
+                    'name' => IdMaker::class,
+                ],
                 [
                     'name' => 'DuplicateAmazonProductsCrossMatch',
-                ]
-			],
-			'writers' => [
-				[
-					'name' => WriterMock::class,
-				],
+                ],
+            ],
+            'writers' => [
+                [
+                    'name' => WriterMock::class,
+                ],
                 'udp_logstash' => [
                     'name' => Udp::class,
 
                     'options' => [
-                        'formatter' => LogStashFormatter::class
+                        'formatter' => LogStashFormatter::class,
                     ],
                 ],
-			],
-		],
-		'loggerWithElasticsearch' => [
-			'writers' => [
-				[
+            ],
+        ],
+        'loggerWithElasticsearch' => [
+            'writers' => [
+                [
                     'name' => Elasticsearch::class,
                     'options' => [
                         'client' => [
-                            'hosts' => ['http://localhost:9200']
+                            'hosts' => ['http://localhost:9200'],
                         ],
-                        'indexName' => 'my_index'
+                        'indexName' => 'my_index',
                     ],
-				],
-			],
-		],
-		'logWithDbWriter' => [
-			'processors' => [
-				[
-					'name' => IdMaker::class,
-				],
-			],
-			'writers' => [
-				[
-					'name' => WriterDb::class,
-					'options' => [
-						'db' => 'logDbAdapter',
-						'table' => 'logs',
-						'column' => [
-							'id' => 'id',
-							'timestamp' => 'timestamp',
-							'message' => 'message',
-							'level' => 'level',
-							'priority' => 'priority',
-							'context' => 'context',
-							'lifecycle_token' => 'lifecycle_token',
-						],
-						'formatter' => ContextToString::class,
-					],
-				],
-			],
-		],
-	],
+                ],
+            ],
+        ],
+        'logWithDbWriter' => [
+            'processors' => [
+                [
+                    'name' => IdMaker::class,
+                ],
+            ],
+            'writers' => [
+                [
+                    'name' => WriterDb::class,
+                    'options' => [
+                        'db' => 'logDbAdapter',
+                        'table' => 'logs',
+                        'column' => [
+                            'id' => 'id',
+                            'timestamp' => 'timestamp',
+                            'message' => 'message',
+                            'level' => 'level',
+                            'priority' => 'priority',
+                            'context' => 'context',
+                            'lifecycle_token' => 'lifecycle_token',
+                        ],
+                        'formatter' => ContextToString::class,
+                    ],
+                ],
+            ],
+        ],
+    ],
 ];

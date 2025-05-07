@@ -1,6 +1,5 @@
 <?php
 
-
 namespace rollun\logger\Formatter;
 
 use rollun\utils\Json\Serializer;
@@ -14,7 +13,6 @@ use rollun\utils\Json\Serializer;
  */
 class JsonMessage implements FormatterInterface
 {
-
     /**
      * @var string
      */

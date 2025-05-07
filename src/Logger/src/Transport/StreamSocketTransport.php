@@ -69,7 +69,7 @@ class StreamSocketTransport implements TransportInterface
     public function __construct(private string $host, private int $port, /**
      * @var $protocol
      */
-    private Protocol $protocol, array $options = [])
+        private Protocol $protocol, array $options = [])
     {
         if (isset($options['timeout'])) {
             $this->setTimeout($options['timeout']);
@@ -83,7 +83,7 @@ class StreamSocketTransport implements TransportInterface
             $this->setConnectionTimeout($options['connectionTimeout']);
         } else {
             $defaultSocketTimeout = ini_get('default_socket_timeout');
-            $this->setConnectionTimeout($defaultSocketTimeout > 0 ? $defaultSocketTimeout: null);
+            $this->setConnectionTimeout($defaultSocketTimeout > 0 ? $defaultSocketTimeout : null);
         }
     }
 

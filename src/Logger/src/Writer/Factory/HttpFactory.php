@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright © 2014 Rollun LC (http://rollun.com/)
  * @license LICENSE.md New BSD License
@@ -16,13 +17,13 @@ use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class HttpFactory implements FactoryInterface
 {
-    const KEY = HttpFactory::class;
+    public const KEY = HttpFactory::class;
 
-    const KEY_CLIENT = "client";
+    public const KEY_CLIENT = "client";
 
-    const KEY_URI = "uri";
+    public const KEY_URI = "uri";
 
-    const KEY_OPTIONS = "options";
+    public const KEY_OPTIONS = "options";
 
     /**
      * Create an object
@@ -38,7 +39,7 @@ class HttpFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        $config = (array)$options;
+        $config = (array) $options;
         $client = isset($config[static::KEY_CLIENT]) ? $container->get($config[static::KEY_CLIENT]) : new Client();
         $uri = $config[static::KEY_URI] ?? null;
         $options = $config[static::KEY_OPTIONS] ?? [];

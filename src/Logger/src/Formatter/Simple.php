@@ -15,8 +15,7 @@ use Traversable;
 
 class Simple extends Base
 {
-
-    const DEFAULT_FORMAT = '%timestamp% %level% (%priority%): %message% %context%';
+    public const DEFAULT_FORMAT = '%timestamp% %level% (%priority%): %message% %context%';
 
     /**
      * Format specifier for log messages

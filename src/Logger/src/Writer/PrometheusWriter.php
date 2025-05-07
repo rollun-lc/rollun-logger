@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace rollun\logger\Writer;
@@ -28,7 +29,7 @@ class PrometheusWriter extends AbstractWriter
     public const METHOD_DELETE = 'delete';
     public const METHODS
         = [
-            self::METHOD_POST, self::METHOD_PUT, self::METHOD_DELETE
+            self::METHOD_POST, self::METHOD_PUT, self::METHOD_DELETE,
         ];
 
     public const METRIC_ID = 'metricId';
@@ -82,8 +83,7 @@ class PrometheusWriter extends AbstractWriter
         string $jobName,
         string $type,
         array $options = null
-    )
-    {
+    ) {
         $this->collector = $collector;
         $this->pushGateway = $pushGateway;
         $this->jobName = $jobName;
@@ -121,13 +121,13 @@ class PrometheusWriter extends AbstractWriter
     {
         // required data
         $event['prometheusMetricId'] = isset($event['context'][self::METRIC_ID])
-            ? (string)$event['context'][self::METRIC_ID] : null;
+            ? (string) $event['context'][self::METRIC_ID] : null;
         $event['prometheusValue'] = isset($event['context'][self::VALUE])
-            ? (float)$event['context'][self::VALUE] : 0;
+            ? (float) $event['context'][self::VALUE] : 0;
 
         // prepare groups
         $event['prometheusGroups'] = isset($event['context'][self::GROUPS])
-            ? (array)$event['context'][self::GROUPS] : [];
+            ? (array) $event['context'][self::GROUPS] : [];
         $serviceName = $event['context'][self::SERVICE] ??
             getenv('SERVICE_NAME');
         $withName = $serviceName ? true : false;
@@ -143,9 +143,9 @@ class PrometheusWriter extends AbstractWriter
 
         // other
         $event['prometheusLabels'] = isset($event['context'][self::LABELS])
-            ? (array)$event['context'][self::LABELS] : [];
+            ? (array) $event['context'][self::LABELS] : [];
         $event['prometheusMethod'] = isset($event['context'][self::METHOD])
-            ? (string)$event['context'][self::METHOD] : self::METHOD_POST;
+            ? (string) $event['context'][self::METHOD] : self::METHOD_POST;
         $event['prometheusRefresh'] = !empty($event['context'][self::REFRESH]);
 
         return $event;
@@ -226,11 +226,13 @@ class PrometheusWriter extends AbstractWriter
 
         if ($event['prometheusRefresh']) {
             $counter->set(
-                $event['prometheusValue'], $event['prometheusLabels']
+                $event['prometheusValue'],
+                $event['prometheusLabels']
             );
         } else {
             $counter->incBy(
-                $event['prometheusValue'], $event['prometheusLabels']
+                $event['prometheusValue'],
+                $event['prometheusLabels']
             );
         }
 
@@ -256,7 +258,7 @@ class PrometheusWriter extends AbstractWriter
     private function sendAbstract(PrometheusCollector $collector, array $event)
     {
         $headers = isset($event[LifeCycleToken::KEY_LIFECYCLE_TOKEN]) ? [
-            'LifeCycleToken' => $event[LifeCycleToken::KEY_LIFECYCLE_TOKEN]
+            'LifeCycleToken' => $event[LifeCycleToken::KEY_LIFECYCLE_TOKEN],
         ] : [];
         $this->send(
             collector: $collector,
@@ -276,8 +278,7 @@ class PrometheusWriter extends AbstractWriter
         string $method,
         array $groups,
         array $headers = []
-    )
-    {
+    ) {
         $this->pushGateway->doRequest(
             collectorRegistry: $this->getCollectorRegistry(),
             collector: $collector,

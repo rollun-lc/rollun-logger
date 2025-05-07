@@ -1,8 +1,6 @@
 <?php
 
-
 namespace rollun\logger\Writer\Filter;
-
 
 use rollun\logger\Filter\FilterInterface;
 
@@ -12,9 +10,7 @@ class LevelFilter implements FilterInterface
      * PriorityFilter constructor.
      * @param array $levels
      */
-    public function __construct(private $levels = [])
-    {
-    }
+    public function __construct(private $levels = []) {}
 
     /**
      * Returns TRUE to accept the message, FALSE to block it.

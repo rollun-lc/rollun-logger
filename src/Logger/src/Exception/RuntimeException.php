@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework (http://framework.zend.com/)
  *
@@ -12,6 +13,4 @@ namespace rollun\logger\Exception;
 /**
  * Runtime argument exception
  */
-class RuntimeException extends \RuntimeException implements ExceptionInterface
-{
-}
+class RuntimeException extends \RuntimeException implements ExceptionInterface {}

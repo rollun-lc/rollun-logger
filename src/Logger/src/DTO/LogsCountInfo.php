@@ -12,9 +12,7 @@ class LogsCountInfo
         private int $countLimit,
         private string $operator,
         private int $currentCount
-    )
-    {
-    }
+    ) {}
 
     public function getTimeLimit(): int
     {

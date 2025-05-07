@@ -15,7 +15,6 @@ use Traversable;
 
 class Base implements FormatterInterface
 {
-
     /**
      * Format specifier for DateTime objects in event data (default: ISO 8601)
      *

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright © 2014 Rollun LC (http://rollun.com/)
  * @license   LICENSE.md New BSD License
@@ -114,11 +115,11 @@ class ConfigProvider
                 LifeCycleToken::class => LifeCycleTokenFactory::class,
 
                 // Middlewares
-                RequestLoggedMiddleware::class => RequestLoggedMiddlewareFactory::class
+                RequestLoggedMiddleware::class => RequestLoggedMiddlewareFactory::class,
             ],
             'invokables'         => [
                 PushGateway::class => PushGateway::class,
-                Collector::class   => Collector::class
+                Collector::class   => Collector::class,
             ],
             'aliases'            => [],
         ];
@@ -138,7 +139,7 @@ class ConfigProvider
                         'name'    => Stream::class,
                         'options' => [
                             'stream'    => 'php://stdout',
-                            'formatter' => new FluentdFormatter()
+                            'formatter' => new FluentdFormatter(),
                         ],
                     ],
                     'udp_logstash' => [
@@ -152,7 +153,7 @@ class ConfigProvider
                                     'timeout' => 10,
                                     'writingTimeout' => 10,
                                     'connectionTimeout' => 10,
-                                ]
+                                ],
                             ],
                             'formatter' => LogStashFormatter::class,
                             'filters'   => [
@@ -166,7 +167,7 @@ class ConfigProvider
                                 'regex_not_metrics' => [
                                     'name'    => 'regex',
                                     'options' => [
-                                        'regex' => '/^((?!METRICS).)*$/'
+                                        'regex' => '/^((?!METRICS).)*$/',
                                     ],
                                 ],
                             ],
@@ -194,7 +195,7 @@ class ConfigProvider
                                 'regex_only_metrics' => [
                                     'name'    => 'regex',
                                     'options' => [
-                                        'regex' => '/^METRICS$/'
+                                        'regex' => '/^METRICS$/',
                                     ],
                                 ],
                             ],
@@ -211,7 +212,7 @@ class ConfigProvider
                                 'regex_only_metrics_gauge' => [
                                     'name'    => 'regex',
                                     'options' => [
-                                        'regex' => '/^METRICS_GAUGE$/'
+                                        'regex' => '/^METRICS_GAUGE$/',
                                     ],
                                 ],
                                 'priority_>=_4' => [
@@ -228,7 +229,7 @@ class ConfigProvider
                                         'priority' => 5, // we should send only warnings or notices
                                     ],
                                 ],
-                            ]
+                            ],
                         ],
                     ],
                     'prometheus_metrics_counter' => [
@@ -239,7 +240,7 @@ class ConfigProvider
                                 'regex_only_metrics_counter' => [
                                     'name'    => 'regex',
                                     'options' => [
-                                        'regex' => '/^METRICS_COUNTER$/'
+                                        'regex' => '/^METRICS_COUNTER$/',
                                     ],
                                 ],
                                 'priority_>=_4' => [
@@ -256,7 +257,7 @@ class ConfigProvider
                                         'priority' => 5, // we should send only warnings or notices
                                     ],
                                 ],
-                            ]
+                            ],
                         ],
                     ],
                     'slack' => [
@@ -268,7 +269,7 @@ class ConfigProvider
                                 'regex_not_metrics' => [
                                     'name'    => 'regex',
                                     'options' => [
-                                        'regex' => '/^((?!METRICS).)*$/'
+                                        'regex' => '/^((?!METRICS).)*$/',
                                     ],
                                 ],
                                 'priority_<_4' => [
@@ -288,7 +289,7 @@ class ConfigProvider
                         'name' => IdMaker::class,
                     ],
                     [
-                        'name' => ExceptionBacktrace::class
+                        'name' => ExceptionBacktrace::class,
                     ],
                     [
                         'name' => LifeCycleTokenInjector::class,

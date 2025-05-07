@@ -1,8 +1,6 @@
 <?php
 
-
 namespace rollun\logger\Writer;
-
 
 use DateTime;
 use Elasticsearch\Client;
@@ -105,7 +103,7 @@ class Elasticsearch extends AbstractWriter
             return $client['client'];
         }
 
-        if(is_array($client['client'])) {
+        if (is_array($client['client'])) {
             $clientConfig = $client['client'] ?? [];
             if (!isset($clientConfig['hosts'])) {
                 throw new InvalidArgumentException('Hosts property must be set for elasticsearch client.');
@@ -145,7 +143,7 @@ class Elasticsearch extends AbstractWriter
             $params = [
                 'index' => $index,
                 'type' => $this->type,
-                'body' => $event
+                'body' => $event,
             ];
             $this->client->index($params);
         } catch (Throwable $exception) {
@@ -170,10 +168,12 @@ class Elasticsearch extends AbstractWriter
             $timestamp = $event['timestamp'];
         }
 
-        $index = strtr($mask, [
+        $index = strtr(
+            $mask,
+            [
                 '{index_name}' => $this->indexName,
                 '{date}' => $timestamp ? $timestamp->format('Y-m-d')
-                    : (new DateTime($event['timestamp']))->format('Y-m-d')
+                    : (new DateTime($event['timestamp']))->format('Y-m-d'),
             ]
         );
 

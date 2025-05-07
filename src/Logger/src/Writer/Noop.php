@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework (http://framework.zend.com/)
  *
@@ -17,7 +18,5 @@ class Noop extends AbstractWriter
      * @param array $event event data
      * @return void
      */
-    protected function doWrite(array $event)
-    {
-    }
+    protected function doWrite(array $event) {}
 }

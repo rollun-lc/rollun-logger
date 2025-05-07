@@ -1,8 +1,6 @@
 <?php
 
-
 namespace rollun\logger\Formatter\Factory;
-
 
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
@@ -23,7 +21,7 @@ class LogStashFormatterFactory implements FactoryInterface
                 'context'                => 'context',
                 'lifecycle_token'        => 'lifecycle_token',
                 'parent_lifecycle_token' => 'parent_lifecycle_token',
-                '_index_name'            => '_index_name'
+                '_index_name'            => '_index_name',
             ],
             new JsonTruncator(LogStashFormatter::DEFAULT_MAX_SIZE)
         );

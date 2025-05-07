@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework (http://framework.zend.com/)
  *
@@ -16,7 +17,7 @@ interface FormatterInterface
      *
      * @see http://php.net/manual/en/function.date.php
      */
-    const DEFAULT_DATETIME_FORMAT = 'c';
+    public const DEFAULT_DATETIME_FORMAT = 'c';
 
     /**
      * Formats data into a single line to be written by the writer.

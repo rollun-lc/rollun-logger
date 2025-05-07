@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright © 2014 Rollun LC (http://rollun.com/)
  * @license LICENSE.md New BSD License
@@ -31,7 +32,7 @@ class IdMaker implements ProcessorInterface
     public function makeId()
     {
         [$usec, $sec] = explode(" ", microtime());
-        $timestamp = (int)($sec - date('Z')) . '.' . (int)($usec * 1000 * 1000);
+        $timestamp = (int) ($sec - date('Z')) . '.' . (int) ($usec * 1000 * 1000);
         $idGenerator = LifeCycleToken::IdGenerate(8);
         $id = $timestamp . '_' . $idGenerator;
 

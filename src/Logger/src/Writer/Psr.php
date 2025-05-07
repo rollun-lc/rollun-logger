@@ -22,7 +22,6 @@ use rollun\logger\Exception\InvalidArgumentException;
  */
 class Psr extends AbstractWriter
 {
-
     use PsrLoggerAwareTrait;
 
     /**
@@ -61,7 +60,7 @@ class Psr extends AbstractWriter
         parent::__construct($options);
 
         if (null === $this->logger) {
-            $this->setLogger(new NullLogger);
+            $this->setLogger(new NullLogger());
         }
     }
 

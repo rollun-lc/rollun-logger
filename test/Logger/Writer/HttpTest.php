@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright © 2014 Rollun LC (http://rollun.com/)
  * @license LICENSE.md New BSD License
@@ -26,8 +27,7 @@ class HttpTest extends TestCase
 
     public function setUp(): void
     {
-        $this->clientMock = new class extends Client
-        {
+        $this->clientMock = new class extends Client {
             protected $rawBodyStorage = null;
 
             /**

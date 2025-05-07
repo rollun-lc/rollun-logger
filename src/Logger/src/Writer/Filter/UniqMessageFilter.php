@@ -1,15 +1,12 @@
 <?php
 
-
 namespace rollun\logger\Writer\Filter;
-
 
 use rollun\logger\Filter\FilterInterface;
 use Laminas\Cache\Storage\StorageInterface;
 
 class UniqMessageFilter implements FilterInterface
 {
-
     /**
      * @var StorageInterface
      *
@@ -35,7 +32,7 @@ class UniqMessageFilter implements FilterInterface
     {
         $messageId = hash("sha256", $event["message"]);
         $result = !$this->cacheStorage->hasItem($messageId);
-        if($result) {
+        if ($result) {
             $this->cacheStorage->setItem($messageId, true);
         }
         return $result;

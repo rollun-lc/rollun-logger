@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace rollun\logger\Prometheus;
@@ -17,7 +18,7 @@ use Prometheus\Storage\Redis;
  */
 class Collector
 {
-    const DEFAULT_REDIS_PORT = 6379;
+    public const DEFAULT_REDIS_PORT = 6379;
 
     /**
      * @var CollectorRegistry
@@ -39,7 +40,7 @@ class Collector
         $redisPort = empty(getenv('PROMETHEUS_REDIS_PORT')) ? self::DEFAULT_REDIS_PORT : getenv('PROMETHEUS_REDIS_PORT');
 
         if (!empty($redisHost) && !empty($redisPort)) {
-            Redis::setDefaultOptions(['host' => (string)$redisHost, 'port' => (int)$redisPort, 'read_timeout' => '10']);
+            Redis::setDefaultOptions(['host' => (string) $redisHost, 'port' => (int) $redisPort, 'read_timeout' => '10']);
             $this->adapter = new Redis();
         } else {
             $this->adapter = new InMemory();

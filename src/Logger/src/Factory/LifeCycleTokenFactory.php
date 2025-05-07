@@ -1,8 +1,6 @@
 <?php
 
-
 namespace rollun\logger\Factory;
-
 
 use Psr\Container\ContainerInterface;
 use rollun\logger\LifeCycleToken;

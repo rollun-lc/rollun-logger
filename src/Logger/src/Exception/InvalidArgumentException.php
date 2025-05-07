@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework (http://framework.zend.com/)
  *
@@ -12,6 +13,4 @@ namespace rollun\logger\Exception;
 /**
  * Invalid argument exception
  */
-class InvalidArgumentException extends \InvalidArgumentException implements ExceptionInterface
-{
-}
+class InvalidArgumentException extends \InvalidArgumentException implements ExceptionInterface {}

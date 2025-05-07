@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework (http://framework.zend.com/)
  *
@@ -29,7 +30,7 @@ class LoggerAwareTraitTest extends TestCase
         $value = $reflectionProperty->getValue($object);
         $this->assertEquals($value, null);
 
-        $logger = new Logger;
+        $logger = new Logger();
 
         $object->setLogger($logger);
 

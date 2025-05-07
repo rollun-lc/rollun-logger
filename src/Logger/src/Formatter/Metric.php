@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace rollun\logger\Formatter;
@@ -22,10 +23,10 @@ class Metric extends Db
     {
         $newEvent = [
             'value' => $event['context']['value'] ?? null,
-            'timestamp' => (new DateTime('now', new DateTimeZone('UTC')))->getTimestamp()
+            'timestamp' => (new DateTime('now', new DateTimeZone('UTC')))->getTimestamp(),
         ];
 
-        if(isset($event['context']['info'])) {
+        if (isset($event['context']['info'])) {
             $newEvent['info'] = $event['context']['info'];
         }
 

@@ -14,7 +14,6 @@ use Psr\Log\LoggerInterface as PsrLoggerInterface;
 
 trait LoggerAwareTrait
 {
-
     /**
      * @var PsrLoggerInterface
      */

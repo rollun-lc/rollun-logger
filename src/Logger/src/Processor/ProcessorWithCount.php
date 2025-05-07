@@ -1,8 +1,6 @@
 <?php
 
-
 namespace rollun\logger\Processor;
-
 
 use rollun\logger\DTO\LogsCountInfo;
 

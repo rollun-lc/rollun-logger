@@ -66,7 +66,7 @@ class JsonTruncator
             // truncated string
             'truncated' => substr($json, 0, $this->maxSize),
             // number of truncated bytes
-            'truncatedBytes' => $diff
+            'truncatedBytes' => $diff,
         ]);
 
         return $json;

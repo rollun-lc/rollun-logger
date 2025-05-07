@@ -20,7 +20,6 @@ use rollun\logger\Formatter\Base as BaseFormatter;
 
 class BaseTest extends TestCase
 {
-
     public function testDefaultDateTimeFormat()
     {
         $formatter = new BaseFormatter();

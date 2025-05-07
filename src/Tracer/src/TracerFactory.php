@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: victor
@@ -23,7 +24,6 @@ use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class TracerFactory implements FactoryInterface
 {
-
     /**
      * Create an object
      *

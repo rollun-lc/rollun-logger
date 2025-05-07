@@ -3,6 +3,7 @@
 namespace rollun\logger\Transport;
 
 use InvalidArgumentException;
+
 use function socket_close;
 use function socket_connect;
 use function socket_write;
@@ -21,9 +22,7 @@ abstract class SocketAbstractTransport implements TransportInterface
      */
     private $buffer = '';
 
-    public function __construct(private string $host, private int $port, private array $options = [])
-    {
-    }
+    public function __construct(private string $host, private int $port, private array $options = []) {}
 
     public function isOpen(): bool
     {
@@ -92,8 +91,7 @@ abstract class SocketAbstractTransport implements TransportInterface
     protected function setSocketOptions($socket): void
     {
         foreach ($this->options as $name => $value) {
-            if (false === socket_set_option($socket, SOL_SOCKET, $name, $value))
-            {
+            if (false === socket_set_option($socket, SOL_SOCKET, $name, $value)) {
                 throw new InvalidArgumentException("Unable to set socket option {$name} to {$value}.");
             }
         }

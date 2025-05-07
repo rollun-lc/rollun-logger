@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace rollun\logger\Writer\Factory;
@@ -19,12 +20,12 @@ use Laminas\ServiceManager\Factory\FactoryInterface;
  */
 class PrometheusFactory implements FactoryInterface
 {
-    const COLLECTOR = 'collector';
-    const JOB_NAME = 'jobName';
-    const DEFAULT_JOB_NAME = 'logger_job';
-    const TYPE = 'type';
-    const TYPE_GAUGE = 'gauge';
-    const TYPE_COUNTER = 'counter';
+    public const COLLECTOR = 'collector';
+    public const JOB_NAME = 'jobName';
+    public const DEFAULT_JOB_NAME = 'logger_job';
+    public const TYPE = 'type';
+    public const TYPE_GAUGE = 'gauge';
+    public const TYPE_COUNTER = 'counter';
 
     /**
      * @var array
@@ -36,7 +37,7 @@ class PrometheusFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        $config = (array)$options;
+        $config = (array) $options;
 
         $collectorClass = empty($config[static::COLLECTOR]) ? Collector::class : $config[static::COLLECTOR];
         if (!is_a($collectorClass, Collector::class, true)) {

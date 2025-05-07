@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright © 2014 Rollun LC (http://rollun.com/)
  * @license LICENSE.md New BSD License
@@ -11,17 +12,15 @@ use Serializable;
 class LifeCycleToken implements Serializable, \Stringable
 {
     // For system token
-    const KEY_LIFECYCLE_TOKEN = "lifecycle_token";
+    public const KEY_LIFECYCLE_TOKEN = "lifecycle_token";
     // If sent token not equals to system, system token write with this name
-    const KEY_ORIGINAL_LIFECYCLE_TOKEN = "original_lifecycle_token";
+    public const KEY_ORIGINAL_LIFECYCLE_TOKEN = "original_lifecycle_token";
     // For parent token
-    const KEY_PARENT_LIFECYCLE_TOKEN = "parent_lifecycle_token";
+    public const KEY_PARENT_LIFECYCLE_TOKEN = "parent_lifecycle_token";
     // If sent parent token not equals to system, system patent token write with this name
-    const KEY_ORIGINAL_PARENT_LIFECYCLE_TOKEN = "original_parent_lifecycle_token";
+    public const KEY_ORIGINAL_PARENT_LIFECYCLE_TOKEN = "original_parent_lifecycle_token";
 
-    public function __construct(private string $token, private ?LifeCycleToken $parentToken = null)
-    {
-    }
+    public function __construct(private string $token, private ?LifeCycleToken $parentToken = null) {}
 
     public function __toString(): string
     {
@@ -146,7 +145,7 @@ class LifeCycleToken implements Serializable, \Stringable
     public function __serialize(): array
     {
         return [
-            'token' => $this->token
+            'token' => $this->token,
         ];
     }
 
@@ -193,7 +192,7 @@ class LifeCycleToken implements Serializable, \Stringable
      */
     public static function createFromArgv(): self
     {
-        if($parentToken = self::findTokenInArgv()) {
+        if ($parentToken = self::findTokenInArgv()) {
             return new self(self::generateToken()->toString(), new self($parentToken));
         }
 
@@ -225,7 +224,7 @@ class LifeCycleToken implements Serializable, \Stringable
         $allowedKeys = [
             'HTTP_LIFECYCLETOKEN',
             'HTTP_LIFE_CYCLE_TOKEN',
-            'HTTP_LIFECYCLE_TOKEN'
+            'HTTP_LIFECYCLE_TOKEN',
         ];
 
         foreach ($allowedKeys as $allowedKey) {

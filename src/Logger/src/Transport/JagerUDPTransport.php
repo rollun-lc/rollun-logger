@@ -1,8 +1,6 @@
 <?php
 
-
 namespace rollun\logger\Transport;
-
 
 use Jaeger\Transport\TUDPTransport;
 
@@ -13,9 +11,7 @@ use Jaeger\Transport\TUDPTransport;
  */
 class JagerUDPTransport implements TransportInterface
 {
-    public function __construct(private TUDPTransport $transport, protected $options = [])
-    {
-    }
+    public function __construct(private TUDPTransport $transport, protected $options = []) {}
 
     public function write(string $message): void
     {

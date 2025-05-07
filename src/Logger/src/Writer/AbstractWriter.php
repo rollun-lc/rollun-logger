@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework (http://framework.zend.com/)
  *
@@ -180,7 +181,7 @@ abstract class AbstractWriter implements WriterInterface
     public function setFilterPluginManager($plugins)
     {
         if (is_string($plugins)) {
-            $plugins = new $plugins;
+            $plugins = new $plugins();
         }
         if (!$plugins instanceof FilterPluginManager) {
             throw new InvalidArgumentException(sprintf(
@@ -229,7 +230,7 @@ abstract class AbstractWriter implements WriterInterface
     public function setFormatterPluginManager($plugins)
     {
         if (is_string($plugins)) {
-            $plugins = new $plugins;
+            $plugins = new $plugins();
         }
         if (!$plugins instanceof FormatterPluginManager) {
             throw new InvalidArgumentException(
@@ -357,9 +358,7 @@ abstract class AbstractWriter implements WriterInterface
      *
      * @return void
      */
-    public function shutdown()
-    {
-    }
+    public function shutdown() {}
 
     /**
      * Write a message to the log

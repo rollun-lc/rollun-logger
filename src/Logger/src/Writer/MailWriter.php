@@ -1,6 +1,5 @@
 <?php
 
-
 namespace rollun\logger\Writer;
 
 use Traversable;
@@ -10,7 +9,6 @@ use Laminas\Mail\Transport\SmtpOptions;
 use Laminas\Mime\Message as MimeMessage;
 use Laminas\Mime\Mime;
 use Laminas\Mime\Part as MimePart;
-
 
 /**
  * Class MailWriter

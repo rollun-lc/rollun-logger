@@ -18,7 +18,7 @@ class RedisStorageFactory implements FactoryInterface
                 'host' => getenv('LOGS_REDIS_HOST'),
                 'port' => getenv('LOGS_REDIS_PORT') ?: 6379,
                 'timeout' => 1,
-            ]
+            ],
         ]);
     }
 }

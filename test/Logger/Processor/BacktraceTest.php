@@ -16,7 +16,6 @@ use Psr\Log\LogLevel;
 
 class BacktraceTest extends TestCase
 {
-
     public function testProcess()
     {
         $processor = new Backtrace();
@@ -26,7 +25,7 @@ class BacktraceTest extends TestCase
             'priority' => 1,
             'level' => LogLevel::CRITICAL,
             'message' => 'foo',
-            'context' => []
+            'context' => [],
         ];
 
         $event = $processor->process($event);

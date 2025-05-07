@@ -1,8 +1,6 @@
 <?php
 
-
 namespace rollun\logger\Processor\Factory;
-
 
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;

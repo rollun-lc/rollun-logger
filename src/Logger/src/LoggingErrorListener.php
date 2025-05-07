@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright © 2014 Rollun LC (http://rollun.com/)
  * @license LICENSE.md New BSD License
@@ -18,11 +19,9 @@ class LoggingErrorListener
      *
      * STATUS [METHOD] path: message
      */
-    const LOG_FORMAT = '%d [%s] %s: %s';
+    public const LOG_FORMAT = '%d [%s] %s: %s';
 
-    public function __construct(private LoggerInterface $logger)
-    {
-    }
+    public function __construct(private LoggerInterface $logger) {}
 
     /**
      * @param $error
@@ -35,7 +34,7 @@ class LoggingErrorListener
             self::LOG_FORMAT,
             empty($response->getStatusCode()) ? $error->getCode() : $response->getStatusCode(),
             empty($request->getMethod()) ? $error->getLine() : $request->getMethod(),
-            empty((string)$request->getUri()) ? $error->getFile() : (string)$request->getUri(),
+            empty((string) $request->getUri()) ? $error->getFile() : (string) $request->getUri(),
             $error->getMessage()
         );
 
@@ -44,7 +43,7 @@ class LoggingErrorListener
             [
                 "status_code" => $response->getStatusCode(),
                 "method" => $request->getMethod(),
-                "uri" => (string)$request->getUri(),
+                "uri" => (string) $request->getUri(),
                 "code" => $error->getCode(),
                 "line" => $error->getLine(),
                 "file" => $error->getFile(),

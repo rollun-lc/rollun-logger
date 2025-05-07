@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Rollun\Test\Logger\Writer;
@@ -35,12 +36,12 @@ class HttpAsyncTest extends TestCase
             [
                 'http://some-url.com/path',
                 ['foo' => '123'],
-                'UE9TVCAvcGF0aCBIVFRQLzEuMQ0KSG9zdDogc29tZS11cmwuY29tDQpBY2NlcHQ6IGFwcGxpY2F0aW9uL2pzb24NCkNvbnRlbnQtVHlwZTogYXBwbGljYXRpb24vanNvbg0KQ29udGVudC1MZW5ndGg6IDEzDQpDb25uZWN0aW9uOiBDbG9zZQ0KDQp7ImZvbyI6IjEyMyJ9ODBzb21lLXVybC5jb20='
+                'UE9TVCAvcGF0aCBIVFRQLzEuMQ0KSG9zdDogc29tZS11cmwuY29tDQpBY2NlcHQ6IGFwcGxpY2F0aW9uL2pzb24NCkNvbnRlbnQtVHlwZTogYXBwbGljYXRpb24vanNvbg0KQ29udGVudC1MZW5ndGg6IDEzDQpDb25uZWN0aW9uOiBDbG9zZQ0KDQp7ImZvbyI6IjEyMyJ9ODBzb21lLXVybC5jb20=',
             ],
             [
                 'http://some-url.com',
                 ['foo' => '1'],
-                'UE9TVCAvIEhUVFAvMS4xDQpIb3N0OiBzb21lLXVybC5jb20NCkFjY2VwdDogYXBwbGljYXRpb24vanNvbg0KQ29udGVudC1UeXBlOiBhcHBsaWNhdGlvbi9qc29uDQpDb250ZW50LUxlbmd0aDogMTENCkNvbm5lY3Rpb246IENsb3NlDQoNCnsiZm9vIjoiMSJ9ODBzb21lLXVybC5jb20='
+                'UE9TVCAvIEhUVFAvMS4xDQpIb3N0OiBzb21lLXVybC5jb20NCkFjY2VwdDogYXBwbGljYXRpb24vanNvbg0KQ29udGVudC1UeXBlOiBhcHBsaWNhdGlvbi9qc29uDQpDb250ZW50LUxlbmd0aDogMTENCkNvbm5lY3Rpb246IENsb3NlDQoNCnsiZm9vIjoiMSJ9ODBzb21lLXVybC5jb20=',
             ],
         ];
     }
@@ -63,7 +64,7 @@ class HttpAsyncTest extends TestCase
      */
     public function createWriter($options)
     {
-        $writer = new class($options) extends HttpAsync {
+        $writer = new class ($options) extends HttpAsync {
             /**
              * @var string
              */
@@ -74,7 +75,7 @@ class HttpAsyncTest extends TestCase
              */
             protected function send(string $host, int $port, string $out)
             {
-                $this->hash = base64_encode($out . (string)$port . $host);
+                $this->hash = base64_encode($out . (string) $port . $host);
             }
         };
 

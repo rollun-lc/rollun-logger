@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework (http://framework.zend.com/)
  *
@@ -31,7 +32,6 @@ use Psr\Log\LoggerTrait;
  */
 class Logger implements PsrLoggerInterface
 {
-
     use LoggerTrait;
 
     /**
@@ -322,7 +322,9 @@ class Logger implements PsrLoggerInterface
 
         if (!$writer instanceof WriterInterface) {
             throw new Exception\InvalidArgumentException(sprintf(
-                'Writer must implement %s\Writer\WriterInterface; received "%s"', __NAMESPACE__, get_debug_type($writer)
+                'Writer must implement %s\Writer\WriterInterface; received "%s"',
+                __NAMESPACE__,
+                get_debug_type($writer)
             ));
         }
 
@@ -380,11 +382,13 @@ class Logger implements PsrLoggerInterface
     public function setProcessorPluginManager($plugins)
     {
         if (is_string($plugins)) {
-            $plugins = new $plugins;
+            $plugins = new $plugins();
         }
         if (!$plugins instanceof ProcessorPluginManager) {
             throw new Exception\InvalidArgumentException(sprintf(
-                'processor plugin manager must extend %s\ProcessorPluginManager; received %s', __NAMESPACE__, get_debug_type($plugins)
+                'processor plugin manager must extend %s\ProcessorPluginManager; received %s',
+                __NAMESPACE__,
+                get_debug_type($plugins)
             ));
         }
 
@@ -419,7 +423,8 @@ class Logger implements PsrLoggerInterface
             $processor = $this->processorPlugin($processor, $options);
         } elseif (!$processor instanceof ProcessorInterface) {
             throw new Exception\InvalidArgumentException(sprintf(
-                'Processor must implement' . ProcessorInterface::class . '; received "%s"', get_debug_type($processor)
+                'Processor must implement' . ProcessorInterface::class . '; received "%s"',
+                get_debug_type($processor)
             ));
         }
         $this->processors->insert($processor, $priority);
@@ -442,7 +447,8 @@ class Logger implements PsrLoggerInterface
     {
         if (!array_key_exists($level, $this->priorities) && !in_array($level, $this->priorities)) {
             throw new InvalidArgumentException(sprintf(
-                '$level must be one of PSR-3 log levels; received %s', var_export($level, 1)
+                '$level must be one of PSR-3 log levels; received %s',
+                var_export($level, 1)
             ));
         }
 
@@ -462,9 +468,9 @@ class Logger implements PsrLoggerInterface
 
         $event = [
             'timestamp' => $timestamp,
-            'priority' => (int)$priority,
+            'priority' => (int) $priority,
             'level' => $this->priorities[$priority],
-            'message' => (string)$message,
+            'message' => (string) $message,
             'context' => $context,
         ];
 
@@ -514,7 +520,7 @@ class Logger implements PsrLoggerInterface
                 $failedWriters[] = [
                     'writer' => $writer,
                     'failedEvent' => $event,
-                    'exception' => $e
+                    'exception' => $e,
                 ];
             }
         }
@@ -539,7 +545,7 @@ class Logger implements PsrLoggerInterface
                         $message,
                         [
                             'exception' => $writer['exception'],
-                            'failedEvent' => $writer['failedEvent']
+                            'failedEvent' => $writer['failedEvent'],
                         ]
                     );
                     $this->fallbackWriter->write($event);
@@ -547,7 +553,7 @@ class Logger implements PsrLoggerInterface
                     // Logging original message
                     $this->logError($this->failedWriterEventToString($writer));
                     // Logging fallback writer fail
-                    $this->logError('Fallback writer failed to write log message. ' . (string)$e);
+                    $this->logError('Fallback writer failed to write log message. ' . (string) $e);
                 }
             } else {
                 $this->logError($this->failedWriterEventToString($writer));
@@ -564,7 +570,7 @@ class Logger implements PsrLoggerInterface
     protected function failedWriterEventToString(array $failedWriterEvent)
     {
         $message = 'Writer ' . $failedWriterEvent['writer']::class . ' failed to write log message.';
-        $exception = (string)$failedWriterEvent['exception'];
+        $exception = (string) $failedWriterEvent['exception'];
         $failedEvent = print_r($failedWriterEvent['failedEvent'], true);
         return $message . ' ' . $exception . ' ' . $failedEvent;
     }
@@ -648,7 +654,7 @@ class Logger implements PsrLoggerInterface
                     E_CORE_ERROR,
                     E_CORE_WARNING,
                     E_COMPILE_ERROR,
-                    E_COMPILE_WARNING
+                    E_COMPILE_WARNING,
                 ],
                 true
             );
@@ -658,7 +664,9 @@ class Logger implements PsrLoggerInterface
             }
 
             $logger->log(
-                $errorPriorityMap[$error['type']], $error['message'], [
+                $errorPriorityMap[$error['type']],
+                $error['message'],
+                [
                     'file' => $error['file'],
                     'line' => $error['line'],
                 ]

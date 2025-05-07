@@ -13,42 +13,42 @@ $container->setService(LifeCycleToken::class, $lifeCycleToken);
 
 
 $client = ClientBuilder::create()
-	->setHosts([[
-		'host' => '',
-		'port' => '',
-		'scheme' => '',
-		'path' => '',
-		'user' => '',
-		'pass' => ''
-	]])->build();
+    ->setHosts([[
+        'host' => '',
+        'port' => '',
+        'scheme' => '',
+        'path' => '',
+        'user' => '',
+        'pass' => '',
+    ]])->build();
 
 /*$params = [
-	'index' => 'my_index',
-	'type' => 'my_type',
-	'id' => 'my_id',
-	'body' => ['testField' => 'abc']
+    'index' => 'my_index',
+    'type' => 'my_type',
+    'id' => 'my_id',
+    'body' => ['testField' => 'abc']
 ];
 $result = $client->index($params);
 print_r($result);*/
 /*
 $params = [
-	'index' => 'my_index',
-	'type' => 'my_type',
-	'id' => 'my_id'
+    'index' => 'my_index',
+    'type' => 'my_type',
+    'id' => 'my_id'
 ];
 
 $response = $client->get($params);
 print_r($response);*/
 
 $params = [
-	'index' => 'rollun_log',
-	'type' => '_doc',
-	'size' => 50,               // how many results *per shard* you want back
-	'body' => [
-		'query' => [
-			'match_all' => new \stdClass()
-		]
-	]
+    'index' => 'rollun_log',
+    'type' => '_doc',
+    'size' => 50,               // how many results *per shard* you want back
+    'body' => [
+        'query' => [
+            'match_all' => new \stdClass(),
+        ],
+    ],
 ];
 
 $response = $client->search($params);

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace rollun\logger\Writer;
-
 
 use InvalidArgumentException;
 use RuntimeException;

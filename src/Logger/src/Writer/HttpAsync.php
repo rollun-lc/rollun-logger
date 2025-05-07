@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace rollun\logger\Writer;
@@ -17,7 +18,7 @@ class HttpAsync extends AbstractWriter
     /**
      * Request method
      */
-    const METHOD = 'POST';
+    public const METHOD = 'POST';
 
     /**
      * @var string
@@ -96,7 +97,7 @@ class HttpAsync extends AbstractWriter
         $data = json_encode($event);
 
         // prepare port
-        $port = isset($parts['port']) ? (int)$parts['port'] : 80;
+        $port = isset($parts['port']) ? (int) $parts['port'] : 80;
 
         // prepare path
         $path = $parts['path'] ?? '/';

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace rollun\logger\Writer;
-
 
 use InvalidArgumentException;
 use rollun\logger\Transport\TransportInterface;
@@ -35,7 +33,8 @@ abstract class TransportAbstractWriter extends AbstractWriter
                 [
                     'ignore_error' => false,     // Suppress writer exceptions
                     'auto_flash' => true,
-                ], $transport['options'] ?? []
+                ],
+                $transport['options'] ?? []
             );
 
             if (!isset($transport['formatter'])) {
@@ -67,7 +66,7 @@ abstract class TransportAbstractWriter extends AbstractWriter
      * @param int $port
      * @return TransportInterface
      */
-    abstract function createTransport(string $host, int $port, $options = []): TransportInterface;
+    abstract public function createTransport(string $host, int $port, $options = []): TransportInterface;
 
     public function __destruct()
     {

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: itprofessor02
@@ -35,7 +36,7 @@ class FluentdFormatterTest extends TestCase
                     'message' => 'test message',
                     'context' => [],
                 ],
-                json_encode(['timestamp' => time(), 'priority' => 1, 'level' => 'debug', 'message' => 'test message'])
+                json_encode(['timestamp' => time(), 'priority' => 1, 'level' => 'debug', 'message' => 'test message']),
             ],
             [
                 [
@@ -47,7 +48,7 @@ class FluentdFormatterTest extends TestCase
                         'a' => '1',
                         'b' => '2',
                         'c' => [
-                            'qqq' => 'qwe'
+                            'qqq' => 'qwe',
                         ],
                     ],
                 ],
@@ -56,10 +57,10 @@ class FluentdFormatterTest extends TestCase
                     'context.a' => '1',
                     'context.b' => '2',
                     'context.c' => [
-                        'qqq' => 'qwe'
+                        'qqq' => 'qwe',
                     ],
 
-                ])
+                ]),
             ],
             [
                 [
@@ -76,7 +77,7 @@ class FluentdFormatterTest extends TestCase
                             'not_empty' => [
                                 'a' => '1',
                                 'b' => '2',
-                            ]
+                            ],
                         ],
                     ],
                 ],
@@ -89,10 +90,10 @@ class FluentdFormatterTest extends TestCase
                         'not_empty' => [
                             'a' => '1',
                             'b' => '2',
-                        ]
+                        ],
                     ],
 
-                ])
+                ]),
             ],
 
         ];

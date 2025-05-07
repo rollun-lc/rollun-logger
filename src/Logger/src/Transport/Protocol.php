@@ -11,9 +11,7 @@ class Protocol
     private const TCP = 'tcp';
     private const UDP = 'udp';
 
-    private function __construct(private string $value)
-    {
-    }
+    private function __construct(private string $value) {}
 
     public function getValue(): string
     {

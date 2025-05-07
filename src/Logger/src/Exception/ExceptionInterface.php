@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework (http://framework.zend.com/)
  *
@@ -9,6 +10,4 @@
 
 namespace rollun\logger\Exception;
 
-interface ExceptionInterface
-{
-}
+interface ExceptionInterface {}

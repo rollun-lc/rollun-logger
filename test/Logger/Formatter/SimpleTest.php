@@ -19,7 +19,6 @@ use Psr\Log\LogLevel;
 
 class SimpleTest extends TestCase
 {
-
     public function testConstructorThrowsOnBadFormatString()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -51,7 +50,7 @@ class SimpleTest extends TestCase
             'message' => 'foo',
             'priority' => 42,
             'level' => 'bar',
-            'context' => []
+            'context' => [],
         ];
 
         $outputExpected = '2012-08-28T18:15:00+00:00 bar (42): foo';

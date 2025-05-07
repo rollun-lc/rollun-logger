@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework (http://framework.zend.com/)
  *
@@ -6,6 +7,7 @@
  * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
+
 namespace rollun\logger\Writer;
 
 use rollun\logger\Exception\InvalidArgumentException;
@@ -140,7 +142,7 @@ class FingersCrossed extends AbstractWriter
     public function setWriterPluginManager($plugins)
     {
         if (is_string($plugins)) {
-            $plugins = new $plugins;
+            $plugins = new $plugins();
         }
         if (! $plugins instanceof WriterPluginManager) {
             throw new InvalidArgumentException(sprintf(

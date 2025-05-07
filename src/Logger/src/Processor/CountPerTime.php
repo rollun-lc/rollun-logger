@@ -1,8 +1,6 @@
 <?php
 
-
 namespace rollun\logger\Processor;
-
 
 use Laminas\Cache\Storage\StorageInterface;
 use rollun\logger\DTO\LogsCountInfo;

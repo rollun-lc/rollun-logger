@@ -17,7 +17,6 @@ namespace rollun\logger\Processor;
  */
 class PsrPlaceholder implements ProcessorInterface
 {
-
     /**
      * @param array $event event data
      * @return array event data

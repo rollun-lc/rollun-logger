@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework (http://framework.zend.com/)
  *
@@ -11,7 +12,6 @@ namespace rollun\logger\Filter;
 
 use rollun\logger\Exception\InvalidArgumentException;
 use Traversable;
-
 
 class SuppressFilter implements FilterInterface
 {

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright © 2014 Rollun LC (http://rollun.com/)
  * @license LICENSE.md New BSD License
@@ -16,7 +17,7 @@ use Laminas\Db\TableGateway\TableGateway;
 
 class LoggerWithDbWriterTest extends TestCase
 {
-    const LIFECYCLE_TOKEN = 'token';
+    public const LIFECYCLE_TOKEN = 'token';
 
     /**
      * @var ContainerInterface
@@ -32,7 +33,6 @@ class LoggerWithDbWriterTest extends TestCase
      * {@inheritDoc}
      */
     public function setUp(): void
-
     {
         $this->markTestIncomplete("TODO: Automatic apply log table migration.");
         $this->logger = $this->getContainer()->get('logWithDbWriter');
@@ -73,7 +73,7 @@ class LoggerWithDbWriterTest extends TestCase
             'priority' => '6',
             'message' => 'test',
             'lifecycle_token' => self::LIFECYCLE_TOKEN,
-            'context' => '{"context":"value"}'
+            'context' => '{"context":"value"}',
         ], $row);
     }
 }

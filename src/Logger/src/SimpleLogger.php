@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright © 2014 Rollun LC (http://rollun.com/)
  * @license LICENSE.md New BSD License
@@ -20,7 +21,7 @@ final class SimpleLogger implements LoggerInterface
 {
     use LoggerTrait;
 
-    const DEFAULT_LOGS_PATH = "logs.log";
+    public const DEFAULT_LOGS_PATH = "logs.log";
 
     /**
      * @var string

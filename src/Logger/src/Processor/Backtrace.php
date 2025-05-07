@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework (http://framework.zend.com/)
  *
@@ -8,7 +9,6 @@
  */
 
 namespace rollun\logger\Processor;
-
 
 class Backtrace implements ProcessorInterface
 {

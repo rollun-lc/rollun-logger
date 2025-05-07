@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright © 2014 Rollun LC (http://rollun.com/)
  * @license LICENSE.md New BSD License
@@ -15,9 +16,7 @@ use Psr\Log\LoggerInterface;
 
 class RequestLoggedMiddleware implements MiddlewareInterface
 {
-    public function __construct(private LoggerInterface $logger)
-    {
-    }
+    public function __construct(private LoggerInterface $logger) {}
 
     /**
      * Logging all incoming requests in format '[Datetime] Method - URL <- Ip address'

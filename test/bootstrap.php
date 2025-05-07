@@ -1,4 +1,5 @@
 <?php
+
 global $argv;
 
 use Symfony\Component\Dotenv\Dotenv;
@@ -9,8 +10,8 @@ error_reporting(E_ALL);
 chdir(dirname(__DIR__));
 
 // Make environment variables stored in .env accessible via getenv(), $_ENV or $_SERVER.
-if(file_exists('.env')) {
-	(new Dotenv())->load('.env');
+if (file_exists('.env')) {
+    (new Dotenv())->load('.env');
 }
 
 if (getenv("APP_ENV") != 'test') {

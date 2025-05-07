@@ -25,7 +25,6 @@ use rollun\logger\Writer\Psr as PsrWriter;
  */
 class PsrTest extends TestCase
 {
-
     /**
      * @covers ::__construct
      */
@@ -81,7 +80,7 @@ class PsrTest extends TestCase
      */
     public function testFallbackLoggerIsNullLogger()
     {
-        $writer = new PsrWriter;
+        $writer = new PsrWriter();
         //$this->assertAttributeInstanceOf(NullLogger::class, 'logger', $writer);
         $property = new \ReflectionProperty($writer, 'logger');
         $property->setAccessible(true);
@@ -101,8 +100,10 @@ class PsrTest extends TestCase
         $psrLogger->expects($this->once())
                 ->method('log')
                 ->with(
-                        $this->equalTo($logLevel), $this->equalTo($message), $this->equalTo($context)
-        );
+                    $this->equalTo($logLevel),
+                    $this->equalTo($message),
+                    $this->equalTo($context)
+                );
 
         $writer = new PsrWriter($psrLogger);
         $logger = new Logger();

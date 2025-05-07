@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Rollun\Test\Logger\LoggerTest;
-
 
 use PHPUnit\Framework\TestCase;
 use rollun\logger\Writer\Stream;
@@ -27,7 +25,7 @@ class FallbackWriterTest extends TestCase
         $options = [
             Logger::FALLBACK_WRITER_KEY => [
                 'name' => $fallbackWriter = new Mock(),
-            ]
+            ],
         ];
         $logger = new Logger($options);
 
@@ -63,11 +61,11 @@ class FallbackWriterTest extends TestCase
         $options = [
             Logger::FALLBACK_WRITER_KEY => [
                 'name' => $failedFallbackWriter,
-            ]
+            ],
         ];
         $logger = $this->getMockBuilder(Logger::class)
             ->setConstructorArgs([
-                'options' => $options
+                'options' => $options,
             ])->onlyMethods(['logError'])
             ->getMock();
         $logger
@@ -128,9 +126,9 @@ class FallbackWriterTest extends TestCase
             Logger::FALLBACK_WRITER_KEY => [
                 'name' => Stream::class,
                 'options' => [
-                    'stream' => $filename
-                ]
-            ]
+                    'stream' => $filename,
+                ],
+            ],
         ];
         $logger = new Logger($options);
 

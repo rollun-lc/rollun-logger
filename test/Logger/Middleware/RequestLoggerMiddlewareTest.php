@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Logger\Middleware;
-
 
 use DateTime;
 use Exception;
@@ -68,7 +66,7 @@ class RequestLoggerMiddlewareTest extends TestCase
      * @return bool
      * @throws Exception
      */
-    function validISO8601Date($value)
+    public function validISO8601Date($value)
     {
         if (!is_string($value)) {
             return false;

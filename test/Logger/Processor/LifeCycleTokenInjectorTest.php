@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright © 2014 Rollun LC (http://rollun.com/)
  * @license LICENSE.md New BSD License
@@ -48,8 +49,10 @@ class LifeCycleTokenInjectorTest extends TestCase
         ];
         $event = $lifeCycleTokenInjector->process($event);
         $this->assertEquals($tokenId, $event[LifeCycleToken::KEY_LIFECYCLE_TOKEN]);
-        $this->assertEquals($lifeCycleToken->toString(),
-            $event['context'][LifeCycleToken::KEY_ORIGINAL_LIFECYCLE_TOKEN]);
+        $this->assertEquals(
+            $lifeCycleToken->toString(),
+            $event['context'][LifeCycleToken::KEY_ORIGINAL_LIFECYCLE_TOKEN]
+        );
     }
 
     public function testTokenIsExistButEq()
@@ -79,7 +82,9 @@ class LifeCycleTokenInjectorTest extends TestCase
         ];
         $event = $lifeCycleTokenInjector->process($event);
         $this->assertEquals($parentTokenId, $event[LifeCycleToken::KEY_PARENT_LIFECYCLE_TOKEN]);
-        $this->assertEquals($lifeCycleTokenParent->toString(),
-            $event['context'][LifeCycleToken::KEY_ORIGINAL_PARENT_LIFECYCLE_TOKEN]);
+        $this->assertEquals(
+            $lifeCycleTokenParent->toString(),
+            $event['context'][LifeCycleToken::KEY_ORIGINAL_PARENT_LIFECYCLE_TOKEN]
+        );
     }
 }

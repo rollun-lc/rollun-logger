@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace rollun\logger\Writer;
@@ -81,7 +82,7 @@ class Slack extends AbstractWriter
     {
         $body = [
             'channel' => $this->channel,
-            'text'    => $message
+            'text'    => $message,
         ];
 
         $this->client->setRawBody(json_encode($body));

@@ -18,7 +18,6 @@ use Laminas\Db\Adapter\Adapter;
 
 class Db extends AbstractWriter
 {
-
     /**
      * Db adapter instance
      *
@@ -79,7 +78,7 @@ class Db extends AbstractWriter
         $tableName = (string) $tableName;
         if ('' === $tableName) {
             throw new InvalidArgumentException(
-            'You must specify a table name. Either directly in the constructor, or via options'
+                'You must specify a table name. Either directly in the constructor, or via options'
             );
         }
 

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace rollun\logger\Writer\Filter;
-
 
 use rollun\logger\Filter\FilterInterface;
 

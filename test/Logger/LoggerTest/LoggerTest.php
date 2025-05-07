@@ -31,7 +31,6 @@ use Psr\Log\Test\LoggerInterfaceTest;
 
 class LoggerTest extends LoggerInterfaceTest
 {
-
     /**
      * @var Logger
      */
@@ -49,7 +48,7 @@ class LoggerTest extends LoggerInterfaceTest
      */
     public function getLogger()
     {
-        $this->mockWriter = new MockWriter;
+        $this->mockWriter = new MockWriter();
         $this->logger->addWriter($this->mockWriter);
         return $this->logger;
     }
@@ -76,7 +75,7 @@ class LoggerTest extends LoggerInterfaceTest
      */
     public function setUp(): void
     {
-        $this->logger = new Logger;
+        $this->logger = new Logger();
     }
 
     public function testThrowsOnInvalidLevel()
@@ -152,7 +151,7 @@ class LoggerTest extends LoggerInterfaceTest
 
     public function testLogging()
     {
-        $writer = new MockWriter;
+        $writer = new MockWriter();
         $this->logger->addWriter($writer);
         $this->logger->log(LogLevel::INFO, 'tottakai');
 
@@ -162,7 +161,7 @@ class LoggerTest extends LoggerInterfaceTest
 
     public function testLoggingArray()
     {
-        $writer = new MockWriter;
+        $writer = new MockWriter();
         $this->logger->addWriter($writer);
         $this->logger->log(LogLevel::INFO, 'test');
 
@@ -172,8 +171,8 @@ class LoggerTest extends LoggerInterfaceTest
 
     public function testAddFilter()
     {
-        $writer = new MockWriter;
-        $filter = new MockFilter;
+        $writer = new MockWriter();
+        $filter = new MockFilter();
         $writer->addFilter($filter);
         $this->logger->addWriter($writer);
         $this->logger->log(LogLevel::INFO, 'test');
@@ -184,7 +183,7 @@ class LoggerTest extends LoggerInterfaceTest
 
     public function testAddFilterByName()
     {
-        $writer = new MockWriter;
+        $writer = new MockWriter();
         $writer->addFilter('mock');
         $this->logger->addWriter($writer);
         $this->logger->log(LogLevel::INFO, 'test');
@@ -207,7 +206,7 @@ class LoggerTest extends LoggerInterfaceTest
         // Conditionally enabled until zend-validator is forwards-compatible
         // with zend-servicemanager v3.
         if (class_exists(DigitsFilter::class)) {
-            $data[] = ['validator', ['validator' => new DigitsFilter]];
+            $data[] = ['validator', ['validator' => new DigitsFilter()]];
         }
 
         return $data;
@@ -220,7 +219,7 @@ class LoggerTest extends LoggerInterfaceTest
      */
     public function testAddFilterByNameWithParams($filter, $options)
     {
-        $writer = new MockWriter;
+        $writer = new MockWriter();
         $writer->addFilter($filter, $options);
         $this->logger->addWriter($writer);
 
@@ -244,7 +243,7 @@ class LoggerTest extends LoggerInterfaceTest
      */
     public function testLoggingCustomAttributesForUserContext($context)
     {
-        $writer = new MockWriter;
+        $writer = new MockWriter();
         $this->logger->addWriter($writer);
         $this->logger->log(LogLevel::ERROR, 'tottakai', $context);
 
@@ -278,7 +277,7 @@ class LoggerTest extends LoggerInterfaceTest
 
     public function testRegisterErrorHandler()
     {
-        $writer = new MockWriter;
+        $writer = new MockWriter();
         $this->logger->addWriter($writer);
 
         $previous = Logger::registerErrorHandler($this->logger);
@@ -305,7 +304,7 @@ class LoggerTest extends LoggerInterfaceTest
         $options = ['writers' => [
             'first_writer' => [
                 'name' => 'mock',
-            ]
+            ],
         ]];
         $logger = new Logger($options);
 
@@ -321,9 +320,9 @@ class LoggerTest extends LoggerInterfaceTest
                 'name' => 'stream',
                 'options' => [
                     'stream' => 'php://output',
-                    'log_separator' => 'foo'
+                    'log_separator' => 'foo',
                 ],
-            ]
+            ],
         ]];
         $logger = new Logger($options);
 
@@ -345,7 +344,7 @@ class LoggerTest extends LoggerInterfaceTest
                 'first_processor' => [
                     'name' => 'backtrace',
                 ],
-            ]
+            ],
         ];
         $logger = new Logger($options);
         $processors = $logger->getProcessors()->toArray();
@@ -369,7 +368,7 @@ class LoggerTest extends LoggerInterfaceTest
         $processors = $this->logger->getProcessors()->toArray();
         $this->assertInstanceOf(Backtrace::class, $processors[0]);
 
-        $writer = new MockWriter;
+        $writer = new MockWriter();
         $this->logger->addWriter($writer);
         $this->logger->log(LogLevel::ERROR, 'foo');
     }
@@ -378,7 +377,7 @@ class LoggerTest extends LoggerInterfaceTest
     {
         $processor = new Backtrace();
         $this->logger->addProcessor($processor);
-        $writer = new MockWriter;
+        $writer = new MockWriter();
         $this->logger->addWriter($writer);
 
         $this->logger->log(LogLevel::ERROR, 'foo');
@@ -387,7 +386,7 @@ class LoggerTest extends LoggerInterfaceTest
 
     public function testExceptionHandler()
     {
-        $writer = new MockWriter;
+        $writer = new MockWriter();
         $this->logger->addWriter($writer);
 
         $this->assertTrue(Logger::registerExceptionHandler($this->logger));
@@ -396,9 +395,7 @@ class LoggerTest extends LoggerInterfaceTest
         $this->assertFalse(Logger::registerExceptionHandler($this->logger));
 
         // get the internal exception handler
-        $exceptionHandler = set_exception_handler(function ($e): void {
-
-        });
+        $exceptionHandler = set_exception_handler(function ($e): void {});
         set_exception_handler($exceptionHandler);
 
         // reset the exception handler
@@ -432,7 +429,7 @@ class LoggerTest extends LoggerInterfaceTest
                 [
                     'name' => 'stream',
                     'options' => [
-                        'stream' => $stream
+                        'stream' => $stream,
                     ],
                 ],
             ],
@@ -493,7 +490,7 @@ class LoggerTest extends LoggerInterfaceTest
      */
     public function testWriteLogMapsLevelsProperly($priorityLevel, $logLevel, $priority)
     {
-        $writer = new MockWriter;
+        $writer = new MockWriter();
         $this->logger->addWriter($writer);
         $this->logger->log($priorityLevel, 'tottakai');
 
