@@ -30,7 +30,7 @@ class IdMaker implements ProcessorInterface
      */
     public function makeId()
     {
-        list($usec, $sec) = explode(" ", microtime());
+        [$usec, $sec] = explode(" ", microtime());
         $timestamp = (int)($sec - date('Z')) . '.' . (int)($usec * 1000 * 1000);
         $idGenerator = LifeCycleToken::IdGenerate(8);
         $id = $timestamp . '_' . $idGenerator;
