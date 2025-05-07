@@ -30,7 +30,7 @@ class ExceptionBacktraceTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            'Exception argument must implement \Throwable interface, ' . get_class($this) . ' given'
+            'Exception argument must implement \Throwable interface, ' . static::class . ' given'
         );
         $processor = new ExceptionBacktrace();
         $event['context']['exception'] = $this;

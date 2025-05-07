@@ -248,7 +248,7 @@ class Logger implements PsrLoggerInterface
         foreach ($this->writers as $writer) {
             try {
                 $writer->shutdown();
-            } catch (\Exception $e) {
+            } catch (\Exception) {
 
             }
         }
@@ -531,7 +531,7 @@ class Logger implements PsrLoggerInterface
     protected function processFailedWriters(array $failedWriters): void
     {
         foreach ($failedWriters as $writer) {
-            $message = 'Writer ' . get_class($writer['writer']) . ' failed to write log message.';
+            $message = 'Writer ' . $writer['writer']::class . ' failed to write log message.';
             if (isset($this->fallbackWriter)) {
                 try {
                     $event = $this->createEvent(
@@ -563,7 +563,7 @@ class Logger implements PsrLoggerInterface
      */
     protected function failedWriterEventToString(array $failedWriterEvent)
     {
-        $message = 'Writer ' . get_class($failedWriterEvent['writer']) . ' failed to write log message.';
+        $message = 'Writer ' . $failedWriterEvent['writer']::class . ' failed to write log message.';
         $exception = (string)$failedWriterEvent['exception'];
         $failedEvent = print_r($failedWriterEvent['failedEvent'], true);
         return $message . ' ' . $exception . ' ' . $failedEvent;

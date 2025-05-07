@@ -37,7 +37,7 @@ class PsrPlaceholder implements ProcessorInterface
             }
 
             if (is_object($val)) {
-                $replacements['{' . $key . '}'] = '[object ' . get_class($val) . ']';
+                $replacements['{' . $key . '}'] = '[object ' . $val::class . ']';
                 continue;
             }
 

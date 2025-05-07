@@ -9,17 +9,11 @@ use rollun\logger\Filter\FilterInterface;
 class LevelFilter implements FilterInterface
 {
     /**
-     * @var array
-     */
-    private $levels;
-
-    /**
      * PriorityFilter constructor.
      * @param array $levels
      */
-    public function __construct($levels = [])
+    public function __construct(private $levels = [])
     {
-        $this->levels = $levels;
     }
 
     /**

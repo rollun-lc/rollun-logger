@@ -20,7 +20,7 @@ class ConditionalProcessorAbstractFactory implements AbstractFactoryInterface
     {
         try {
             $config = $this->getConfig($container);
-        } catch (\RuntimeException $e) {
+        } catch (\RuntimeException) {
             return false;
         }
 

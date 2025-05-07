@@ -97,7 +97,7 @@ class Base implements FormatterInterface
         } elseif (is_array($value)) {
             $value = @json_encode($value, $jsonFlags);
         } elseif (is_object($value) && !method_exists($value, '__toString')) {
-            $value = sprintf('object(%s) %s', get_class($value), @json_encode($value));
+            $value = sprintf('object(%s) %s', $value::class, @json_encode($value));
         } elseif (is_resource($value)) {
             $value = sprintf('resource(%s)', get_resource_type($value));
         } elseif (!is_object($value)) {

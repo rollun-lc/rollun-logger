@@ -17,24 +17,12 @@ class LogStashFormatter implements FormatterInterface
     public const INDEX_NAME_KEY = 'es_index_name';
 
     /**
-     * @var string
-     */
-    private $index;
-
-    /**
-     * @var array
-     */
-    private $columnMap;
-
-    /**
      * @var JsonTruncator
      */
     private $jsonTruncator;
 
-    public function __construct(string $index, array $columnMap = null, ?JsonTruncator $jsonTruncator = null)
+    public function __construct(private string $index, private ?array $columnMap = null, ?JsonTruncator $jsonTruncator = null)
     {
-        $this->index = $index;
-        $this->columnMap = $columnMap;
         $this->jsonTruncator = is_null($jsonTruncator) ? new JsonTruncator(self::DEFAULT_MAX_SIZE) : $jsonTruncator;
     }
 
@@ -55,7 +43,7 @@ class LogStashFormatter implements FormatterInterface
             $event['context'] = $this->jsonTruncator
                 ->withMaxSize($this->jsonTruncator->getMaxSize() - strlen($event['message'] ?? ''))
                 ->truncate(json_encode($event['context']));
-        } catch (InvalidArgumentException $e) {
+        } catch (InvalidArgumentException) {
             // We get here when too small value gets into withMaxSize(), which means the message is too large.
             $event['message'] = $this->jsonTruncator->truncate($event['message']);
             $event['context'] = '{}';

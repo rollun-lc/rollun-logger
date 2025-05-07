@@ -25,13 +25,6 @@ use Laminas\Stdlib\ArrayUtils;
 class FingersCrossed extends AbstractWriter
 {
     /**
-     * The wrapped writer
-     *
-     * @var WriterInterface
-     */
-    protected $writer;
-
-    /**
      * Writer plugins
      *
      * @var WriterPluginManager
@@ -67,18 +60,19 @@ class FingersCrossed extends AbstractWriter
      * @param FilterInterface|int|null $filterOrPriority Filter or log priority which determines buffering of events
      * @param int $bufferSize Maximum buffer size
      */
-    public function __construct($writer, $filterOrPriority = null, $bufferSize = 0)
-    {
-        $this->writer = $writer;
-
-        if ($writer instanceof Traversable) {
-            $writer = ArrayUtils::iteratorToArray($writer);
+    public function __construct(
+        protected $writer,
+        $filterOrPriority = null,
+        $bufferSize = 0
+    ) {
+        if ($this->writer instanceof Traversable) {
+            $this->writer = ArrayUtils::iteratorToArray($this->writer);
         }
 
-        if (is_array($writer)) {
-            $filterOrPriority = $writer['priority'] ?? null;
-            $bufferSize       = $writer['bufferSize'] ?? null;
-            $writer           = $writer['writer'] ?? null;
+        if (is_array($this->writer)) {
+            $filterOrPriority = $this->writer['priority'] ?? null;
+            $bufferSize       = $this->writer['bufferSize'] ?? null;
+            $this->writer           = $this->writer['writer'] ?? null;
         }
 
         if (null === $filterOrPriority) {
@@ -88,10 +82,10 @@ class FingersCrossed extends AbstractWriter
             $filterOrPriority = new PriorityFilter($filterOrPriority);
         }
 
-        if (is_array($writer) && isset($writer['name'])) {
-            $this->setWriter($writer['name'], $writer['options']);
+        if (is_array($this->writer) && isset($this->writer['name'])) {
+            $this->setWriter($this->writer['name'], $this->writer['options']);
         } else {
-            $this->setWriter($writer);
+            $this->setWriter($this->writer);
         }
         $this->addFilter($filterOrPriority);
         $this->bufferSize = $bufferSize;

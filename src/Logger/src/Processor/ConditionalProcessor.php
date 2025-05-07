@@ -8,20 +8,12 @@ use rollun\logger\Filter\FilterInterface;
 
 class ConditionalProcessor implements ProcessorInterface
 {
-    /** @var FilterInterface[] */
-    private $filters;
-
-    /** @var ProcessorInterface[] */
-    private $processors;
-
     /**
      * @param FilterInterface[] $filters
      * @param ProcessorInterface[] $processors
      */
-    public function __construct(array $filters, array $processors)
+    public function __construct(private array $filters, private array $processors)
     {
-        $this->filters = $filters;
-        $this->processors = $processors;
     }
 
     public function process(array $event): array

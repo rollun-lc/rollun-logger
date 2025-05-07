@@ -15,14 +15,8 @@ use Psr\Log\LoggerInterface;
 
 class RequestLoggedMiddleware implements MiddlewareInterface
 {
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    public function __construct(LoggerInterface $logger)
+    public function __construct(private LoggerInterface $logger)
     {
-        $this->logger = $logger;
     }
 
     /**

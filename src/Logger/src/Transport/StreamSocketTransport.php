@@ -9,21 +9,6 @@ use UnexpectedValueException;
 class StreamSocketTransport implements TransportInterface
 {
     /**
-     * @var string
-     */
-    private $host;
-
-    /**
-     * @var int
-     */
-    private $port;
-
-    /**
-     * @var $protocol
-     */
-    private $protocol;
-
-    /**
      * @var resource|null
      */
     private $socket;
@@ -81,12 +66,11 @@ class StreamSocketTransport implements TransportInterface
      */
     private $errstr;
 
-    public function __construct(string $host, int $port, Protocol $protocol, array $options = [])
+    public function __construct(private string $host, private int $port, /**
+     * @var $protocol
+     */
+    private Protocol $protocol, array $options = [])
     {
-        $this->host = $host;
-        $this->port = $port;
-        $this->protocol = $protocol;
-
         if (isset($options['timeout'])) {
             $this->setTimeout($options['timeout']);
         }

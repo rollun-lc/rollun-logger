@@ -20,16 +20,8 @@ class LoggingErrorListener
      */
     const LOG_FORMAT = '%d [%s] %s: %s';
 
-    /** @var LoggerInterface */
-    private $logger;
-
-    /**
-     * LoggingErrorListener constructor.
-     * @param LoggerInterface $logger
-     */
-    public function __construct(LoggerInterface $logger)
+    public function __construct(private LoggerInterface $logger)
     {
-        $this->logger = $logger;
     }
 
     /**

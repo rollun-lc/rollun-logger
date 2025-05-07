@@ -65,7 +65,7 @@ class FormatterPluginManager extends AbstractPluginManager
         if (! $instance instanceof $this->instanceOf) {
             throw new InvalidServiceException(sprintf(
                 '%s can only create instances of %s; %s is invalid',
-                get_class($this),
+                static::class,
                 $this->instanceOf,
                 (get_debug_type($instance))
             ));
@@ -84,7 +84,7 @@ class FormatterPluginManager extends AbstractPluginManager
     {
         try {
             $this->validate($plugin);
-        } catch (InvalidServiceException $e) {
+        } catch (InvalidServiceException) {
             throw new InvalidArgumentException(sprintf(
                 'Plugin of type %s is invalid; must implement %s\Formatter\FormatterInterface',
                 (get_debug_type($plugin)),

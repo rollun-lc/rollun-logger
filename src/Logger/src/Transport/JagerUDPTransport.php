@@ -13,17 +13,8 @@ use Jaeger\Transport\TUDPTransport;
  */
 class JagerUDPTransport implements TransportInterface
 {
-    /**
-     * @var TUDPTransport
-     */
-    private $transport;
-
-    protected $options = [];
-
-    public function __construct(TUDPTransport $transport, $options = [])
+    public function __construct(private TUDPTransport $transport, protected $options = [])
     {
-        $this->transport = $transport;
-        $this->options = $options;
     }
 
     public function write(string $message): void

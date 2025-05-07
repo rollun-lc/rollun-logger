@@ -5,26 +5,15 @@ namespace rollun\logger\DTO;
 class LogsCountInfo
 {
     /**
-     * Time in seconds
-     * @var int
+     * @param int $timeLimit Time in seconds
      */
-    private $timeLimit;
-
-    /** @var int */
-    private $countLimit;
-
-    /** @var string */
-    private $operator;
-
-    /** @var int */
-    private $currentCount;
-
-    public function __construct(int $timeLimit, int $countLimit, string $operator, int $currentCount)
+    public function __construct(
+        private int $timeLimit,
+        private int $countLimit,
+        private string $operator,
+        private int $currentCount
+    )
     {
-        $this->timeLimit = $timeLimit;
-        $this->countLimit = $countLimit;
-        $this->operator = $operator;
-        $this->currentCount = $currentCount;
     }
 
     public function getTimeLimit(): int

@@ -12,16 +12,6 @@ use function substr;
 abstract class SocketAbstractTransport implements TransportInterface
 {
     /**
-     * @var string
-     */
-    private $host;
-
-    /**
-     * @var int
-     */
-    private $port;
-
-    /**
      * @var resource
      */
     private $socket;
@@ -31,16 +21,8 @@ abstract class SocketAbstractTransport implements TransportInterface
      */
     private $buffer = '';
 
-    /**
-     * @var array
-     */
-    private $options;
-
-    public function __construct(string $host, int $port, array $options = [])
+    public function __construct(private string $host, private int $port, private array $options = [])
     {
-        $this->host = $host;
-        $this->port = $port;
-        $this->options = $options;
     }
 
     public function isOpen(): bool

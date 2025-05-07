@@ -9,9 +9,9 @@
 
 namespace Rollun\Test\Logger\TestAsset;
 
-class StringObject
+class StringObject implements \Stringable
 {
-    public function __toString()
+    public function __toString(): string
     {
         return 'Hello World';
     }

@@ -19,14 +19,6 @@ class CountPerTime implements ProcessorInterface
 
     public const KEY_ON_FALSE = 'onFalse';
 
-    private StorageInterface $storage;
-
-    /**
-     * Key to save in storage
-     * @var string
-     */
-    private $key;
-
     /**
      * Time in seconds
      * @var int
@@ -45,11 +37,11 @@ class CountPerTime implements ProcessorInterface
     /** @var ProcessorInterface[]  */
     private $onFalse = [];
 
-    public function __construct(StorageInterface $storage, string $key, array $options = null)
-    {
-        $this->storage = $storage;
-        $this->key = $key;
-
+    public function __construct(
+        private StorageInterface $storage,
+        private string $key,
+        array $options = null
+    ) {
         if (isset($options[self::KEY_TIME])) {
             $this->timeLimit = $options[self::KEY_TIME];
         }

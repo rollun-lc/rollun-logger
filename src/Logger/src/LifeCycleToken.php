@@ -8,7 +8,7 @@ namespace rollun\logger;
 
 use Serializable;
 
-class LifeCycleToken implements Serializable
+class LifeCycleToken implements Serializable, \Stringable
 {
     // For system token
     const KEY_LIFECYCLE_TOKEN = "lifecycle_token";
@@ -19,31 +19,11 @@ class LifeCycleToken implements Serializable
     // If sent parent token not equals to system, system patent token write with this name
     const KEY_ORIGINAL_PARENT_LIFECYCLE_TOKEN = "original_parent_lifecycle_token";
 
-    /**
-     * @var string
-     */
-    private $token;
-
-    /**
-     * @var self
-     */
-    private $parentToken;
-
-    /**
-     * Token constructor.
-     * @param string $token
-     * @param LifeCycleToken|null $parentToken
-     */
-    public function __construct(string $token, LifeCycleToken $parentToken = null)
+    public function __construct(private string $token, private ?LifeCycleToken $parentToken = null)
     {
-        $this->token = $token;
-        $this->parentToken = $parentToken;
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->token;
     }
