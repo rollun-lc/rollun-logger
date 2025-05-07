@@ -92,17 +92,17 @@ class MailWriter extends AbstractWriter
 
         // Setup SMTP transport using PLAIN authentication
         $transport = new SmtpTransport();
-        $options = new SmtpOptions(array(
+        $options = new SmtpOptions([
             'name' => 'gmail',
             'host' => 'smtp.gmail.com',
             'port' => '465',
             'connection_class' => 'plain',
-            'connection_config' => array(
+            'connection_config' => [
                 'username' => $this->email,
                 'password' => $this->pass,
                 'ssl' => 'ssl',
-            ),
-        ));
+            ],
+        ]);
         $transport->setOptions($options);
 
         $message = new Message();

@@ -438,7 +438,7 @@ class Logger implements PsrLoggerInterface
      * @param array $context
      * @return array
      */
-    protected function createEvent($level, $message, array $context = array())
+    protected function createEvent($level, $message, array $context = [])
     {
         if (!array_key_exists($level, $this->priorities) && !in_array($level, $this->priorities)) {
             throw new InvalidArgumentException(sprintf(
@@ -495,7 +495,7 @@ class Logger implements PsrLoggerInterface
      *
      * @throws InvalidArgumentException
      */
-    public function log($level, $message, array $context = array())
+    public function log($level, $message, array $context = [])
     {
         $event = $this->createEvent($level, $message, $context);
 

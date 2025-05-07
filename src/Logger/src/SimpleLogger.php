@@ -58,7 +58,7 @@ final class SimpleLogger implements LoggerInterface
      *
      * @return void
      */
-    public function log($level, $message, array $context = array())
+    public function log($level, $message, array $context = [])
     {
         $message = $this->psrPlaceholder->process([
             "message" => $message,
