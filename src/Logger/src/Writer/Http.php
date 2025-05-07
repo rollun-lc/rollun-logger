@@ -59,7 +59,7 @@ class Http extends AbstractWriter
 
         $this->client = $client;
         $this->options = $options;
-        $uri = $uri ?? $client->getUri();
+        $uri ??= $client->getUri();
         $this->uri = new HttpUri($uri);
     }
 

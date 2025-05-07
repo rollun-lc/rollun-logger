@@ -56,9 +56,7 @@ class FilterPluginManagerFactoryTest extends TestCase
                     'test' => 'test-too',
                 ],
                 'factories' => [
-                    'test-too' => function ($container) use ($filter) {
-                        return $filter;
-                    },
+                    'test-too' => fn($container) => $filter,
                 ],
             ],
         ];

@@ -56,9 +56,7 @@ class FormatterPluginManagerFactoryTest extends TestCase
                     'test' => 'test-too',
                 ],
                 'factories' => [
-                    'test-too' => function ($container) use ($formatter) {
-                        return $formatter;
-                    },
+                    'test-too' => fn($container) => $formatter,
                 ],
             ],
         ];

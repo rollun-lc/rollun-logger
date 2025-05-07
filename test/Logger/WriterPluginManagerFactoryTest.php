@@ -55,9 +55,7 @@ class WriterPluginManagerFactoryTest extends TestCase
                     'test' => 'test-too',
                 ],
                 'factories' => [
-                    'test-too' => function ($container) use ($writer) {
-                        return $writer;
-                    },
+                    'test-too' => fn($container) => $writer,
                 ],
             ],
         ];

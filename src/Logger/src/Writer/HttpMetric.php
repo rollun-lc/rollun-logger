@@ -52,7 +52,7 @@ class HttpMetric extends AbstractWriter
 
         $this->client = $client;
         $this->options = $options;
-        $url = $url ?? $client->getUri();
+        $url ??= $client->getUri();
         $this->url = new HttpUri($url);
     }
 
