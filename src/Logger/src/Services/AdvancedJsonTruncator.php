@@ -12,7 +12,7 @@ class AdvancedJsonTruncator implements JsonTruncatorInterface
     }
 
     /**
-     * Возвращает новый экземпляр с изменёнными параметрами
+     * Returns new copy with changed params
      * @param array $params
      * @return static
      */
@@ -24,7 +24,7 @@ class AdvancedJsonTruncator implements JsonTruncatorInterface
     }
 
     /**
-     * Устанавливает параметры (с валидаторами, если нужно)
+     * Set params
      */
     protected function setParams(array $params): void
     {
@@ -32,13 +32,12 @@ class AdvancedJsonTruncator implements JsonTruncatorInterface
             if (!array_key_exists($key, $this->params)) {
                 throw new InvalidArgumentException("Unknown param: $key");
             }
-            // можно добавить тут проверки диапазонов/типов
             $this->params[$key] = $value;
         }
     }
 
     /**
-     * Обработка json с учётом параметров, аналогично твоему JSONata
+     * Json processing
      */
     public function truncate(string $json): string
     {
@@ -51,11 +50,9 @@ class AdvancedJsonTruncator implements JsonTruncatorInterface
             0
         );
         return json_encode($processed, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-//        return json_encode($processed);
     }
 
-
-    protected function truncateString($value)
+    private function truncateString($value): string
     {
         if (is_array($value) || is_object($value)) {
             $str = json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
@@ -68,47 +65,40 @@ class AdvancedJsonTruncator implements JsonTruncatorInterface
         return $str;
     }
 
-    protected function shrinkArrays($node)
+    /**
+     * Проверка, является ли массив списком (индексы 0..N-1)
+     */
+    private function isList(array $array): bool
     {
-        if (is_array($node) && array_keys($node) === range(0, count($node) - 1)) { // is indexed
-            $processed = array_map([$this, 'shrinkArrays'], $node);
+        return array_keys($array) === range(0, count($array) - 1);
+    }
 
-            // check string length of array
+    private function shrinkArrays($node)
+    {
+        if (!is_array($node)) {
+            return $node;
+        }
+        $isList = $this->isList($node);
+        $processed = array_map(fn($v) => $this->shrinkArrays($v), $node);
+        if ($isList) {
             $arrayString = json_encode($processed, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
             if (mb_strlen($arrayString) > $this->params['maxArrayChars']) {
                 $limited = array_slice($processed, 0, $this->params['arrayLimit']);
                 $limited[] = '…';
                 return $limited;
             }
-            return $processed;
-        } elseif (is_array($node)) { // assoc
-            $res = [];
-            foreach ($node as $k => $v) {
-                $res[$k] = $this->shrinkArrays($v);
-            }
-            return $res;
         }
-        return $node;
+        return $processed;
     }
 
-    protected function walk($node, $depth)
+    private function walk($node, int $depth)
     {
         if ($depth >= $this->params['depthLimit']) {
             return $this->truncateString($node);
         }
-
-        if (is_array($node) && array_keys($node) === range(0, count($node) - 1)) { // is indexed
-            return array_map(function ($v) use ($depth) {
-                return $this->walk($v, $depth + 1);
-            }, $node);
-        } elseif (is_array($node)) { // assoc
-            $res = [];
-            foreach ($node as $k => $v) {
-                $res[$k] = $this->walk($v, $depth + 1);
-            }
-            return $res;
-        } else {
+        if (!is_array($node)) {
             return $this->truncateString($node);
         }
+        return array_map(fn($v) => $this->walk($v, $depth + 1), $node);
     }
 }
