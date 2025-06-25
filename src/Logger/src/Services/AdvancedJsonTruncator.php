@@ -52,8 +52,11 @@ class AdvancedJsonTruncator implements JsonTruncatorInterface
         return json_encode($processed, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     }
 
-    private function truncateString($value): string
+    private function truncateString($value): string|null
     {
+        if ($value === null) {
+            return null;
+        }
         if (is_array($value) || is_object($value)) {
             $str = json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         } else {
