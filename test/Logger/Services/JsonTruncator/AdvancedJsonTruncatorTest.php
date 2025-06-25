@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 use rollun\logger\Services\AdvancedJsonTruncator;
 use rollun\logger\Services\JsonTruncatorInterface;
 
-class JsonTruncatorTest extends TestCase
+class AdvancedJsonTruncatorTest extends TestCase
 {
     private static string $inputJson;
 
@@ -30,7 +30,7 @@ class JsonTruncatorTest extends TestCase
     /**
      * @dataProvider jsonTruncationProvider
      */
-    public function testTruncateJson(array $params, string $expectedPath)
+    public function testTruncateHugeManifestJson(array $params, string $expectedPath)
     {
         $expected = json_decode(file_get_contents($expectedPath), true);
         $actual = json_decode(
