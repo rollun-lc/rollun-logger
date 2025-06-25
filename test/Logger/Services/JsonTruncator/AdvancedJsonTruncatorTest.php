@@ -131,18 +131,18 @@ class AdvancedJsonTruncatorTest extends TestCase
         return [
             'just_string' => [
                 [
-                    'text' => 'AAAAAAAAAAAAAA'
+                    'text' => 'AAAAAAAAAAAAAA',
                 ],
                 [
-                    'limit' => 4
+                    'limit' => 4,
                 ],
                 [
-                    'text' => 'AAAA…'
-                ]
+                    'text' => 'AAAA…',
+                ],
             ],
             'array_cut' => [
                 [
-                    1, 2, 3, 4, 5, 6, 7, 8, 9
+                    1, 2, 3, 4, 5, 6, 7, 8, 9,
                 ],
                 [
                     'limit' => 4,
@@ -150,12 +150,12 @@ class AdvancedJsonTruncatorTest extends TestCase
                     'arrayLimit' => 2,
                 ],
                 [
-                    1, 2, '…'
-                ]
+                    1, 2, '…',
+                ],
             ],
             'array_no_cut' => [
                 [
-                    1, 2, 3
+                    1, 2, 3,
                 ],
                 [
                     'limit' => 4,
@@ -163,12 +163,12 @@ class AdvancedJsonTruncatorTest extends TestCase
                     'arrayLimit' => 2,
                 ],
                 [
-                    1, 2, 3
-                ]
+                    1, 2, 3,
+                ],
             ],
             'array_one_element' => [
                 [
-                    "element" => ['one']
+                    "element" => ['one'],
                 ],
                 [
                     'limit' => 4,
@@ -177,8 +177,8 @@ class AdvancedJsonTruncatorTest extends TestCase
                     'arrayLimit' => 2,
                 ],
                 [
-                    "element" => ['one']
-                ]
+                    "element" => ['one'],
+                ],
             ],
             'empty_input' => [
                 [],
@@ -188,7 +188,7 @@ class AdvancedJsonTruncatorTest extends TestCase
                     'maxArrayChars' => 20,
                     'arrayLimit' => 2,
                 ],
-                []
+                [],
             ],
             'array_depth_cut' => [
                 ['root' => ['a' => ['b' => ['c' => 'deep']]]],
@@ -200,7 +200,7 @@ class AdvancedJsonTruncatorTest extends TestCase
                 ],
                 [
                     'root' => [
-                        'a' => '{"b":{"c":…'
+                        'a' => '{"b":{"c":…',
                     ],
                 ],
             ],
@@ -241,14 +241,14 @@ class AdvancedJsonTruncatorTest extends TestCase
                 [
                     'limit' => 100,
                 ],
-                1
+                1,
             ],
             'bool_input' => [
                 true,
                 [
                     'limit' => 100,
                 ],
-                true
+                true,
             ],
         ];
     }

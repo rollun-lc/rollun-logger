@@ -13,7 +13,7 @@ class AdvancedJsonTruncatorFactory implements FactoryInterface
         'depthLimit' => 3,
         'maxArrayChars' => 1000,
         'arrayLimit' => 3,
-        ];
+    ];
 
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {

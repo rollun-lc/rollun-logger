@@ -60,7 +60,7 @@ class AdvancedJsonTruncator implements JsonTruncatorInterface
         if (is_array($value) || is_object($value)) {
             $str = json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         } else {
-            $str = (string)$value;
+            $str = (string) $value;
         }
         if (mb_strlen($str) > $this->params['limit']) {
             return mb_substr($str, 0, $this->params['limit']) . '…';
