@@ -4,9 +4,9 @@ namespace rollun\logger\Factory;
 
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
-use rollun\logger\Services\AdvancedJsonTruncator;
+use rollun\logger\Services\RecursiveJsonTruncator;
 
-class AdvancedJsonTruncatorFactory implements FactoryInterface
+class RecursiveJsonTruncatorFactory implements FactoryInterface
 {
     private const DEFAULT_PARAMS = [
         'limit' => 1000,
@@ -17,6 +17,6 @@ class AdvancedJsonTruncatorFactory implements FactoryInterface
 
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        return new AdvancedJsonTruncator(self::DEFAULT_PARAMS);
+        return new RecursiveJsonTruncator(self::DEFAULT_PARAMS);
     }
 }

@@ -4,10 +4,10 @@ namespace Rollun\Test\Logger\Services\JsonTruncator;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use rollun\logger\Services\AdvancedJsonTruncator;
+use rollun\logger\Services\RecursiveJsonTruncator;
 use rollun\logger\Services\JsonTruncatorInterface;
 
-class AdvancedJsonTruncatorTest extends TestCase
+class RecursiveJsonTruncatorTest extends TestCase
 {
     private static string $inputJson;
 
@@ -20,7 +20,7 @@ class AdvancedJsonTruncatorTest extends TestCase
 
     public function setUp(): void
     {
-        $this->jsonTruncator = new AdvancedJsonTruncator([
+        $this->jsonTruncator = new RecursiveJsonTruncator([
             'limit' => 1000,
             'depthLimit' => 3,
             'maxArrayChars' => 1000,

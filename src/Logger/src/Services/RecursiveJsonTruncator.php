@@ -4,7 +4,7 @@ namespace rollun\logger\Services;
 
 use InvalidArgumentException;
 
-class AdvancedJsonTruncator implements JsonTruncatorInterface
+class RecursiveJsonTruncator implements JsonTruncatorInterface
 {
     public function __construct(private array $params = [])
     {
