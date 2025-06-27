@@ -217,7 +217,6 @@ class RecursiveJsonTruncatorTest extends TestCase
                     'lvl0' => [
                         'lvl1' => [
                             'lvl2' =>
-                            // json_encode(['lvl3'=>['lvl4'=>['lvl5'=>['lvl6'=>'value']]]])
                                 '{"lvl3":{"lvl4":{"lvl5":{"lvl6":"value"}}}}',
                         ],
                     ],
