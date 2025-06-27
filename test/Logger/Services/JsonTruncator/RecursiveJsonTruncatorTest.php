@@ -121,15 +121,11 @@ class RecursiveJsonTruncatorTest extends TestCase
     {
         return [
             'just_string' => [
-                [
-                    'text' => 'AAAAAAAAAAAAAA',
-                ],
+                'AAAAAAAAAAAAAA',
                 [
                     'limit' => 4,
                 ],
-                [
-                    'text' => 'AAAA…',
-                ],
+                'AAAA…',
             ],
             'array_cut' => [
                 [
