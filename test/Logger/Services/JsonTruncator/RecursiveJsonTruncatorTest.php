@@ -118,7 +118,8 @@ class RecursiveJsonTruncatorTest extends TestCase
     public function testWithWrongParams(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->jsonTruncator->withConfig(RecursiveTruncationParamsValueObject::createFromArray(['limit' => -1]),
+        $this->jsonTruncator->withConfig(
+            RecursiveTruncationParamsValueObject::createFromArray(['limit' => -1]),
         )->truncate(static::$inputJson);
     }
 
