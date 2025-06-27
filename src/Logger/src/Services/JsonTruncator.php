@@ -9,7 +9,7 @@ use InvalidArgumentException;
  *
  * @package rollun\logger\Services
  */
-class JsonTruncator
+class JsonTruncator implements JsonTruncatorInterface
 {
     /**
      * Minimum value of truncated json size
