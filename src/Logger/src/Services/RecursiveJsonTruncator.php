@@ -6,34 +6,18 @@ use InvalidArgumentException;
 
 class RecursiveJsonTruncator implements JsonTruncatorInterface
 {
-    public function __construct(private array $params = [])
-    {
-        $this->setParams($params);
-    }
+    public function __construct(private RecursiveTruncationParamsValueObject $params) {}
 
     /**
      * Returns new copy with changed params
-     * @param array $params
+     * @param RecursiveTruncationParamsValueObject $params
      * @return static
      */
-    public function withParams(array $params): self
+    public function withConfig(RecursiveTruncationParamsValueObject $params): self
     {
         $clone = clone $this;
-        $clone->setParams($params);
+        $clone->params = $params;
         return $clone;
-    }
-
-    /**
-     * Set params
-     */
-    protected function setParams(array $params): void
-    {
-        foreach ($params as $key => $value) {
-            if (!array_key_exists($key, $this->params)) {
-                throw new InvalidArgumentException("Unknown param: $key");
-            }
-            $this->params[$key] = $value;
-        }
     }
 
     /**
@@ -45,10 +29,12 @@ class RecursiveJsonTruncator implements JsonTruncatorInterface
         if ($data === null && json_last_error() !== JSON_ERROR_NONE) {
             throw new InvalidArgumentException("Invalid JSON");
         }
+
         $processed = $this->walk(
             $this->shrinkArrays($data),
-            0
+            0,
         );
+
         return json_encode($processed, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     }
 
@@ -57,14 +43,17 @@ class RecursiveJsonTruncator implements JsonTruncatorInterface
         if ($value === null) {
             return null;
         }
+
         if (is_array($value) || is_object($value)) {
             $str = json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         } else {
-            $str = (string) $value;
+            $str = (string)$value;
         }
-        if (mb_strlen($str) > $this->params['limit']) {
-            return mb_substr($str, 0, $this->params['limit']) . '…';
+
+        if (mb_strlen($str) > $this->params->getLimit()) {
+            return mb_substr($str, 0, $this->params->getLimit()) . '…';
         }
+
         return $str;
     }
 
@@ -81,27 +70,32 @@ class RecursiveJsonTruncator implements JsonTruncatorInterface
         if (!is_array($node)) {
             return $node;
         }
+
         $isList = $this->isList($node);
         $processed = array_map(fn($v) => $this->shrinkArrays($v), $node);
+
         if ($isList) {
             $arrayString = json_encode($processed, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-            if (mb_strlen($arrayString) > $this->params['maxArrayChars']) {
-                $limited = array_slice($processed, 0, $this->params['arrayLimit']);
+            if (mb_strlen($arrayString) > $this->params->getMaxArrayChars()) {
+                $limited = array_slice($processed, 0, $this->params->getArrayLimit());
                 $limited[] = '…';
                 return $limited;
             }
         }
+
         return $processed;
     }
 
     private function walk($node, int $depth)
     {
-        if ($depth >= $this->params['depthLimit']) {
+        if ($depth >= $this->params->getDepthLimit()) {
             return $this->truncateString($node);
         }
+
         if (!is_array($node)) {
             return $this->truncateString($node);
         }
+
         return array_map(fn($v) => $this->walk($v, $depth + 1), $node);
     }
 }
