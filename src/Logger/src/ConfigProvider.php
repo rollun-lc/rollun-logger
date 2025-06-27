@@ -113,12 +113,12 @@ class ConfigProvider
                 'LogWriterManager'    => WriterPluginManagerFactory::class,
                 'StorageForLogsCount' => RedisStorageFactory::class,
                 RecursiveJsonTruncator::class => RecursiveJsonTruncatorFactory::class,
-                'RecursiveJsonTruncatorDefaultParams' => fn () => [
-                        'limit'         => 1000,
-                        'depthLimit'    => 3,
-                        'maxArrayChars' => 1000,
-                        'arrayLimit'    => 3,
-                    ],
+                'RecursiveJsonTruncatorDefaultParams' => fn() => [
+                    'limit'         => 1000,
+                    'depthLimit'    => 3,
+                    'maxArrayChars' => 1000,
+                    'arrayLimit'    => 3,
+                ],
 
                 //LifeCycleToken
                 LifeCycleToken::class => LifeCycleTokenFactory::class,
