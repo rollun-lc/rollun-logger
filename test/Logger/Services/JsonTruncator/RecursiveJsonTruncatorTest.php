@@ -28,19 +28,6 @@ class RecursiveJsonTruncatorTest extends TestCase
         ]);
     }
 
-    /**
-     * @dataProvider jsonManifestTruncationProvider
-     */
-    public function testTruncateHugeManifestJson(array $params, string $expectedPath)
-    {
-        $expected = json_decode(file_get_contents($expectedPath), true);
-        $actual = json_decode(
-            $this->jsonTruncator->withParams($params)->truncate(static::$inputJson),
-            true
-        );
-        $this->assertEquals($expected, $actual, "Result for inputted Json does not match $expectedPath");
-    }
-
     public static function jsonManifestTruncationProvider(): array
     {
         return [
@@ -93,12 +80,16 @@ class RecursiveJsonTruncatorTest extends TestCase
     }
 
     /**
-     * @dataProvider invalidJsonProvider
+     * @dataProvider jsonManifestTruncationProvider
      */
-    public function testInvalidJsonThrowsException(string $invalidJson): void
+    public function testTruncateHugeManifestJson(array $params, string $expectedPath)
     {
-        $this->expectException(InvalidArgumentException::class);
-        $this->jsonTruncator->truncate($invalidJson);
+        $expected = json_decode(file_get_contents($expectedPath), true);
+        $actual = json_decode(
+            $this->jsonTruncator->withParams($params)->truncate(static::$inputJson),
+            true
+        );
+        $this->assertEquals($expected, $actual, "Result for inputted Json does not match $expectedPath");
     }
 
     public static function invalidJsonProvider(): array
@@ -111,19 +102,19 @@ class RecursiveJsonTruncatorTest extends TestCase
         ];
     }
 
+    /**
+     * @dataProvider invalidJsonProvider
+     */
+    public function testInvalidJsonThrowsException(string $invalidJson): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->jsonTruncator->truncate($invalidJson);
+    }
+
     public function testWithWrongParams(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->jsonTruncator->withParams(['unknown' => 1])->truncate(static::$inputJson);
-    }
-
-    /**
-     * @dataProvider defaultScenariosProvider
-     */
-    public function testWithDefaultScenarios($input, $params, $expected): void
-    {
-        $actual = json_decode($this->jsonTruncator->withParams($params)->truncate(json_encode($input)), true);
-        $this->assertEquals($expected, $actual);
     }
 
     public static function defaultScenariosProvider(): array
@@ -253,9 +244,17 @@ class RecursiveJsonTruncatorTest extends TestCase
         ];
     }
 
+    /**
+     * @dataProvider defaultScenariosProvider
+     */
+    public function testWithDefaultScenarios($input, $params, $expected): void
+    {
+        $actual = json_decode($this->jsonTruncator->withParams($params)->truncate(json_encode($input)), true);
+        $this->assertEquals($expected, $actual);
+    }
+
     public function testTruncateKeepsValidJson(): void
     {
-        // 4.1: Результат остаётся валидным JSON
         $numbers   = range(1, 50);
         $jsonInput = json_encode(['nums' => $numbers]);
         $truncator = $this->jsonTruncator->withParams([
@@ -267,10 +266,8 @@ class RecursiveJsonTruncatorTest extends TestCase
 
         $result = $truncator->truncate($jsonInput);
 
-        // Попытка декодировать – должна вернуть массив, а не false
         $decoded = json_decode($result, true);
         $this->assertIsArray($decoded, 'Decoded result should be an array');
         $this->assertSame(JSON_ERROR_NONE, json_last_error(), 'Truncated output must be valid JSON');
     }
-
 }
