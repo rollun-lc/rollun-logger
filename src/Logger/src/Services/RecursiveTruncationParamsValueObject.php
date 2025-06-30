@@ -11,11 +11,31 @@ final class RecursiveTruncationParamsValueObject
     private const DEFAULT_MAX_ARRAY_CHARS = 1000;
     private const DEFAULT_ARRAY_LIMIT = 3;
 
+    /**
+     * @var int
+     */
+    private $limit;
+
+    /**
+     * @var int
+     */
+    private $depthLimit;
+
+    /**
+     * @var int
+     */
+    private $maxArrayChars;
+
+    /**
+     * @var int
+     */
+    private $arrayLimit;
+
     public function __construct(
-        private int $limit = self::DEFAULT_LIMIT,
-        private int $depthLimit = self::DEFAULT_DEPTH_LIMIT,
-        private int $maxArrayChars = self::DEFAULT_MAX_ARRAY_CHARS,
-        private int $arrayLimit = self::DEFAULT_ARRAY_LIMIT,
+        $limit = self::DEFAULT_LIMIT,
+        $depthLimit = self::DEFAULT_DEPTH_LIMIT,
+        $maxArrayChars = self::DEFAULT_MAX_ARRAY_CHARS,
+        $arrayLimit = self::DEFAULT_ARRAY_LIMIT
     ) {
         if ($limit < 1) {
             throw new InvalidArgumentException('limit (max line length) must be >= 1');
@@ -27,14 +47,20 @@ final class RecursiveTruncationParamsValueObject
             throw new InvalidArgumentException('maxArrayChars (max (string)array threshold) must be >= 1');
         }
         if ($arrayLimit < 1) {
-            throw new InvalidArgumentException(
-                'arrayLimit (if > maxArrayChars, we leave only the first N elements) must be >= 1',
-            );
+            throw new InvalidArgumentException('arrayLimit (if > maxArrayChars, we leave only the first N elements) must be >= 1');
         }
+
+        $this->limit = $limit;
+        $this->depthLimit = $depthLimit;
+        $this->maxArrayChars = $maxArrayChars;
+        $this->arrayLimit = $arrayLimit;
     }
 
     /**
      * Creates ValueObject from array.
+     *
+     * @param array $a
+     * @return self
      */
     public static function createFromArray(array $a): self
     {
@@ -42,7 +68,7 @@ final class RecursiveTruncationParamsValueObject
             $a['limit'] ?? self::DEFAULT_LIMIT,
             $a['depthLimit'] ?? self::DEFAULT_DEPTH_LIMIT,
             $a['maxArrayChars'] ?? self::DEFAULT_MAX_ARRAY_CHARS,
-            $a['arrayLimit'] ?? self::DEFAULT_ARRAY_LIMIT,
+            $a['arrayLimit'] ?? self::DEFAULT_ARRAY_LIMIT
         );
     }
 
@@ -66,43 +92,43 @@ final class RecursiveTruncationParamsValueObject
         return $this->arrayLimit;
     }
 
-    public function withLimit(int $limit): self
+    public function withLimit($limit): self
     {
         return new self(
             $limit,
             $this->depthLimit,
             $this->maxArrayChars,
-            $this->arrayLimit,
+            $this->arrayLimit
         );
     }
 
-    public function withDepthLimit(int $depthLimit): self
+    public function withDepthLimit($depthLimit): self
     {
         return new self(
             $this->limit,
             $depthLimit,
             $this->maxArrayChars,
-            $this->arrayLimit,
+            $this->arrayLimit
         );
     }
 
-    public function withMaxArrayChars(int $maxArrayChars): self
+    public function withMaxArrayChars($maxArrayChars): self
     {
         return new self(
             $this->limit,
             $this->depthLimit,
             $maxArrayChars,
-            $this->arrayLimit,
+            $this->arrayLimit
         );
     }
 
-    public function withArrayLimit(int $arrayLimit): self
+    public function withArrayLimit($arrayLimit): self
     {
         return new self(
             $this->limit,
             $this->depthLimit,
             $this->maxArrayChars,
-            $arrayLimit,
+            $arrayLimit
         );
     }
 }
