@@ -195,7 +195,11 @@ class RecursiveJsonTruncatorTest extends TestCase
                     'maxArrayChars' => 100,
                     'arrayLimit' => 5,
                 ],
-                ['root' => ['a' => ['b' => '{"c":"deep"…']]]
+                [
+                    'root' => [
+                        'a' => '{"b":{"c":…',
+                    ],
+                ],
             ],
             'deep_nesting_3_levels' => [
                 [
