@@ -6,12 +6,21 @@ use InvalidArgumentException;
 
 class RecursiveJsonTruncator implements JsonTruncatorInterface
 {
-    public function __construct(private RecursiveTruncationParamsValueObject $params) {}
+    /**
+     * @var RecursiveTruncationParamsValueObject
+     */
+    private $params;
+
+    public function __construct(RecursiveTruncationParamsValueObject $params)
+    {
+        $this->params = $params;
+    }
 
     /**
      * Returns new copy with changed params
+     *
      * @param RecursiveTruncationParamsValueObject $params
-     * @return static
+     * @return self
      */
     public function withConfig(RecursiveTruncationParamsValueObject $params): self
     {
@@ -32,13 +41,17 @@ class RecursiveJsonTruncator implements JsonTruncatorInterface
 
         $processed = $this->walk(
             $this->shrinkArrays($data),
-            0,
+            0
         );
 
         return json_encode($processed, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     }
 
-    private function truncateString($value): string|null
+    /**
+     * @param mixed $value
+     * @return string|null
+     */
+    private function truncateString($value): ?string
     {
         if ($value === null) {
             return null;
@@ -65,6 +78,10 @@ class RecursiveJsonTruncator implements JsonTruncatorInterface
         return array_keys($array) === range(0, count($array) - 1);
     }
 
+    /**
+     * @param mixed $node
+     * @return mixed
+     */
     private function shrinkArrays($node)
     {
         if (!is_array($node)) {
@@ -72,7 +89,9 @@ class RecursiveJsonTruncator implements JsonTruncatorInterface
         }
 
         $isList = $this->isList($node);
-        $processed = array_map(fn($v) => $this->shrinkArrays($v), $node);
+        $processed = array_map(function ($v) {
+            return $this->shrinkArrays($v);
+        }, $node);
 
         if ($isList) {
             $arrayString = json_encode($processed, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
@@ -86,6 +105,11 @@ class RecursiveJsonTruncator implements JsonTruncatorInterface
         return $processed;
     }
 
+    /**
+     * @param mixed $node
+     * @param int $depth
+     * @return mixed
+     */
     private function walk($node, int $depth)
     {
         if ($depth >= $this->params->getDepthLimit()) {
@@ -96,6 +120,8 @@ class RecursiveJsonTruncator implements JsonTruncatorInterface
             return $this->truncateString($node);
         }
 
-        return array_map(fn($v) => $this->walk($v, $depth + 1), $node);
+        return array_map(function ($v) use ($depth) {
+            return $this->walk($v, $depth + 1);
+        }, $node);
     }
 }
