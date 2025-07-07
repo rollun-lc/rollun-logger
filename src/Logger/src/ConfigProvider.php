@@ -51,6 +51,12 @@ class ConfigProvider
             'log_processors' => $this->getLogProcessors(),
             'log_formatters' => $this->getLogFormatters(),
             'log_writers'    => $this->getLogWriters(),
+            RecursiveJsonTruncatorFactory::class => [
+                'limit'         => 1000,
+                'depthLimit'    => 3,
+                'maxArrayChars' => 1000,
+                'arrayLimit'    => 3,
+            ],
         ];
     }
 
