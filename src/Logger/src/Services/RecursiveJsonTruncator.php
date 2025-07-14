@@ -7,11 +7,11 @@ use InvalidArgumentException;
 class RecursiveJsonTruncator implements JsonTruncatorInterface
 {
     /**
-     * @var RecursiveTruncationParamsValueObject
+     * @var RecursiveTruncationParams
      */
     private $params;
 
-    public function __construct(RecursiveTruncationParamsValueObject $params)
+    public function __construct(RecursiveTruncationParams $params)
     {
         $this->params = $params;
     }
@@ -19,10 +19,10 @@ class RecursiveJsonTruncator implements JsonTruncatorInterface
     /**
      * Returns new copy with changed params
      *
-     * @param RecursiveTruncationParamsValueObject $params
+     * @param RecursiveTruncationParams $params
      * @return self
      */
-    public function withConfig(RecursiveTruncationParamsValueObject $params): self
+    public function withConfig(RecursiveTruncationParams $params): self
     {
         $clone = clone $this;
         $clone->params = $params;
@@ -63,8 +63,8 @@ class RecursiveJsonTruncator implements JsonTruncatorInterface
             $str = (string) $value;
         }
 
-        if (mb_strlen($str) > $this->params->getLimit()) {
-            return mb_substr($str, 0, $this->params->getLimit()) . '…';
+        if (mb_strlen($str) > $this->params->getMaxLineLength()) {
+            return mb_substr($str, 0, $this->params->getMaxLineLength()) . '…';
         }
 
         return $str;
@@ -95,8 +95,8 @@ class RecursiveJsonTruncator implements JsonTruncatorInterface
 
         if ($isList) {
             $arrayString = json_encode($processed, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-            if (mb_strlen($arrayString) > $this->params->getMaxArrayChars()) {
-                $limited = array_slice($processed, 0, $this->params->getArrayLimit());
+            if (mb_strlen($arrayString) > $this->params->getMaxArrayToStringLength()) {
+                $limited = array_slice($processed, 0, $this->params->getMaxArrayElementsAfterCut());
                 $limited[] = '…';
                 return $limited;
             }
@@ -112,7 +112,7 @@ class RecursiveJsonTruncator implements JsonTruncatorInterface
      */
     private function walk($node, int $depth)
     {
-        if ($depth >= $this->params->getDepthLimit()) {
+        if ($depth >= $this->params->getMaxNestingDepth()) {
             return $this->truncateString($node);
         }
 
