@@ -7,6 +7,7 @@ namespace rollun\logger\Formatter;
 use DateTime;
 use InvalidArgumentException;
 use rollun\logger\Services\JsonTruncator;
+use rollun\logger\Services\JsonTruncatorInterface;
 use RuntimeException;
 
 class LogStashFormatter implements FormatterInterface
@@ -27,11 +28,11 @@ class LogStashFormatter implements FormatterInterface
     private $columnMap;
 
     /**
-     * @var JsonTruncator
+     * @var JsonTruncatorInterface
      */
     private $jsonTruncator;
 
-    public function __construct(string $index, array $columnMap = null, ?JsonTruncator $jsonTruncator = null)
+    public function __construct(string $index, array $columnMap = null, ?JsonTruncatorInterface $jsonTruncator = null)
     {
         $this->index = $index;
         $this->columnMap = $columnMap;
@@ -43,7 +44,9 @@ class LogStashFormatter implements FormatterInterface
      */
     public function format($event)
     {
-        $event['timestamp'] = $event['timestamp'] instanceof DateTime ? $event['timestamp']->format('Y-m-d\TH:i:s.u\Z') : $event['timestamp'];
+        $event['timestamp'] = $event['timestamp'] instanceof DateTime ? $event['timestamp']->format(
+            'Y-m-d\TH:i:s.u\Z'
+        ) : $event['timestamp'];
         // If index_name is set in context - use it
         if (!empty($event['context'][static::INDEX_NAME_KEY])) {
             $event['_index_name'] = $event['context'][static::INDEX_NAME_KEY];
@@ -52,9 +55,7 @@ class LogStashFormatter implements FormatterInterface
             $event['_index_name'] = $this->index;
         }
         try {
-            $event['context'] = $this->jsonTruncator
-                ->withMaxSize($this->jsonTruncator->getMaxSize() - strlen($event['message'] ?? ''))
-                ->truncate(json_encode($event['context']));
+            $event['context'] = json_decode($this->jsonTruncator->truncate(json_encode($event['context'])));
         } catch (InvalidArgumentException $e) {
             // We get here when too small value gets into withMaxSize(), which means the message is too large.
             $event['message'] = $this->jsonTruncator->truncate($event['message']);
@@ -67,8 +68,8 @@ class LogStashFormatter implements FormatterInterface
     /**
      * Map event into column using the $columnMap array
      *
-     * @param  array $event
-     * @param  array $columnMap
+     * @param array $event
+     * @param array $columnMap
      * @return array
      */
     protected function mapEventIntoColumn(array $event, array $columnMap = null)
