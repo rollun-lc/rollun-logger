@@ -15,12 +15,7 @@ class LogStashFormatter implements FormatterInterface
     // key in 'context' field of log which can be used to pass index_name
     public const INDEX_NAME_KEY = 'es_index_name';
 
-    /**
-     * @var JsonTruncatorInterface
-     */
-    private $jsonTruncator;
-
-    public function __construct(private string $index, private ?array $columnMap = null, ?JsonTruncatorInterface $jsonTruncator = null)
+    public function __construct(private string $index, private ?array $columnMap = null, private ?JsonTruncatorInterface $jsonTruncator = null)
     {
         $this->jsonTruncator = is_null($jsonTruncator) ? new JsonTruncator(self::DEFAULT_MAX_SIZE) : $jsonTruncator;
     }
