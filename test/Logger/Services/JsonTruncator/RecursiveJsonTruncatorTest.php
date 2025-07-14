@@ -6,7 +6,7 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use rollun\logger\Services\RecursiveJsonTruncator;
 use rollun\logger\Services\JsonTruncatorInterface;
-use rollun\logger\Services\RecursiveTruncationParamsValueObject;
+use rollun\logger\Services\RecursiveTruncationParams;
 
 class RecursiveJsonTruncatorTest extends TestCase
 {
@@ -21,11 +21,11 @@ class RecursiveJsonTruncatorTest extends TestCase
 
     public function setUp(): void
     {
-        $params = RecursiveTruncationParamsValueObject::createFromArray([
-            'limit' => 1000,
-            'depthLimit' => 3,
-            'maxArrayChars' => 1000,
-            'arrayLimit' => 3,
+        $params = RecursiveTruncationParams::createFromArray([
+            'maxLineLength' => 1000,
+            'maxNestingDepth' => 3,
+            'maxArrayToStringLength' => 1000,
+            'maxArrayElementsAfterCut' => 3,
         ]);
         $this->jsonTruncator = new RecursiveJsonTruncator($params);
     }
@@ -35,46 +35,46 @@ class RecursiveJsonTruncatorTest extends TestCase
         return [
             'different_limits_1' => [
                 [
-                    'limit' => 100,
-                    'depthLimit' => 3,
-                    'maxArrayChars' => 1000,
-                    'arrayLimit' => 3,
+                    'maxLineLength' => 100,
+                    'maxNestingDepth' => 3,
+                    'maxArrayToStringLength' => 1000,
+                    'maxArrayElementsAfterCut' => 3,
                 ],
                 __DIR__ . '/data/truncated_result_1.json',
             ],
             'different_limits_2' => [
                 [
-                    'limit' => 50,
-                    'depthLimit' => 2,
-                    'maxArrayChars' => 200,
-                    'arrayLimit' => 2,
+                    'maxLineLength' => 50,
+                    'maxNestingDepth' => 2,
+                    'maxArrayToStringLength' => 200,
+                    'maxArrayElementsAfterCut' => 2,
                 ],
                 __DIR__ . '/data/truncated_result_2.json',
             ],
             'different_limits_3' => [
                 [
-                    'limit' => 30,
-                    'depthLimit' => 1,
-                    'maxArrayChars' => 100,
-                    'arrayLimit' => 1,
+                    'maxLineLength' => 30,
+                    'maxNestingDepth' => 1,
+                    'maxArrayToStringLength' => 100,
+                    'maxArrayElementsAfterCut' => 1,
                 ],
                 __DIR__ . '/data/truncated_result_3.json',
             ],
             'different_limits_4' => [
                 [
-                    'limit' => 200,
-                    'depthLimit' => 5,
-                    'maxArrayChars' => 5000,
-                    'arrayLimit' => 10,
+                    'maxLineLength' => 200,
+                    'maxNestingDepth' => 5,
+                    'maxArrayToStringLength' => 5000,
+                    'maxArrayElementsAfterCut' => 10,
                 ],
                 __DIR__ . '/data/truncated_result_4.json',
             ],
             'different_limits_5' => [
                 [
-                    'limit' => 10,
-                    'depthLimit' => 2,
-                    'maxArrayChars' => 50,
-                    'arrayLimit' => 1,
+                    'maxLineLength' => 10,
+                    'maxNestingDepth' => 2,
+                    'maxArrayToStringLength' => 50,
+                    'maxArrayElementsAfterCut' => 1,
                 ],
                 __DIR__ . '/data/truncated_result_5.json',
             ],
@@ -88,7 +88,7 @@ class RecursiveJsonTruncatorTest extends TestCase
     {
         $expected = json_decode(file_get_contents($expectedPath), true);
         $actual = json_decode(
-            $this->jsonTruncator->withConfig(RecursiveTruncationParamsValueObject::createFromArray($params))->truncate(
+            $this->jsonTruncator->withConfig(RecursiveTruncationParams::createFromArray($params))->truncate(
                 static::$inputJson,
             ),
             true,
@@ -119,7 +119,7 @@ class RecursiveJsonTruncatorTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->jsonTruncator->withConfig(
-            RecursiveTruncationParamsValueObject::createFromArray(['limit' => -1]),
+            RecursiveTruncationParams::createFromArray(['maxLineLength' => -1]),
         )->truncate(static::$inputJson);
     }
 
@@ -129,7 +129,7 @@ class RecursiveJsonTruncatorTest extends TestCase
             'just_string' => [
                 'AAAAAAAAAAAAAA',
                 [
-                    'limit' => 4,
+                    'maxLineLength' => 4,
                 ],
                 'AAAA…',
             ],
@@ -146,9 +146,9 @@ class RecursiveJsonTruncatorTest extends TestCase
                     9,
                 ],
                 [
-                    'limit' => 4,
-                    'maxArrayChars' => 5,
-                    'arrayLimit' => 2,
+                    'maxLineLength' => 4,
+                    'maxArrayToStringLength' => 5,
+                    'maxArrayElementsAfterCut' => 2,
                 ],
                 [
                     1,
@@ -163,9 +163,9 @@ class RecursiveJsonTruncatorTest extends TestCase
                     3,
                 ],
                 [
-                    'limit' => 4,
-                    'maxArrayChars' => 10,
-                    'arrayLimit' => 2,
+                    'maxLineLength' => 4,
+                    'maxArrayToStringLength' => 10,
+                    'maxArrayElementsAfterCut' => 2,
                 ],
                 [
                     1,
@@ -178,10 +178,10 @@ class RecursiveJsonTruncatorTest extends TestCase
                     "element" => ['one'],
                 ],
                 [
-                    'limit' => 4,
-                    'depthLimit' => 2,
-                    'maxArrayChars' => 20,
-                    'arrayLimit' => 2,
+                    'maxLineLength' => 4,
+                    'maxNestingDepth' => 2,
+                    'maxArrayToStringLength' => 20,
+                    'maxArrayElementsAfterCut' => 2,
                 ],
                 [
                     "element" => ['one'],
@@ -190,20 +190,20 @@ class RecursiveJsonTruncatorTest extends TestCase
             'empty_input' => [
                 [],
                 [
-                    'limit' => 4,
-                    'depthLimit' => 2,
-                    'maxArrayChars' => 20,
-                    'arrayLimit' => 2,
+                    'maxLineLength' => 4,
+                    'maxNestingDepth' => 2,
+                    'maxArrayToStringLength' => 20,
+                    'maxArrayElementsAfterCut' => 2,
                 ],
                 [],
             ],
             'array_depth_cut' => [
                 ['root' => ['a' => ['b' => ['c' => 'deep']]]],
                 [
-                    'limit' => 10,
-                    'depthLimit' => 2,
-                    'maxArrayChars' => 100,
-                    'arrayLimit' => 5,
+                    'maxLineLength' => 10,
+                    'maxNestingDepth' => 2,
+                    'maxArrayToStringLength' => 100,
+                    'maxArrayElementsAfterCut' => 5,
                 ],
                 [
                     'root' => [
@@ -228,10 +228,10 @@ class RecursiveJsonTruncatorTest extends TestCase
                     ],
                 ],
                 [
-                    'limit' => 1000,
-                    'depthLimit' => 3,
-                    'maxArrayChars' => 1000,
-                    'arrayLimit' => 5,
+                    'maxLineLength' => 1000,
+                    'maxNestingDepth' => 3,
+                    'maxArrayToStringLength' => 1000,
+                    'maxArrayElementsAfterCut' => 5,
                 ],
                 [
                     'lvl0' => [
@@ -245,14 +245,14 @@ class RecursiveJsonTruncatorTest extends TestCase
             'integer_input' => [
                 1,
                 [
-                    'limit' => 100,
+                    'maxLineLength' => 100,
                 ],
                 1,
             ],
             'bool_input' => [
                 true,
                 [
-                    'limit' => 100,
+                    'maxLineLength' => 100,
                 ],
                 true,
             ],
@@ -265,7 +265,7 @@ class RecursiveJsonTruncatorTest extends TestCase
     public function testWithDefaultScenarios($input, $params, $expected): void
     {
         $actual = json_decode(
-            $this->jsonTruncator->withConfig(RecursiveTruncationParamsValueObject::createFromArray($params))->truncate(
+            $this->jsonTruncator->withConfig(RecursiveTruncationParams::createFromArray($params))->truncate(
                 json_encode($input),
             ),
             true,
@@ -277,11 +277,11 @@ class RecursiveJsonTruncatorTest extends TestCase
     {
         $numbers = range(1, 50);
         $jsonInput = json_encode(['nums' => $numbers]);
-        $truncator = $this->jsonTruncator->withConfig(RecursiveTruncationParamsValueObject::createFromArray([
-            'limit' => 100,
-            'depthLimit' => 1,
-            'maxArrayChars' => 20,
-            'arrayLimit' => 5,
+        $truncator = $this->jsonTruncator->withConfig(RecursiveTruncationParams::createFromArray([
+            'maxLineLength' => 100,
+            'maxNestingDepth' => 1,
+            'maxArrayToStringLength' => 20,
+            'maxArrayElementsAfterCut' => 5,
         ]));
 
         $result = $truncator->truncate($jsonInput);
