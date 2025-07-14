@@ -37,23 +37,12 @@ final class RecursiveTruncationParamsValueObject
         $maxArrayChars = self::DEFAULT_MAX_ARRAY_CHARS,
         $arrayLimit = self::DEFAULT_ARRAY_LIMIT
     ) {
-        if ($limit < 1) {
-            throw new InvalidArgumentException('limit (max line length) must be >= 1');
-        }
-        if ($depthLimit < 0) {
-            throw new InvalidArgumentException('depthLimit (maximum nesting depth) must be >= 0');
-        }
-        if ($maxArrayChars < 1) {
-            throw new InvalidArgumentException('maxArrayChars (max (string)array threshold) must be >= 1');
-        }
-        if ($arrayLimit < 1) {
-            throw new InvalidArgumentException('arrayLimit (if > maxArrayChars, we leave only the first N elements) must be >= 1');
-        }
-
         $this->limit = $limit;
         $this->depthLimit = $depthLimit;
         $this->maxArrayChars = $maxArrayChars;
         $this->arrayLimit = $arrayLimit;
+
+        $this->validate();
     }
 
     /**
@@ -70,6 +59,22 @@ final class RecursiveTruncationParamsValueObject
             $a['maxArrayChars'] ?? self::DEFAULT_MAX_ARRAY_CHARS,
             $a['arrayLimit'] ?? self::DEFAULT_ARRAY_LIMIT
         );
+    }
+
+    private function validate()
+    {
+        if ($this->limit < 1) {
+            throw new InvalidArgumentException('limit (max line length) must be >= 1');
+        }
+        if ($this->depthLimit < 0) {
+            throw new InvalidArgumentException('depthLimit (maximum nesting depth) must be >= 0');
+        }
+        if ($this->maxArrayChars < 1) {
+            throw new InvalidArgumentException('maxArrayChars (max (string)array threshold) must be >= 1');
+        }
+        if ($this->arrayLimit < 1) {
+            throw new InvalidArgumentException('arrayLimit (if > maxArrayChars, we leave only the first N elements) must be >= 1');
+        }
     }
 
     public function getLimit(): int
