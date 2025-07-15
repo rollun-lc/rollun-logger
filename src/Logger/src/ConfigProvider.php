@@ -8,6 +8,7 @@
 namespace rollun\logger;
 
 use Psr\Log\LoggerInterface;
+use rollun\logger\Factory\RecursiveJsonTruncatorFactory;
 use rollun\logger\Factory\LifeCycleTokenFactory;
 use rollun\logger\Factory\RedisStorageFactory;
 use rollun\logger\Formatter\ContextToString;
@@ -26,6 +27,7 @@ use rollun\logger\Processor\LifeCycleTokenInjector;
 use rollun\logger\Processor\ProcessorWithCount;
 use rollun\logger\Prometheus\Collector;
 use rollun\logger\Prometheus\PushGateway;
+use rollun\logger\Services\RecursiveJsonTruncator;
 use rollun\logger\Writer\Factory\PrometheusFactory;
 use rollun\logger\Writer\Factory\WriterFactory;
 use rollun\logger\Writer\PrometheusWriter;
@@ -50,6 +52,12 @@ class ConfigProvider
             'log_processors' => $this->getLogProcessors(),
             'log_formatters' => $this->getLogFormatters(),
             'log_writers'    => $this->getLogWriters(),
+            RecursiveJsonTruncatorFactory::class => [
+                'maxLineLength'             => 1000,
+                'maxNestingDepth'           => 3,
+                'maxArrayToStringLength'    => 1000,
+                'maxArrayElementsAfterCut'  => 3,
+            ],
         ];
     }
 
@@ -110,6 +118,7 @@ class ConfigProvider
                 'LogProcessorManager' => ProcessorPluginManagerFactory::class,
                 'LogWriterManager'    => WriterPluginManagerFactory::class,
                 'StorageForLogsCount' => RedisStorageFactory::class,
+                RecursiveJsonTruncator::class => RecursiveJsonTruncatorFactory::class,
 
                 //LifeCycleToken
                 LifeCycleToken::class => LifeCycleTokenFactory::class,

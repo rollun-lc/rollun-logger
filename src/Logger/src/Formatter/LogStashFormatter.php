@@ -5,6 +5,7 @@ namespace rollun\logger\Formatter;
 use DateTime;
 use InvalidArgumentException;
 use rollun\logger\Services\JsonTruncator;
+use rollun\logger\Services\JsonTruncatorInterface;
 use RuntimeException;
 
 class LogStashFormatter implements FormatterInterface
@@ -14,12 +15,7 @@ class LogStashFormatter implements FormatterInterface
     // key in 'context' field of log which can be used to pass index_name
     public const INDEX_NAME_KEY = 'es_index_name';
 
-    /**
-     * @var JsonTruncator
-     */
-    private $jsonTruncator;
-
-    public function __construct(private string $index, private ?array $columnMap = null, ?JsonTruncator $jsonTruncator = null)
+    public function __construct(private string $index, private ?array $columnMap = null, private ?JsonTruncatorInterface $jsonTruncator = null)
     {
         $this->jsonTruncator = is_null($jsonTruncator) ? new JsonTruncator(self::DEFAULT_MAX_SIZE) : $jsonTruncator;
     }
@@ -38,9 +34,7 @@ class LogStashFormatter implements FormatterInterface
             $event['_index_name'] = $this->index;
         }
         try {
-            $event['context'] = $this->jsonTruncator
-                ->withMaxSize($this->jsonTruncator->getMaxSize() - strlen($event['message'] ?? ''))
-                ->truncate(json_encode($event['context']));
+            $event['context'] = json_decode($this->jsonTruncator->truncate(json_encode($event['context'])));
         } catch (InvalidArgumentException) {
             // We get here when too small value gets into withMaxSize(), which means the message is too large.
             $event['message'] = $this->jsonTruncator->truncate($event['message']);

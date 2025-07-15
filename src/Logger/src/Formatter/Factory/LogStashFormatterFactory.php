@@ -5,7 +5,7 @@ namespace rollun\logger\Formatter\Factory;
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use rollun\logger\Formatter\LogStashFormatter;
-use rollun\logger\Services\JsonTruncator;
+use rollun\logger\Services\RecursiveJsonTruncator;
 
 class LogStashFormatterFactory implements FactoryInterface
 {
@@ -23,7 +23,7 @@ class LogStashFormatterFactory implements FactoryInterface
                 'parent_lifecycle_token' => 'parent_lifecycle_token',
                 '_index_name'            => '_index_name',
             ],
-            new JsonTruncator(LogStashFormatter::DEFAULT_MAX_SIZE)
+            $container->get(RecursiveJsonTruncator::class),
         );
     }
 }
