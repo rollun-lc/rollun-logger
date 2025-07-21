@@ -36,8 +36,6 @@ class LogStashFormatter implements FormatterInterface
         try {
             $event['context'] = json_decode($this->jsonTruncator->truncate(json_encode($event['context'])));
         } catch (InvalidArgumentException) {
-            // We get here when too small value gets into withMaxSize(), which means the message is too large.
-            $event['message'] = $this->jsonTruncator->truncate($event['message']);
             $event['context'] = '{}';
         }
         $dataToInsert = $this->columnMap ? $this->mapEventIntoColumn($event, $this->columnMap) : $event;
