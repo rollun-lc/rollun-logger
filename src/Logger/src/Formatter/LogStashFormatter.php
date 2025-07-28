@@ -34,9 +34,11 @@ class LogStashFormatter implements FormatterInterface
             $event['_index_name'] = $this->index;
         }
         try {
-            $event['context'] = json_decode($this->jsonTruncator->truncate(json_encode($event['context'])));
-        } catch (InvalidArgumentException) {
-            $event['context'] = '{}';
+            $event['context'] = $this->jsonTruncator->truncate(json_encode($event['context']));
+        } catch (\Throwable $exception) {
+            //            TODO: добавить здесь проблема с обрезкой лога?
+            $errorMessage = $exception->getMessage();
+            $event['context'] = 'Error: ' . $errorMessage;
         }
         $dataToInsert = $this->columnMap ? $this->mapEventIntoColumn($event, $this->columnMap) : $event;
         return json_encode($dataToInsert);
