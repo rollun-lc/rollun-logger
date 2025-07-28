@@ -36,7 +36,7 @@ class LogStashFormatter implements FormatterInterface
         try {
             $event['context'] = $this->jsonTruncator->truncate(json_encode($event['context']));
         } catch (\Throwable $exception) {
-//            TODO: добавить здесь проблема с обрезкой лога?
+            //            TODO: добавить здесь проблема с обрезкой лога?
             $errorMessage = $exception->getMessage();
             $event['context'] = 'Error: ' . $errorMessage;
         }
