@@ -671,3 +671,81 @@ return function (Application $app, MiddlewareFactory $factory, ContainerInterfac
 По умолчанию логгер берется из контенйера по ключу "Psr\Log\LoggerInterface", согласно фабрике [RequestLoggedMiddlewareFactory](https://github.com/rollun-com/rollun-logger/blob/fa35ffa8dca2f137d38fa3b66eb8fdc3fde5283a/src/Logger/src/Middleware/Factory/RequestLoggedMiddlewareFactory.php#L18),
 которая подключается в `rollun\logger\ConfigProvider`. Если вам это не подходит вы всегда можете переопределить эту фабрику
 в своей конфигурации.
+
+### RecursiveJsonTruncator
+
+#### Инструмент для «умного» усечения больших JSON-строк:
+* Сначала рекурсивно «сжимает» слишком длинные массивы (оставляет первые N элементов и добавляет `…` в конец).
+* Затем выполняет глубинный обход и, начиная с заданной глубины, превращает узел в строку (через `json_encode`) и обрезает строку до лимита, добавляя `…`, если нужно
+  Итог: на выходе валидный JSON, но значительно короче и удобнее для логов.
+
+#### Публичный контракт
+* `__construct(RecursiveTruncationParams $params)`
+* `withConfig(RecursiveTruncationParams $params): self` — возвращает клон с другими параметрами.
+* `truncate(string $json): string` - принимает JSON-строку, возвращает JSON-строку. Если вход — невалидный JSON, бросает `InvalidArgumentException`
+
+#### Параметры
+Класс:
+```php
+rollun\logger\Services\RecursiveTruncationParams
+``` 
+**Поля**
+* `maxLineLength` — лимит символов для строки при усечении (в т.ч. когда узел превращён в строку на глубине).
+* `maxNestingDepth` — максимальная глубина обхода. На глубине >= этого значения узел превращается в строку и при необходимости обрезается
+* `maxArrayToStringLength` — если `json_encode()` массива длиннее этого порога, массив сжимается (оставляем первые `maxArrayElementsAfterCut` элементов + `…`).
+* `maxArrayElementsAfterCut` — сколько первых элементов оставить при сжатии массива
+
+Конструктор VO валидирует значения (минимумы/границы) и может быть создан из массива
+```php
+use rollun\logger\Services\RecursiveTruncationParams;
+
+$params = RecursiveTruncationParams::createFromArray([
+    'maxLineLength'            => 1000,
+    'maxNestingDepth'          => 3,
+    'maxArrayToStringLength'   => 1000,
+    'maxArrayElementsAfterCut' => 3,
+]);
+
+``` 
+
+#### Пример использования
+```php
+use rollun\logger\Services\RecursiveJsonTruncator;
+use rollun\logger\Services\RecursiveTruncationParams;
+
+$params = RecursiveTruncationParams::createFromArray([
+    'maxLineLength'            => 200,  // строковый лимит
+    'maxNestingDepth'          => 2,    // глубже -> в строку
+    'maxArrayToStringLength'   => 300,  // порог «сжатия» массива
+    'maxArrayElementsAfterCut' => 3,    // оставляем 3 элемента + …
+]);
+
+$truncator = new RecursiveJsonTruncator($params);
+
+$inputJson = json_encode([
+    'meta' => ['veryLong' => str_repeat('x', 1000)],
+    'items' => range(1, 50),
+]);
+
+$out = $truncator->truncate($inputJson);
+// $out — валидный JSON, укороченный по описанным правилам
+
+``` 
+
+#### Конфигурация
+Если отдельная конфигурация не задана, берутся значения по умолчанию. Задается таким образом:
+```php
+RecursiveJsonTruncatorFactory::class => [
+                'maxLineLength'             => 1000,
+                'maxNestingDepth'           => 3,
+                'maxArrayToStringLength'    => 1000,
+                'maxArrayElementsAfterCut'  => 3,
+            ],
+
+``` 
+
+#### Тонкости
+* Валидность JSON: На входе ожидается валидный JSON (строка). Иначе — `InvalidArgumentException`. На выходе — всегда валидный JSON
+* Глубина: При достижении `maxNestingDepth` узел превращается в строку (`json_encode` подузла) и, если нужно, обрезается до `maxLineLength`. Это значит, что числа/булевы/массивы/объекты на этой глубине станут строкой в итоговом JSON.
+* `…` — Unicode-многоточие (U+2026).
+* `null` сохраняется как `null` (не как строка `"null"`), пока узел не превратился в строку из-за глубины — тогда узел станет строкой (`"null"`), и к нему применится лимит
