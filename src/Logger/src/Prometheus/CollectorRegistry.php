@@ -32,9 +32,9 @@ class CollectorRegistry extends \Prometheus\CollectorRegistry
     /**
      * @inheritDoc
      */
-    public function __construct(Adapter $adapter)
+    public function __construct(Adapter $adapter, bool $registerDefaultMetrics = false)
     {
-        parent::__construct($adapter);
+        parent::__construct($adapter, $registerDefaultMetrics);
 
         $this->adapter = $adapter;
     }
