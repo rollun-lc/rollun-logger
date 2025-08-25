@@ -31,9 +31,7 @@
     "psr/log": "^1.1.4",
     "laminas/laminas-cache-storage-adapter-redis": "^2.6",
     "promphp/prometheus_client_php": "^2",
-    "promphp/prometheus_push_gateway_php": "^1",
-    "guzzlehttp/guzzle": "^7.9",
-    "guzzlehttp/psr7": "^2.7"
+    "promphp/prometheus_push_gateway_php": "^1"
   },
   "require-dev": {
     "ext-redis": "*",
