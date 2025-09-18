@@ -32,7 +32,6 @@
   },
   "require-dev": {
     "ext-redis": "*" ,
-    "zendframework/zend-component-installer": "^1.0",
     "zendframework/zend-config-aggregator": "^1.0",
     "zfcampus/zf-development-mode": "^3.1",
     "symfony/dotenv": "^4.1",
