@@ -19,7 +19,7 @@ jobs:
       with:
         php-version: '7.2'
         extensions: json, zip, mysqli, pdo_mysql
-        tools: composer:v1
+        tools: composer:v2
   
     - name: Validate composer.json and composer.lock
       run: composer validate
