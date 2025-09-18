@@ -129,15 +129,29 @@ class HttpAsync extends AbstractWriter
         $fp = fsockopen($host, $port, $errno, $errstr, 0.1);
 
         if ($fp === false) {
-            throw new RuntimeException("Cannot open socket connection. Message: '$errstr'");
+            $this->isServerAvailable = false;
+            throw new RuntimeException("Cannot open socket connection to {$host}:{$port}. Error: {$errstr} (Code: {$errno})");
         }
 
         $result = fwrite($fp, $out);
-        fclose($fp);
 
         if ($result === false) {
+            fclose($fp);
             $this->isServerAvailable = false;
-            throw new RuntimeException("The response timeout from {$this->url} exceeds 100ms");
+            throw new RuntimeException("Failed to write data to {$host}:{$port}");
+        }
+
+        // Read response to check for errors
+        stream_set_timeout($fp, 1); // 1s read timeout
+        $statusLine = fgets($fp, 2048) ?: '';
+        fclose($fp);
+
+        // Check for HTTP error status
+        if (preg_match('/HTTP\/1\.1 (\d+)/', $statusLine, $matches)) {
+            $statusCode = (int) $matches[1];
+            if ($statusCode >= 400) {
+                throw new RuntimeException("Server returned error {$statusCode} for {$this->url}");
+            }
         }
     }
 }
