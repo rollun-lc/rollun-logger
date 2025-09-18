@@ -19,6 +19,18 @@ class HttpAsyncMetric extends HttpAsync
             return false;
         }
 
+        // Validate metricId format (3-64 chars, alphanumeric + underscore)
+        $metricId = $event['context']['metricId'];
+        if (!is_string($metricId) || !preg_match('/^[a-z0-9_]{3,64}$/i', $metricId)) {
+            throw new \InvalidArgumentException('Invalid metric ID format');
+        }
+
+        // Validate value is numeric
+        $value = $event['context']['value'];
+        if (!(is_int($value) || is_float($value))) {
+            throw new \InvalidArgumentException('Value must be numeric');
+        }
+
         return true;
     }
 
