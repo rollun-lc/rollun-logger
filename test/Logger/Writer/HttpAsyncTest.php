@@ -142,14 +142,9 @@ class HttpAsyncTest extends TestCase
     public function testThrowsOnSendError(int $statusCode, string $statusText)
     {
         $writer = new class (self::TEST_URL, $statusCode, $statusText) extends HttpAsync {
-            private int $statusCode;
-            private string $statusText;
-
-            public function __construct(string $url, int $statusCode = 400, string $statusText = 'Bad Request')
+            public function __construct(string $url, private int $statusCode = 400, private string $statusText = 'Bad Request')
             {
                 parent::__construct(['url' => $url]);
-                $this->statusCode = $statusCode;
-                $this->statusText = $statusText;
             }
 
             protected function send(string $host, int $port, string $out)
