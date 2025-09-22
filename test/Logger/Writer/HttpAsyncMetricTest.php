@@ -130,7 +130,7 @@ class HttpAsyncMetricTest extends TestCase
     public function testIsValidReturnsTrueForValidEvents(array $event)
     {
         $writer = $this->createWriter(['url' => self::TEST_URL]);
-        
+
         $this->assertTrue($writer->isValid($event));
     }
 
@@ -140,14 +140,14 @@ class HttpAsyncMetricTest extends TestCase
     public function testIsValidReturnsFalseForInvalidEvents(array $event)
     {
         $writer = $this->createWriter(['url' => self::TEST_URL]);
-        
+
         $this->assertFalse($writer->isValid($event));
     }
 
     public function testParseUrlAddsMetricIdToUrl()
     {
         $writer = $this->createWriter(['url' => self::TEST_URL]);
-        
+
         $event = [
             'context' => [
                 'metricId' => self::VALID_METRIC_ID,
@@ -156,7 +156,7 @@ class HttpAsyncMetricTest extends TestCase
         ];
 
         $parsedUrl = $writer->parseUrl($event);
-        
+
         $this->assertEquals(self::TEST_HOST, $parsedUrl['host']);
         $this->assertEquals('/metrics/' . self::VALID_METRIC_ID, $parsedUrl['path']);
     }
@@ -165,7 +165,7 @@ class HttpAsyncMetricTest extends TestCase
     {
         $writer = new class (['url' => self::TEST_URL]) extends HttpAsyncMetric {
             public $sendCalled = false;
-            
+
             protected function send(string $host, int $port, string $out)
             {
                 $this->sendCalled = true;
@@ -189,12 +189,12 @@ class HttpAsyncMetricTest extends TestCase
         $writer = new class (['url' => self::TEST_URL]) extends HttpAsyncMetric {
             public $sendCalled = false;
             public $lastEvent = null;
-            
+
             protected function send(string $host, int $port, string $out)
             {
                 $this->sendCalled = true;
             }
-            
+
             protected function doWrite(array $event)
             {
                 $this->lastEvent = $event;
@@ -225,7 +225,7 @@ class HttpAsyncMetricTest extends TestCase
             {
                 return parent::isValid($event);
             }
-            
+
             public function parseUrl(array $event): array
             {
                 return parent::parseUrl($event);

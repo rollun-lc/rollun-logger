@@ -16,7 +16,7 @@ use rollun\logger\Writer\HttpAsync;
 class HttpAsyncTest extends TestCase
 {
     private const TEST_URL = 'http://some-url.com/path';
-    
+
     private const TEST_HOST = 'some-url.com';
 
     private const TEST_LIFECYCLE_TOKEN = 'RID-123';
@@ -107,12 +107,12 @@ class HttpAsyncTest extends TestCase
     {
         $writer = new class (['url' => 'http://some-url.com']) extends HttpAsync {
             public $sendCalled = false;
-            
+
             protected function isValid(array $event): bool
             {
                 return false;
             }
-            
+
             protected function send(string $host, int $port, string $out)
             {
                 $this->sendCalled = true;
