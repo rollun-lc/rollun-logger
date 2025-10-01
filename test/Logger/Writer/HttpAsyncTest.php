@@ -19,7 +19,7 @@ class HttpAsyncTest extends TestCase
 
     private const TEST_HOST = 'some-url.com';
 
-    private const TEST_LIFECYCLE_TOKEN = 'RID-123';
+    private const TEST_LIFECYCLE_TOKEN = 'TRZ37KHQPXGLU7KM00Z2RVBYDU3ZR5';
 
     /**
      * Write with invalid URL test
@@ -41,7 +41,7 @@ class HttpAsyncTest extends TestCase
         // $url, $data, $expected
         return [
             [
-                'http://some-url.com/path',
+                self::TEST_URL,
                 ['foo' => '123'],
                 'UE9TVCAvcGF0aCBIVFRQLzEuMQ0KSG9zdDogc29tZS11cmwuY29tDQpBY2NlcHQ6IGFwcGxpY2F0aW9uL2pzb24NCkNvbnRlbnQtVHlwZTogYXBwbGljYXRpb24vanNvbg0KQ29udGVudC1MZW5ndGg6IDEzDQpDb25uZWN0aW9uOiBDbG9zZQ0KDQp7ImZvbyI6IjEyMyJ9ODBzb21lLXVybC5jb20=',
             ],
