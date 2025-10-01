@@ -22,103 +22,108 @@ class HttpAsyncMetricTest extends TestCase
     private const INVALID_METRIC_ID_SPECIAL = 'test-metric@123';
 
     /**
-     * @return array[]
+     * @return iterable
      */
-    public function getValidEventProvider(): array
+    public function getValidEventProvider(): iterable
     {
-        return [
-            'integer value' => [
-                [
-                    'context' => [
-                        'metricId' => self::VALID_METRIC_ID,
-                        'value' => 42,
-                    ],
+        yield 'integer value' => [
+            [
+                'context' => [
+                    'metricId' => self::VALID_METRIC_ID,
+                    'value' => 42,
                 ],
             ],
-            'float value' => [
-                [
-                    'context' => [
-                        'metricId' => 'cpu_usage',
-                        'value' => 85.5,
-                    ],
+        ];
+
+        yield 'float value' => [
+            [
+                'context' => [
+                    'metricId' => 'cpu_usage',
+                    'value' => 85.5,
                 ],
             ],
-            'with additional context' => [
-                [
-                    'context' => [
-                        'metricId' => 'memory_usage',
-                        'value' => 1024,
-                        'unit' => 'MB',
-                        'timestamp' => time(),
-                    ],
+        ];
+
+        yield 'with additional context' => [
+            [
+                'context' => [
+                    'metricId' => 'memory_usage',
+                    'value' => 1024,
+                    'unit' => 'MB',
+                    'timestamp' => time(),
                 ],
             ],
         ];
     }
 
     /**
-     * @return array[]
+     * @return iterable
      */
-    public function getInvalidEventProvider(): array
+    public function getInvalidEventProvider(): iterable
     {
-        return [
-            'missing metricId' => [
-                [
-                    'context' => [
-                        'value' => 42,
-                    ],
+        yield 'missing metricId' => [
+            [
+                'context' => [
+                    'value' => 42,
                 ],
             ],
-            'missing value' => [
-                [
-                    'context' => [
-                        'metricId' => self::VALID_METRIC_ID,
-                    ],
+        ];
+
+        yield 'missing value' => [
+            [
+                'context' => [
+                    'metricId' => self::VALID_METRIC_ID,
                 ],
             ],
-            'missing context' => [
-                [
-                    'message' => 'test message',
+        ];
+
+        yield 'missing context' => [
+            [
+                'message' => 'test message',
+            ],
+        ];
+
+        yield 'metricId too short' => [
+            [
+                'context' => [
+                    'metricId' => self::INVALID_METRIC_ID_SHORT,
+                    'value' => 42,
                 ],
             ],
-            'metricId too short' => [
-                [
-                    'context' => [
-                        'metricId' => self::INVALID_METRIC_ID_SHORT,
-                        'value' => 42,
-                    ],
+        ];
+
+        yield 'metricId too long' => [
+            [
+                'context' => [
+                    'metricId' => self::INVALID_METRIC_ID_LONG,
+                    'value' => 42,
                 ],
             ],
-            'metricId too long' => [
-                [
-                    'context' => [
-                        'metricId' => self::INVALID_METRIC_ID_LONG,
-                        'value' => 42,
-                    ],
+        ];
+
+        yield 'metricId with special chars' => [
+            [
+                'context' => [
+                    'metricId' => self::INVALID_METRIC_ID_SPECIAL,
+                    'value' => 42,
                 ],
             ],
-            'metricId with special chars' => [
-                [
-                    'context' => [
-                        'metricId' => self::INVALID_METRIC_ID_SPECIAL,
-                        'value' => 42,
-                    ],
+        ];
+
+        yield 'non-numeric value' => [
+            [
+                'context' => [
+                    'metricId' => self::VALID_METRIC_ID,
+                    'value' => 'not a number',
                 ],
             ],
-            'non-numeric value' => [
-                [
-                    'context' => [
-                        'metricId' => self::VALID_METRIC_ID,
-                        'value' => 'not a number',
-                    ],
-                ],
-            ],
-            'null value' => [
-                [
-                    'context' => [
-                        'metricId' => self::VALID_METRIC_ID,
-                        'value' => null,
-                    ],
+        ];
+
+        yield 'null value' => [
+            [
+                'context' => [
+                    'metricId' => self::VALID_METRIC_ID,
+                    'value' => null,
                 ],
             ],
         ];
