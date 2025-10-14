@@ -120,6 +120,12 @@ print_r($event['context']['backtrace']);
 `LifeCycleToken` - это объект который генерирует токены для определения приложения в котором была залогирована
 информация. 
 
+#### **Передача LCT.** 
+Клиенты передают **родительский** LCT одним HTTP-заголовком: `Lifecycle-Token: <token>` (допустимы имена-синонимы: `LifecycleToken`, `Life-Cycle-Token`; регистр имени не важен).
+
+#### **Распознавание.** 
+`LifeCycleToken::createFromHeaders()` ищет заголовок в `$_SERVER` по ключам `HTTP_LIFECYCLE_TOKEN`, `HTTP_LIFECYCLETOKEN`, `HTTP_LIFE_CYCLE_TOKEN` и, если найден, создаёт новый токен, установив найденное значение как **parent**. *(Заголовки с подчёркиваниями по умолчанию Nginx отбрасывает.)*
+
 **Для версий выше 5.2.1 (включительно)**
 
 LifeCycleToken подключается автоматически через конфигурацию. Если вы загружаете конфигурацию с ```rollun\logger\ConfigProvider```
