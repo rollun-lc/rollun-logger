@@ -55,7 +55,7 @@ class CountPerTime implements ProcessorInterface
 - `laminas/laminas-cache-storage-adapter-redis`
 
 Добавлены:
-- `symfony/cache: ^6.0|^7.0`
+- `symfony/cache: ^5.4|^6.0`
 - `laminas/laminas-validator: ^2.14` (отсутствовала явная зависимость)
 
 ## Кто затронут изменениями?

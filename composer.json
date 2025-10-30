@@ -28,7 +28,7 @@
     "psr/http-server-middleware": "^1.0",
     "laminas/laminas-mail": "^2.15.1",
     "psr/log": "^1.1.4",
-    "symfony/cache": "^6.0|^7.0",
+    "symfony/cache": "^5.4|^6.0",
     "promphp/prometheus_client_php": "^2",
     "promphp/prometheus_push_gateway_php": "^1"
   },

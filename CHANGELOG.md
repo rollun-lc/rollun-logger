@@ -19,7 +19,7 @@
 
 ### Added
 
-- Added `symfony/cache: ^6.0|^7.0` dependency (modern PSR-6/PSR-16 cache implementation)
+- Added `symfony/cache: ^5.4|^6.0` dependency (modern PSR-6/PSR-16 cache implementation)
 - Added missing `laminas/laminas-validator: ^2.14` dependency (was used but not declared)
 - Added [migration guide](docs/migration-symfony-cache.md) for Symfony Cache transition
 
