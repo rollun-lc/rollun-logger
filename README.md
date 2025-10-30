@@ -8,3 +8,7 @@
 
 * [Документация](https://github.com/rollun-com/rollun-logger/blob/master/docs/index.md)
 * [Формат логов](https://github.com/rollun-com/rollun-logger/blob/master/LOG_FORMAT.md)
+
+## Migration Guides
+
+* [Миграция на Symfony Cache](https://github.com/rollun-com/rollun-logger/blob/master/docs/migration-symfony-cache.md) - переход с Laminas Cache на Symfony Cache
