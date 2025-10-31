@@ -10,12 +10,14 @@ final class RecursiveTruncationParams
     private const DEFAULT_MAX_NESTING_DEPTH = 3;
     private const DEFAULT_MAX_ARRAY_TO_STRING_LENGTH = 1000;
     private const DEFAULT_MAX_ARRAY_ELEMENTS_AFTER_CUT = 3;
+    private const DEFAULT_MAX_RESULT_LENGTH = 102400;
 
     public function __construct(
         private int $maxLineLength              = self::DEFAULT_MAX_LINE_LENGTH,
         private int $maxNestingDepth            = self::DEFAULT_MAX_NESTING_DEPTH,
         private int $maxArrayToStringLength     = self::DEFAULT_MAX_ARRAY_TO_STRING_LENGTH,
         private int $maxArrayElementsAfterCut   = self::DEFAULT_MAX_ARRAY_ELEMENTS_AFTER_CUT,
+        private int $maxResultLength            = self::DEFAULT_MAX_RESULT_LENGTH,
     ) {
         $this->validate();
     }
@@ -30,6 +32,7 @@ final class RecursiveTruncationParams
             $a['maxNestingDepth'] ?? self::DEFAULT_MAX_NESTING_DEPTH,
             $a['maxArrayToStringLength'] ?? self::DEFAULT_MAX_ARRAY_TO_STRING_LENGTH,
             $a['maxArrayElementsAfterCut'] ?? self::DEFAULT_MAX_ARRAY_ELEMENTS_AFTER_CUT,
+            $a['maxResultLength'] ?? self::DEFAULT_MAX_RESULT_LENGTH,
         );
     }
 
@@ -48,6 +51,9 @@ final class RecursiveTruncationParams
             throw new InvalidArgumentException(
                 'arrayLimit (if > maxArrayChars, we leave only the first N elements) must be >= 1',
             );
+        }
+        if ($this->maxResultLength < 1) {
+            throw new InvalidArgumentException('maxResultLength must be >= 1');
         }
     }
 
@@ -71,6 +77,11 @@ final class RecursiveTruncationParams
         return $this->maxArrayElementsAfterCut;
     }
 
+    public function getMaxResultLength(): int
+    {
+        return $this->maxResultLength;
+    }
+
     public function withMaxLineLength(int $maxLineLength): self
     {
         return new self(
@@ -78,6 +89,7 @@ final class RecursiveTruncationParams
             $this->maxNestingDepth,
             $this->maxArrayToStringLength,
             $this->maxArrayElementsAfterCut,
+            $this->maxResultLength,
         );
     }
 
@@ -88,6 +100,7 @@ final class RecursiveTruncationParams
             $maxNestingDepth,
             $this->maxArrayToStringLength,
             $this->maxArrayElementsAfterCut,
+            $this->maxResultLength,
         );
     }
 
@@ -98,6 +111,7 @@ final class RecursiveTruncationParams
             $this->maxNestingDepth,
             $maxArrayToStringLength,
             $this->maxArrayElementsAfterCut,
+            $this->maxResultLength,
         );
     }
 
@@ -108,6 +122,18 @@ final class RecursiveTruncationParams
             $this->maxNestingDepth,
             $this->maxArrayToStringLength,
             $maxArrayElementsAfterCut,
+            $this->maxResultLength,
+        );
+    }
+
+    public function withMaxResultLength(int $maxResultLength): self
+    {
+        return new self(
+            $this->maxLineLength,
+            $this->maxNestingDepth,
+            $this->maxArrayToStringLength,
+            $this->maxArrayElementsAfterCut,
+            $maxResultLength,
         );
     }
 }

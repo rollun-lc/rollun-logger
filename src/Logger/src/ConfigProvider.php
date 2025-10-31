@@ -57,6 +57,7 @@ class ConfigProvider
                 'maxNestingDepth'           => 3,
                 'maxArrayToStringLength'    => 1000,
                 'maxArrayElementsAfterCut'  => 3,
+                'maxResultLength' => 102400,
             ],
         ];
     }
