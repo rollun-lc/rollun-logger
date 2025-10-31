@@ -39,12 +39,24 @@ class RecursiveJsonTruncator implements JsonTruncatorInterface
             throw new InvalidArgumentException("Invalid JSON");
         }
 
+        // First pass - only lists
         $processed = $this->walk(
-            $this->shrinkArrays($data),
+            $this->shrinkArrays($data, false),
             0
         );
+        $result = json_encode($processed, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
-        return json_encode($processed, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        // Check size and do second pass if needed
+        if (mb_strlen($result) > $this->params->getMaxResultLength()) {
+            // Second pass - with associative arrays
+            $processed = $this->walk(
+                $this->shrinkArrays($data, true),
+                0
+            );
+            $result = json_encode($processed, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        }
+
+        return $result;
     }
 
     /**
@@ -80,17 +92,18 @@ class RecursiveJsonTruncator implements JsonTruncatorInterface
 
     /**
      * @param mixed $node
+     * @param bool $cutAssociative
      * @return mixed
      */
-    private function shrinkArrays($node)
+    private function shrinkArrays($node, bool $cutAssociative = false)
     {
         if (!is_array($node)) {
             return $node;
         }
 
         $isList = $this->isList($node);
-        $processed = array_map(function ($v) {
-            return $this->shrinkArrays($v);
+        $processed = array_map(function ($v) use ($cutAssociative) {
+            return $this->shrinkArrays($v, $cutAssociative);
         }, $node);
 
         if ($isList) {
@@ -99,6 +112,31 @@ class RecursiveJsonTruncator implements JsonTruncatorInterface
                 $limited = array_slice($processed, 0, $this->params->getMaxArrayElementsAfterCut());
                 $limited[] = '…';
                 return $limited;
+            }
+        } elseif ($cutAssociative) {
+            $arrayString = json_encode($processed, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            if (mb_strlen($arrayString) > $this->params->getMaxArrayToStringLength()) {
+                $keys = array_keys($processed);
+                $total = count($keys);
+                $keep = $this->params->getMaxArrayElementsAfterCut();
+
+                if ($total > $keep) {
+                    $firstHalf = (int) ceil(($keep - 1) / 2);
+                    $lastHalf = (int) floor(($keep - 1) / 2);
+
+                    $firstKeys = array_slice($keys, 0, $firstHalf);
+                    $lastKeys = array_slice($keys, -$lastHalf);
+
+                    $limited = [];
+                    foreach ($firstKeys as $k) {
+                        $limited[$k] = $processed[$k];
+                    }
+                    $limited['…'] = '…';
+                    foreach ($lastKeys as $k) {
+                        $limited[$k] = $processed[$k];
+                    }
+                    return $limited;
+                }
             }
         }
 
