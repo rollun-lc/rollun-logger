@@ -30,12 +30,24 @@ class RecursiveJsonTruncator implements JsonTruncatorInterface
             throw new InvalidArgumentException("Invalid JSON");
         }
 
+        // First pass - only lists
         $processed = $this->walk(
-            $this->shrinkArrays($data),
+            $this->shrinkArrays($data, cutAssociative: false),
             0,
         );
+        $result = json_encode($processed, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
-        return json_encode($processed, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        // Check size and do second pass if needed
+        if (mb_strlen($result) > $this->params->getMaxResultLength()) {
+            // Second pass - with associative arrays
+            $processed = $this->walk(
+                $this->shrinkArrays($data, cutAssociative: true),
+                0,
+            );
+            $result = json_encode($processed, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        }
+
+        return $result;
     }
 
     private function truncateString($value): string|null
@@ -65,14 +77,14 @@ class RecursiveJsonTruncator implements JsonTruncatorInterface
         return array_keys($array) === range(0, count($array) - 1);
     }
 
-    private function shrinkArrays($node)
+    private function shrinkArrays($node, bool $cutAssociative = false)
     {
         if (!is_array($node)) {
             return $node;
         }
 
         $isList = $this->isList($node);
-        $processed = array_map(fn($v) => $this->shrinkArrays($v), $node);
+        $processed = array_map(fn($v) => $this->shrinkArrays($v, $cutAssociative), $node);
 
         if ($isList) {
             $arrayString = json_encode($processed, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
@@ -80,6 +92,31 @@ class RecursiveJsonTruncator implements JsonTruncatorInterface
                 $limited = array_slice($processed, 0, $this->params->getMaxArrayElementsAfterCut());
                 $limited[] = '…';
                 return $limited;
+            }
+        } elseif ($cutAssociative) {
+            $arrayString = json_encode($processed, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            if (mb_strlen($arrayString) > $this->params->getMaxArrayToStringLength()) {
+                $keys = array_keys($processed);
+                $total = count($keys);
+                $keep = $this->params->getMaxArrayElementsAfterCut();
+
+                if ($total > $keep) {
+                    $firstHalf = (int) ceil(($keep - 1) / 2);
+                    $lastHalf = (int) floor(($keep - 1) / 2);
+
+                    $firstKeys = array_slice($keys, 0, $firstHalf);
+                    $lastKeys = array_slice($keys, -$lastHalf);
+
+                    $limited = [];
+                    foreach ($firstKeys as $k) {
+                        $limited[$k] = $processed[$k];
+                    }
+                    $limited['…'] = '…';
+                    foreach ($lastKeys as $k) {
+                        $limited[$k] = $processed[$k];
+                    }
+                    return $limited;
+                }
             }
         }
 
