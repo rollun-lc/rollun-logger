@@ -45,6 +45,7 @@ class RecursiveJsonTruncatorTest extends TestCase
                     'maxNestingDepth' => 3,
                     'maxArrayToStringLength' => 1000,
                     'maxArrayElementsAfterCut' => 3,
+                    'maxResultLength' => 1000000,
                 ],
                 __DIR__ . '/data/truncated_result_1.json'
             ],
@@ -54,6 +55,7 @@ class RecursiveJsonTruncatorTest extends TestCase
                     'maxNestingDepth' => 2,
                     'maxArrayToStringLength' => 200,
                     'maxArrayElementsAfterCut' => 2,
+                    'maxResultLength' => 1000000,
                 ],
                 __DIR__ . '/data/truncated_result_2.json'
             ],
@@ -63,6 +65,7 @@ class RecursiveJsonTruncatorTest extends TestCase
                     'maxNestingDepth' => 1,
                     'maxArrayToStringLength' => 100,
                     'maxArrayElementsAfterCut' => 1,
+                    'maxResultLength' => 1000000,
                 ],
                 __DIR__ . '/data/truncated_result_3.json'
             ],
@@ -72,6 +75,7 @@ class RecursiveJsonTruncatorTest extends TestCase
                     'maxNestingDepth' => 5,
                     'maxArrayToStringLength' => 5000,
                     'maxArrayElementsAfterCut' => 10,
+                    'maxResultLength' => 1000000,
                 ],
                 __DIR__ . '/data/truncated_result_4.json'
             ],
@@ -81,6 +85,7 @@ class RecursiveJsonTruncatorTest extends TestCase
                     'maxNestingDepth' => 2,
                     'maxArrayToStringLength' => 50,
                     'maxArrayElementsAfterCut' => 1,
+                    'maxResultLength' => 1000000,
                 ],
                 __DIR__ . '/data/truncated_result_5.json'
             ],
@@ -283,5 +288,77 @@ class RecursiveJsonTruncatorTest extends TestCase
         $decoded = json_decode($result, true);
         $this->assertIsArray($decoded, 'Decoded result should be an array');
         $this->assertSame(JSON_ERROR_NONE, json_last_error(), 'Truncated output must be valid JSON');
+    }
+
+    public function testMaxResultLengthEnforcement(): void
+    {
+        $largeData = ['data' => range(1, 10000)];
+        $params = RecursiveTruncationParams::createFromArray([
+            'maxResultLength' => 1000,
+        ]);
+
+        $result = $this->jsonTruncator->withConfig($params)->truncate(json_encode($largeData));
+
+        $this->assertLessThanOrEqual(1000, mb_strlen($result));
+    }
+
+    public function testMaxResultLengthValidation(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        RecursiveTruncationParams::createFromArray(['maxResultLength' => 0]);
+    }
+
+    public function testAssociativeArrayMiddleCut(): void
+    {
+        $data = [
+            'assoc' => [
+                'first' => 1,
+                'second' => 2,
+                'third' => 3,
+                'fourth' => 4,
+                'fifth' => 5,
+                'sixth' => 6,
+            ],
+        ];
+
+        $params = RecursiveTruncationParams::createFromArray([
+            'maxResultLength' => 50,
+            'maxArrayToStringLength' => 30,
+            'maxArrayElementsAfterCut' => 4,
+        ]);
+
+        $result = json_decode(
+            $this->jsonTruncator->withConfig($params)->truncate(json_encode($data)),
+            true
+        );
+
+        $this->assertArrayHasKey('first', $result['assoc']);
+        $this->assertArrayHasKey('sixth', $result['assoc']);
+        $this->assertArrayHasKey('…', $result['assoc']);
+    }
+
+    public function testTwoPassTruncation(): void
+    {
+        $data = [
+            'list' => range(1, 100),
+            'assoc' => array_combine(
+                array_map(fn($i) => "key_$i", range(1, 100)),
+                range(1, 100)
+            ),
+        ];
+
+        $params = RecursiveTruncationParams::createFromArray([
+            'maxResultLength' => 500,
+            'maxArrayToStringLength' => 200,
+            'maxArrayElementsAfterCut' => 3,
+        ]);
+
+        $result = json_decode(
+            $this->jsonTruncator->withConfig($params)->truncate(json_encode($data)),
+            true
+        );
+
+        $this->assertEquals(4, count($result['list']));
+        $this->assertArrayHasKey('…', $result['assoc']);
     }
 }
