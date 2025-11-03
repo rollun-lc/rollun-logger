@@ -59,8 +59,8 @@ class LogStashFormatter implements FormatterInterface
             $event['context'] = $this->jsonTruncator->truncate(json_encode($event['context']));
 
             // Hard size check on context - emergency truncation
-            if (mb_strlen($event['context']) > self::HARD_MAX_LOG_SIZE) {
-                $event['context'] = mb_substr($event['context'], 0, self::HARD_MAX_LOG_SIZE - 20) . '..."[TRUNCATED]"}';
+            if (strlen($event['context']) > self::HARD_MAX_LOG_SIZE) {
+                $event['context'] = substr($event['context'], 0, self::HARD_MAX_LOG_SIZE - 20) . '..."[TRUNCATED]"}';
             }
         } catch (\Throwable $exception) {
             //            TODO: добавить здесь проблема с обрезкой лога?
