@@ -111,11 +111,11 @@ class CountPerTime implements ProcessorInterface
 
     protected function getTimeKey(): string
     {
-        return "$this->key:CountPerTime:timestamp";
+        return "$this->key" . "_CountPerTime_timestamp";
     }
 
     protected function getCountKey(): string
     {
-        return "$this->key:CountPerTime:count";
+        return "$this->key" . "_CountPerTime_count";
     }
 }
