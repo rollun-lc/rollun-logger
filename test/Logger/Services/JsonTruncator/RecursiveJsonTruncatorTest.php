@@ -361,4 +361,72 @@ class RecursiveJsonTruncatorTest extends TestCase
         $this->assertEquals(4, count($result['list']));
         $this->assertArrayHasKey('…', $result['assoc']);
     }
+
+    public static function largeFileTruncationProvider(): \Generator
+    {
+        yield '3k_items_to_10KB' => [
+            'inputFile' => __DIR__ . '/data/input_3k_items.json',
+            'maxResultLength' => 10000,
+            'expectedRootKey' => null,
+        ];
+
+        yield '5MB_file_to_100KB' => [
+            'inputFile' => __DIR__ . '/data/input_5mb.json',
+            'maxResultLength' => 100000,
+            'expectedRootKey' => 'inventoryItems',
+        ];
+    }
+
+    /**
+     * @dataProvider largeFileTruncationProvider
+     */
+    public function testLargeFileTruncation(string $inputFile, int $maxResultLength, ?string $expectedRootKey): void
+    {
+        $inputJson = file_get_contents($inputFile);
+
+        $params = RecursiveTruncationParams::createFromArray([
+            'maxLineLength' => 200,
+            'maxNestingDepth' => 5,
+            'maxArrayToStringLength' => 5000,
+            'maxArrayElementsAfterCut' => 10,
+            'maxResultLength' => $maxResultLength,
+        ]);
+
+        $result = $this->jsonTruncator->withConfig($params)->truncate($inputJson);
+
+        // Check that result does not exceed maxResultLength
+        $this->assertLessThanOrEqual(
+            $maxResultLength,
+            strlen($result),
+            'Result size should not exceed maxResultLength'
+        );
+
+        // Check that result is valid JSON
+        $decoded = json_decode($result, true);
+        $this->assertIsArray($decoded, 'Result must be valid JSON');
+        $this->assertSame(JSON_ERROR_NONE, json_last_error(), 'Result must be valid JSON');
+
+        // Check that data was truncated (result is smaller than original)
+        $this->assertLessThan(
+            strlen($inputJson),
+            strlen($result),
+            'Result should be smaller than original input'
+        );
+
+        // Check that truncation occurred (should have … markers)
+        $this->assertStringContainsString(
+            '…',
+            $result,
+            'Result should contain truncation markers'
+        );
+
+        // Verify the structure is preserved if expected key is provided
+        if ($expectedRootKey !== null) {
+            $this->assertArrayHasKey(
+                $expectedRootKey,
+                $decoded,
+                'Root structure should be preserved'
+            );
+        }
+    }
 }
