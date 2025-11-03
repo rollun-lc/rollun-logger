@@ -42,7 +42,6 @@ class LogStashFormatter implements FormatterInterface
                 $event['context'] = substr($event['context'], 0, self::HARD_MAX_LOG_SIZE - 20) . '..."[TRUNCATED]"}';
             }
         } catch (\Throwable $exception) {
-            //            TODO: добавить здесь проблема с обрезкой лога?
             $errorMessage = $exception->getMessage();
             $event['context'] = 'Error: ' . $errorMessage;
         }
