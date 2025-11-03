@@ -38,7 +38,7 @@ class RecursiveJsonTruncator implements JsonTruncatorInterface
         $result = json_encode($processed, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
         // Check size and do second pass if needed
-        if (mb_strlen($result) > $this->params->getMaxResultLength()) {
+        if (strlen($result) > $this->params->getMaxResultLength()) {
             // Second pass - with associative arrays
             $processed = $this->walk(
                 $this->shrinkArrays($data, cutAssociative: true),
@@ -62,8 +62,8 @@ class RecursiveJsonTruncator implements JsonTruncatorInterface
             $str = (string) $value;
         }
 
-        if (mb_strlen($str) > $this->params->getMaxLineLength()) {
-            return mb_substr($str, 0, $this->params->getMaxLineLength()) . '…';
+        if (strlen($str) > $this->params->getMaxLineLength()) {
+            return substr($str, 0, $this->params->getMaxLineLength()) . '…';
         }
 
         return $str;
@@ -88,14 +88,14 @@ class RecursiveJsonTruncator implements JsonTruncatorInterface
 
         if ($isList) {
             $arrayString = json_encode($processed, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-            if (mb_strlen($arrayString) > $this->params->getMaxArrayToStringLength()) {
+            if (strlen($arrayString) > $this->params->getMaxArrayToStringLength()) {
                 $limited = array_slice($processed, 0, $this->params->getMaxArrayElementsAfterCut());
                 $limited[] = '…';
                 return $limited;
             }
         } elseif ($cutAssociative) {
             $arrayString = json_encode($processed, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-            if (mb_strlen($arrayString) > $this->params->getMaxArrayToStringLength()) {
+            if (strlen($arrayString) > $this->params->getMaxArrayToStringLength()) {
                 $keys = array_keys($processed);
                 $total = count($keys);
                 $keep = $this->params->getMaxArrayElementsAfterCut();

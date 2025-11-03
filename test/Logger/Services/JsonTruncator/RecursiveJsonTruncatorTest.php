@@ -305,7 +305,7 @@ class RecursiveJsonTruncatorTest extends TestCase
 
         $result = $this->jsonTruncator->withConfig($params)->truncate(json_encode($largeData));
 
-        $this->assertLessThanOrEqual(1000, mb_strlen($result));
+        $this->assertLessThanOrEqual(1000, strlen($result));
     }
 
     public function testMaxResultLengthValidation(): void
