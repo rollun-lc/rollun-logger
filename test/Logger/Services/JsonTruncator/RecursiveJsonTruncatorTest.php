@@ -342,7 +342,9 @@ class RecursiveJsonTruncatorTest extends TestCase
         $data = [
             'list' => range(1, 100),
             'assoc' => array_combine(
-                array_map(fn($i) => "key_$i", range(1, 100)),
+                array_map(function ($i) {
+                    return "key_$i";
+                }, range(1, 100)),
                 range(1, 100)
             ),
         ];

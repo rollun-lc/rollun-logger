@@ -1,6 +1,6 @@
 <?php
 
-namespace Rollun\Test\Logger;
+namespace rollun\test\logger;
 
 use DateTime;
 use PHPUnit\Framework\TestCase;
@@ -8,7 +8,10 @@ use rollun\logger\Formatter\LogStashFormatter;
 
 class LogStashFormatterTest extends TestCase
 {
-    private LogStashFormatter $formatter;
+    /**
+     * @var LogStashFormatter
+     */
+    private $formatter;
 
     public function setUp(): void
     {
