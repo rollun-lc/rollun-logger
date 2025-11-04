@@ -678,3 +678,94 @@ return function (Application $app, MiddlewareFactory $factory, ContainerInterfac
 По умолчанию логгер берется из контенйера по ключу "Psr\Log\LoggerInterface", согласно фабрике [RequestLoggedMiddlewareFactory](https://github.com/rollun-com/rollun-logger/blob/fa35ffa8dca2f137d38fa3b66eb8fdc3fde5283a/src/Logger/src/Middleware/Factory/RequestLoggedMiddlewareFactory.php#L18),
 которая подключается в `rollun\logger\ConfigProvider`. Если вам это не подходит вы всегда можете переопределить эту фабрику
 в своей конфигурации.
+
+### RecursiveJsonTruncator
+
+#### Инструмент для «умного» усечения больших JSON-строк:
+* **Первый проход**: рекурсивно «сжимает» слишком длинные списковые массивы (массивы с числовыми ключами 0..N-1). Оставляет первые N элементов и добавляет `…` в конец.
+* **Проверка размера**: после первого прохода проверяется размер результата. Если он превышает `maxResultLength`, запускается второй проход.
+* **Второй проход**: дополнительно обрезает ассоциативные массивы (с строковыми ключами). При обрезке ассоциативных массивов сохраняются первые и последние ключи, а в середину добавляется маркер `'…' => '…'` для понимания структуры.
+* **Глубинный обход**: выполняет обход и, начиная с заданной глубины, превращает узел в строку (через `json_encode`) и обрезает строку до лимита, добавляя `…`, если нужно.
+* **Защита от больших логов**: результат гарантированно не превысит `maxResultLength` (по умолчанию 100 КБ).
+
+**Дополнительная защита в LogStashFormatter**: После обрезки контекста в `RecursiveJsonTruncator`, поле `context` проходит жесткую проверку размера в `LogStashFormatter`. Если `context` превышает `HARD_MAX_LOG_SIZE` (100 КБ), он обрезается принудительно с добавлением маркера `[TRUNCATED]`. Это гарантирует, что в ELK не попадут логи с контекстом больше допустимого размера.
+
+#### Публичный контракт
+* `__construct(RecursiveTruncationParams $params)`
+* `withConfig(RecursiveTruncationParams $params): self` — возвращает клон с другими параметрами.
+* `truncate(string $json): string` - принимает JSON-строку, возвращает JSON-строку. Если вход — невалидный JSON, бросает `InvalidArgumentException`
+
+#### Параметры
+Класс:
+```php
+rollun\logger\Services\RecursiveTruncationParams
+```
+**Поля**
+* `maxLineLength` (по умолчанию: 1000) — лимит символов для строки при усечении (в т.ч. когда узел превращён в строку на глубине).
+* `maxNestingDepth` (по умолчанию: 3) — максимальная глубина обхода. На глубине >= этого значения узел превращается в строку и при необходимости обрезается.
+* `maxArrayToStringLength` (по умолчанию: 1000) — если `json_encode()` массива длиннее этого порога, массив сжимается (оставляем первые `maxArrayElementsAfterCut` элементов + `…`).
+* `maxArrayElementsAfterCut` (по умолчанию: 10) — сколько элементов оставить при сжатии массива (включая маркер `'…'`). Для списковых массивов — первые N-1 элементов + маркер. Для ассоциативных — первые `ceil((N-1)/2)` ключей + маркер + последние `floor((N-1)/2)` ключей.
+* `maxResultLength` (по умолчанию: 102400 = 100 КБ) — **новый параметр**. Жесткий лимит на размер результата. Если после первого прохода результат превышает этот лимит, запускается второй проход с обрезкой ассоциативных массивов.
+
+Конструктор VO валидирует значения (минимумы/границы) и может быть создан из массива
+```php
+use rollun\logger\Services\RecursiveTruncationParams;
+
+$params = RecursiveTruncationParams::createFromArray([
+    'maxLineLength'            => 1000,
+    'maxNestingDepth'          => 3,
+    'maxArrayToStringLength'   => 1000,
+    'maxArrayElementsAfterCut' => 10,
+    'maxResultLength'          => 102400, // 100 КБ
+]);
+
+``` 
+
+#### Пример использования
+```php
+use rollun\logger\Services\RecursiveJsonTruncator;
+use rollun\logger\Services\RecursiveTruncationParams;
+
+$params = RecursiveTruncationParams::createFromArray([
+    'maxLineLength'            => 200,  // строковый лимит
+    'maxNestingDepth'          => 2,    // глубже -> в строку
+    'maxArrayToStringLength'   => 300,  // порог «сжатия» массива
+    'maxArrayElementsAfterCut' => 3,    // оставляем 3 элемента + …
+]);
+
+$truncator = new RecursiveJsonTruncator($params);
+
+$inputJson = json_encode([
+    'meta' => ['veryLong' => str_repeat('x', 1000)],
+    'items' => range(1, 50),
+]);
+
+$out = $truncator->truncate($inputJson);
+// $out — валидный JSON, укороченный по описанным правилам
+
+``` 
+
+#### Конфигурация
+Если отдельная конфигурация не задана, берутся значения по умолчанию. Задается таким образом:
+```php
+RecursiveJsonTruncatorFactory::class => [
+                'maxLineLength'             => 1000,
+                'maxNestingDepth'           => 3,
+                'maxArrayToStringLength'    => 1000,
+                'maxArrayElementsAfterCut'  => 10,
+                'maxResultLength'           => 102400, // 100 КБ
+            ],
+
+``` 
+
+#### Тонкости
+* **Валидность JSON**: На входе ожидается валидный JSON (строка). Иначе — `InvalidArgumentException`. На выходе — всегда валидный JSON
+* **Глубина**: При достижении `maxNestingDepth` узел превращается в строку (`json_encode` подузла) и, если нужно, обрезается до `maxLineLength`. Это значит, что числа/булевы/массивы/объекты на этой глубине станут строкой в итоговом JSON.
+* **Двухпроходный алгоритм**:
+  - Первый проход обрезает только списковые массивы (с числовыми индексами 0, 1, 2...).
+  - Если результат превышает `maxResultLength`, запускается второй проход, который дополнительно обрезает ассоциативные массивы.
+  - Это позволяет в большинстве случаев сохранить ассоциативные массивы целыми, обрезая их только при необходимости.
+* **Обрезка ассоциативных массивов**: При обрезке сохраняются первые `ceil((N-1)/2)` ключей и последние `floor((N-1)/2)` ключей, где `N = maxArrayElementsAfterCut`. Между ними вставляется маркер `'…' => '…'`. Например, если `maxArrayElementsAfterCut = 4`, из массива с ключами `['a', 'b', 'c', 'd', 'e', 'f']` останутся `['a', 'b', '…' => '…', 'f']` (2 первых, маркер, 1 последний = 4 элемента). Все остальные ключи между первыми и последними удаляются.
+* **Защита в LogStashFormatter**: Даже если `RecursiveJsonTruncator` не смог уложиться в лимит, `LogStashFormatter` применит жесткую обрезку поля `context` на уровне 100 КБ (`HARD_MAX_LOG_SIZE`). Проверка выполняется после работы `RecursiveJsonTruncator` и обрезает именно контекст, а не весь финальный JSON.
+* `…` — Unicode-многоточие (U+2026).
+* `null` сохраняется как `null` (не как строка `"null"`), пока узел не превратился в строку из-за глубины — тогда узел станет строкой (`"null"`), и к нему применится лимит

@@ -13,6 +13,7 @@ use RuntimeException;
 class LogStashFormatter implements FormatterInterface
 {
     public const DEFAULT_MAX_SIZE = 1500;
+    public const HARD_MAX_LOG_SIZE = 102400; // 100 Kb, limits the final truncated context string length (strlen)
 
     // key in 'context' field of log which can be used to pass index_name
     public const INDEX_NAME_KEY = 'es_index_name';
@@ -56,8 +57,12 @@ class LogStashFormatter implements FormatterInterface
         }
         try {
             $event['context'] = $this->jsonTruncator->truncate(json_encode($event['context']));
+
+            // Hard size check on context - emergency truncation
+            if (strlen($event['context']) > self::HARD_MAX_LOG_SIZE) {
+                $event['context'] = substr($event['context'], 0, self::HARD_MAX_LOG_SIZE - 20) . '..."[TRUNCATED]"}';
+            }
         } catch (\Throwable $exception) {
-            //            TODO: добавить здесь проблема с обрезкой лога?
             $errorMessage = $exception->getMessage();
             $event['context'] = 'Error: ' . $errorMessage;
         }
