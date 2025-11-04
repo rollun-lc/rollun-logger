@@ -2,7 +2,7 @@
 
 namespace rollun\logger\Processor;
 
-use Laminas\Cache\Storage\StorageInterface;
+use Psr\SimpleCache\CacheInterface;
 use rollun\logger\DTO\LogsCountInfo;
 
 class CountPerTime implements ProcessorInterface
@@ -36,7 +36,7 @@ class CountPerTime implements ProcessorInterface
     private $onFalse = [];
 
     public function __construct(
-        private StorageInterface $storage,
+        private CacheInterface $storage,
         private string $key,
         array $options = null
     ) {
@@ -68,16 +68,16 @@ class CountPerTime implements ProcessorInterface
         $timeKey = $this->getTimeKey();
         $countKey = $this->getCountKey();
 
-        $lastTimestamp = $this->storage->getItem($timeKey);
-        $count = $this->storage->getItem($countKey) ?? 0;
+        $lastTimestamp = $this->storage->get($timeKey);
+        $count = $this->storage->get($countKey) ?? 0;
 
         if ($lastTimestamp < $now - $this->timeLimit) {
-            $this->storage->setItem($timeKey, $now);
+            $this->storage->set($timeKey, $now);
             $count = 0;
         }
 
         $count++;
-        $this->storage->setItem($countKey, $count);
+        $this->storage->set($countKey, $count);
 
         $isTrue = $this->compareByOperator($count);
 
@@ -111,11 +111,11 @@ class CountPerTime implements ProcessorInterface
 
     protected function getTimeKey(): string
     {
-        return "$this->key:CountPerTime:timestamp";
+        return "$this->key" . "_CountPerTime_timestamp";
     }
 
     protected function getCountKey(): string
     {
-        return "$this->key:CountPerTime:count";
+        return "$this->key" . "_CountPerTime_count";
     }
 }
