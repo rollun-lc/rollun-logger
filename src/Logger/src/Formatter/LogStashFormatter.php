@@ -13,7 +13,7 @@ use RuntimeException;
 class LogStashFormatter implements FormatterInterface
 {
     public const DEFAULT_MAX_SIZE = 1500;
-    public const HARD_MAX_LOG_SIZE = 102400;
+    public const HARD_MAX_LOG_SIZE = 102400; // 100 Kb, limits the final truncated context string length (strlen)
 
     // key in 'context' field of log which can be used to pass index_name
     public const INDEX_NAME_KEY = 'es_index_name';
