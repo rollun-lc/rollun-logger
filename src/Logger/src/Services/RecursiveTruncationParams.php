@@ -9,7 +9,7 @@ final class RecursiveTruncationParams
     private const DEFAULT_MAX_LINE_LENGTH = 1000;
     private const DEFAULT_MAX_NESTING_DEPTH = 3;
     private const DEFAULT_MAX_ARRAY_TO_STRING_LENGTH = 1000;
-    private const DEFAULT_MAX_ARRAY_ELEMENTS_AFTER_CUT = 3;
+    private const DEFAULT_MAX_ARRAY_ELEMENTS_AFTER_CUT = 10;
     private const DEFAULT_MAX_RESULT_LENGTH = 102400; // 100 Kb, limits the final truncated string length (strlen).
 
     /**

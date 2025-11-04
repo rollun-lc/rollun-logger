@@ -704,7 +704,7 @@ rollun\logger\Services\RecursiveTruncationParams
 * `maxLineLength` (по умолчанию: 1000) — лимит символов для строки при усечении (в т.ч. когда узел превращён в строку на глубине).
 * `maxNestingDepth` (по умолчанию: 3) — максимальная глубина обхода. На глубине >= этого значения узел превращается в строку и при необходимости обрезается.
 * `maxArrayToStringLength` (по умолчанию: 1000) — если `json_encode()` массива длиннее этого порога, массив сжимается (оставляем первые `maxArrayElementsAfterCut` элементов + `…`).
-* `maxArrayElementsAfterCut` (по умолчанию: 3) — сколько элементов оставить при сжатии массива (включая маркер `'…'`). Для списковых массивов — первые N-1 элементов + маркер. Для ассоциативных — первые `ceil((N-1)/2)` ключей + маркер + последние `floor((N-1)/2)` ключей.
+* `maxArrayElementsAfterCut` (по умолчанию: 10) — сколько элементов оставить при сжатии массива (включая маркер `'…'`). Для списковых массивов — первые N-1 элементов + маркер. Для ассоциативных — первые `ceil((N-1)/2)` ключей + маркер + последние `floor((N-1)/2)` ключей.
 * `maxResultLength` (по умолчанию: 102400 = 100 КБ) — **новый параметр**. Жесткий лимит на размер результата. Если после первого прохода результат превышает этот лимит, запускается второй проход с обрезкой ассоциативных массивов.
 
 Конструктор VO валидирует значения (минимумы/границы) и может быть создан из массива
@@ -715,7 +715,7 @@ $params = RecursiveTruncationParams::createFromArray([
     'maxLineLength'            => 1000,
     'maxNestingDepth'          => 3,
     'maxArrayToStringLength'   => 1000,
-    'maxArrayElementsAfterCut' => 3,
+    'maxArrayElementsAfterCut' => 10,
     'maxResultLength'          => 102400, // 100 КБ
 ]);
 
@@ -752,7 +752,7 @@ RecursiveJsonTruncatorFactory::class => [
                 'maxLineLength'             => 1000,
                 'maxNestingDepth'           => 3,
                 'maxArrayToStringLength'    => 1000,
-                'maxArrayElementsAfterCut'  => 3,
+                'maxArrayElementsAfterCut'  => 10,
                 'maxResultLength'           => 102400, // 100 КБ
             ],
 
