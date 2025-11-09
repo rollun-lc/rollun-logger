@@ -5,6 +5,10 @@ namespace rollun\logger\Processor;
 use Laminas\Cache\Storage\StorageInterface;
 use rollun\logger\DTO\LogsCountInfo;
 
+/**
+ * @deprecated since version 7.8.0, will be removed in version 8.0.0.
+ * Reason: CountPerTime functionality and related laminas-cache dependency are no longer used and create unnecessary dependencies.
+ */
 class CountPerTime implements ProcessorInterface
 {
     public const KEY_TIME = 'time';
@@ -40,6 +44,11 @@ class CountPerTime implements ProcessorInterface
         private string $key,
         array $options = null
     ) {
+        trigger_error(
+            'Class CountPerTime is deprecated since version 7.8.0 and will be removed in version 8.0.0. CountPerTime functionality and related laminas-cache dependency are no longer used.',
+            E_USER_DEPRECATED
+        );
+
         if (isset($options[self::KEY_TIME])) {
             $this->timeLimit = $options[self::KEY_TIME];
         }
