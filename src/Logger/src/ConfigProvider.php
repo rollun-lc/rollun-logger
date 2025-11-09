@@ -71,6 +71,7 @@ class ConfigProvider
             ],
             'factories' => [
                 LifeCycleTokenInjector::class => LifeCycleTokenReferenceInjectorFactory::class,
+                /** @deprecated since version 7.8.0, will be removed in version 8.0.0 */
                 CountPerTime::class => CountPerTimeFactory::class,
             ],
         ];
@@ -118,6 +119,7 @@ class ConfigProvider
                 'LogFormatterManager' => FormatterPluginManagerFactory::class,
                 'LogProcessorManager' => ProcessorPluginManagerFactory::class,
                 'LogWriterManager'    => WriterPluginManagerFactory::class,
+                /** @deprecated since version 7.8.0, will be removed in version 8.0.0 */
                 'StorageForLogsCount' => RedisStorageFactory::class,
                 RecursiveJsonTruncator::class => RecursiveJsonTruncatorFactory::class,
 
