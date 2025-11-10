@@ -10,7 +10,6 @@ namespace rollun\logger;
 use Psr\Log\LoggerInterface;
 use rollun\logger\Factory\RecursiveJsonTruncatorFactory;
 use rollun\logger\Factory\LifeCycleTokenFactory;
-use rollun\logger\Factory\RedisStorageFactory;
 use rollun\logger\Formatter\ContextToString;
 use rollun\logger\Formatter\Factory\LogStashFormatterFactory;
 use rollun\logger\Formatter\FluentdFormatter;
@@ -18,9 +17,7 @@ use rollun\logger\Formatter\LogStashFormatter;
 use rollun\logger\Formatter\SlackFormatter;
 use rollun\logger\Middleware\Factory\RequestLoggedMiddlewareFactory;
 use rollun\logger\Middleware\RequestLoggedMiddleware;
-use rollun\logger\Processor\CountPerTime;
 use rollun\logger\Processor\ExceptionBacktrace;
-use rollun\logger\Processor\Factory\CountPerTimeFactory;
 use rollun\logger\Processor\Factory\LifeCycleTokenReferenceInjectorFactory;
 use rollun\logger\Processor\IdMaker;
 use rollun\logger\Processor\LifeCycleTokenInjector;
@@ -71,8 +68,6 @@ class ConfigProvider
             ],
             'factories' => [
                 LifeCycleTokenInjector::class => LifeCycleTokenReferenceInjectorFactory::class,
-                /** @deprecated since version 7.8.0, will be removed in version 8.0.0 */
-                CountPerTime::class => CountPerTimeFactory::class,
             ],
         ];
     }
@@ -119,8 +114,6 @@ class ConfigProvider
                 'LogFormatterManager' => FormatterPluginManagerFactory::class,
                 'LogProcessorManager' => ProcessorPluginManagerFactory::class,
                 'LogWriterManager'    => WriterPluginManagerFactory::class,
-                /** @deprecated since version 7.8.0, will be removed in version 8.0.0 */
-                'StorageForLogsCount' => RedisStorageFactory::class,
                 RecursiveJsonTruncator::class => RecursiveJsonTruncatorFactory::class,
 
                 //LifeCycleToken

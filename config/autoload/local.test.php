@@ -15,9 +15,7 @@ use rollun\logger\Logger;
 use rollun\logger\LoggerAbstractServiceFactory;
 use rollun\logger\LoggerServiceFactory;
 use rollun\logger\Processor\ChangeLevel;
-use rollun\logger\Processor\CountPerTime;
 use rollun\logger\Processor\Factory\ConditionalProcessorAbstractFactory;
-use rollun\logger\Processor\Factory\CountPerTimeFactory;
 use rollun\logger\Processor\Factory\ProcessorAbstractFactory;
 use rollun\logger\Processor\IdMaker;
 use rollun\logger\Processor\ProcessorWithCount;
@@ -50,7 +48,6 @@ return [
             ConditionalProcessorAbstractFactory::class,
         ],
         'factories' => [
-            CountPerTime::class => CountPerTimeFactory::class,
             IdMaker::class => InvokableFactory::class,
         ],
     ],
@@ -70,35 +67,6 @@ return [
         ],
     ],
     ConditionalProcessorAbstractFactory::KEY => [
-        'DuplicateAmazonProductsCrossMatch' => [
-            ConditionalProcessorAbstractFactory::KEY_FILTERS => [
-                [
-                    'name'    => 'regex',
-                    'options' => [
-                        'regex' => '/^TEST$/',
-                    ],
-                ],
-            ],
-            ConditionalProcessorAbstractFactory::KEY_PROCESSORS => [
-                [
-                    'name' => CountPerTime::class,
-                    'options' => [
-                        'time' => 60,
-                        'count' => 2,
-                        'onTrue' => [
-                            [
-                                'name' => 'ChangeErrorToWarning',
-                            ],
-                        ],
-                        'onFalse' => [
-                            [
-                                'name' => ProcessorWithCount::class,
-                            ],
-                        ],
-                    ],
-                ],
-            ],
-        ],
     ],
     ProcessorAbstractFactory::KEY => [
         'ChangeErrorToWarning' => [
@@ -114,9 +82,6 @@ return [
             'processors' => [
                 [
                     'name' => IdMaker::class,
-                ],
-                [
-                    'name' => 'DuplicateAmazonProductsCrossMatch',
                 ],
             ],
             'writers' => [
