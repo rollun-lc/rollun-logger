@@ -125,7 +125,7 @@ class HttpAsync extends AbstractWriter
      */
     protected function send(string $host, int $port, string $out)
     {
-        $fp = fsockopen($host, $port, $errno, $errstr, 0.1);
+        $fp = fsockopen($host, $port, $errno, $errstr, 0.5);
 
         if ($fp === false) {
             $this->isServerAvailable = false;
