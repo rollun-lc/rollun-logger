@@ -64,13 +64,15 @@ class Stream extends AbstractWriter
     /**
      * Constructor
      *
-     * @param  string|resource|array|Traversable $streamOrUrl Stream or URL to open as a stream
+     * @param  string|resource|array|Traversable $streamOrUrl Stream or URL to open as a stream.
+     *     As an array of options, 'persistent' => true keeps php://stdout|stderr|fd/N open between
+     *     writes as older versions did (plain files are always held open, but with close-on-exec).
+     *     Note that a reopened php://stdout follows whatever descriptor 1 is at write time: a script
+     *     that closes STDOUT and opens another file will find its log lines in that file.
      * @param  string|null $mode Mode, only applicable if a URL is given
      * @param  null|string $logSeparator Log separator string
      * @param  null|int $filePermissions Permissions value, only applicable if a filename is given;
      *     when $streamOrUrl is an array of options, use the 'chmod' key to specify this.
-     *     The 'persistent' option (bool, default false) keeps php://stdout|stderr|fd/N open between writes
-     *     as older versions did; plain files are always held open, but with close-on-exec set.
      * @throws InvalidArgumentException
      * @throws RuntimeException|ErrorException
      */
@@ -170,7 +172,11 @@ class Stream extends AbstractWriter
             return;
         }
 
+        // Own handler level (they nest) so the fopen() warning ends up as the exception's previous
+        // instead of being discarded by AbstractWriter::write() on its way out.
+        ErrorHandler::start();
         $stream = fopen($this->reopenUrl, $this->reopenMode, false);
+        $error = ErrorHandler::stop();
         if (! $stream) {
             // A RuntimeException is caught by AbstractWriter::write(); a TypeError from fwrite(false)
             // would bypass it and leave the ErrorHandler started for the rest of the request.
@@ -178,7 +184,7 @@ class Stream extends AbstractWriter
                 '"%s" cannot be opened with mode "%s"',
                 $this->reopenUrl,
                 $this->reopenMode
-            ));
+            ), 0, $error);
         }
         try {
             fwrite($stream, $line);

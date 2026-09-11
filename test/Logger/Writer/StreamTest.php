@@ -38,9 +38,10 @@ class StreamTest extends TestCase
     {
         $this->requireProc();
 
-        $writer = new Stream($url);
+        $writer = new Stream($url, null, '');
         $writer->setFormatter($this->formatter());
-        $writer->write(['message' => 'probe', 'priority' => 6, 'timestamp' => 0, 'extra' => []]);
+        // An empty line still opens (and must close) the descriptor, without polluting the runner's output.
+        $writer->write(['message' => '', 'priority' => 6, 'timestamp' => 0, 'extra' => []]);
         // The writer has just written; a process spawned now must see only its own 0/1/2.
         $childEntries = $this->spawnAndListPipes();
 
@@ -60,6 +61,24 @@ class StreamTest extends TestCase
             ['PHP://STDOUT'],
             ['php://fd/1'],
         ];
+    }
+
+    public function testReopenedDescriptorReceivesEveryLine(): void
+    {
+        $this->requireProc();
+        $file = $this->tempFile();
+        $handle = fopen($file, 'w');
+        $fd = $this->fdNumberOf($handle);
+
+        $writer = new Stream("php://fd/$fd");
+        $writer->setFormatter($this->formatter());
+        $writer->write(['message' => 'first', 'priority' => 6, 'timestamp' => 0, 'extra' => []]);
+        $writer->write(['message' => 'second', 'priority' => 6, 'timestamp' => 0, 'extra' => []]);
+        $writer->shutdown();
+        fclose($handle);
+
+        $this->assertNull($this->streamOf($writer));
+        $this->assertSame("first\nsecond\n", file_get_contents($file));
     }
 
     public function testPersistentOptionKeepsStdoutOpen(): void
@@ -156,6 +175,7 @@ class StreamTest extends TestCase
             $this->fail('expected RuntimeException');
         } catch (RuntimeException $e) {
             $this->assertStringContainsString('cannot be opened', $e->getMessage());
+            $this->assertInstanceOf(\ErrorException::class, $e->getPrevious(), 'fopen warning must be kept as previous');
         }
 
         $this->assertFalse(ErrorHandler::started(), 'ErrorHandler leaked after a failed write');
@@ -186,6 +206,18 @@ class StreamTest extends TestCase
         return $file;
     }
 
+    /** @param resource $handle */
+    private function fdNumberOf($handle): int
+    {
+        $target = realpath(stream_get_meta_data($handle)['uri']);
+        foreach (scandir('/proc/self/fd') as $fd) {
+            if (is_numeric($fd) && @readlink("/proc/self/fd/$fd") === $target) {
+                return (int) $fd;
+            }
+        }
+        $this->fail("descriptor of $target not found in /proc/self/fd");
+    }
+
     private function requireProc(): void
     {
         if (! is_dir('/proc/self/fd') || ! function_exists('shell_exec')) {
@@ -201,14 +233,27 @@ class StreamTest extends TestCase
      */
     private function spawnAndListPipes(): array
     {
+        // Sentinel: a handle deliberately opened without close-on-exec must show up in the child's table,
+        // otherwise the listing is broken and every "not inherited" assertion would pass vacuously.
+        $sentinelFile = $this->tempFile();
+        $sentinel = fopen($sentinelFile, 'a');
+
         $output = $this->tempFile();
         shell_exec(sprintf(
             'sh -c %s 1>/dev/null 2>/dev/null',
             escapeshellarg('for f in /proc/self/fd/*; do n=${f##*/}; [ "$n" -gt 2 ] && readlink "$f"; done > ' . escapeshellarg($output))
         ));
+        fclose($sentinel);
 
         $entries = array_filter(array_map('trim', file($output)));
-        // the shell's own descriptor on /proc/self/fd (the dir handle) and the output file itself are its own
-        return array_values(array_filter($entries, fn(string $target) => !str_contains($target, '/proc/') && $target !== realpath($output)));
+        $this->assertContains(realpath($sentinelFile), $entries, 'child descriptor listing is broken');
+
+        // the shell's own descriptor on /proc/self/fd (the dir handle), the output file and the sentinel are expected
+        return array_values(array_filter(
+            $entries,
+            fn(string $target) => !str_contains($target, '/proc/')
+                && $target !== realpath($output)
+                && $target !== realpath($sentinelFile)
+        ));
     }
 }
