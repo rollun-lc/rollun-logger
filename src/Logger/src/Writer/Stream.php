@@ -93,9 +93,7 @@ class Stream extends AbstractWriter
         }
 
         // Setting the default mode
-        if (null === $mode) {
-            $mode = 'a';
-        }
+        $mode ??= 'a';
 
         if (is_resource($streamOrUrl)) {
             if ('stream' != get_resource_type($streamOrUrl)) {

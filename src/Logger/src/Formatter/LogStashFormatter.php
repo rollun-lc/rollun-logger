@@ -18,7 +18,7 @@ class LogStashFormatter implements FormatterInterface
 
     public function __construct(private string $index, private ?array $columnMap = null, private ?JsonTruncatorInterface $jsonTruncator = null)
     {
-        $this->jsonTruncator = is_null($jsonTruncator) ? new JsonTruncator(self::DEFAULT_MAX_SIZE) : $jsonTruncator;
+        $this->jsonTruncator = $jsonTruncator ?? new JsonTruncator(self::DEFAULT_MAX_SIZE);
     }
 
     /**

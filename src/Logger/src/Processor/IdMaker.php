@@ -18,9 +18,7 @@ class IdMaker implements ProcessorInterface
      */
     public function process(array $event): array
     {
-        if (!isset($event['id'])) {
-            $event['id'] = $this->makeId();
-        }
+        $event['id'] ??= $this->makeId();
 
         return $event;
     }
